@@ -1,22 +1,18 @@
 package ca.mcgill.esce321.flightManagement.model;
 
-
 import jakarta.persistence.*;
-
 import java.util.List;
-
 
 @Entity
 public class Customer extends Person {
 
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 //    private String phoneNumber;
 //    private String address;
 
     private int points;
     private boolean isMember;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Booking> bookings;
 
     public Customer(){}
     public Customer(String email, String password, String firstName, String lastName, boolean isMember){
@@ -38,5 +34,13 @@ public class Customer extends Person {
 
     public void setMember(boolean member) {
         isMember = member;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

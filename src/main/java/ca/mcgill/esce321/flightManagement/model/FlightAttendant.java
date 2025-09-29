@@ -1,16 +1,15 @@
 package ca.mcgill.esce321.flightManagement.model;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 public class FlightAttendant extends Employee{
 
-    @OneToMany(mappedBy = "attendant")
+    @ManyToMany(mappedBy = "attendants",cascade = CascadeType.ALL)
     private List<Flight> flights;
 
+    public FlightAttendant(){}
     public FlightAttendant(String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);
     }

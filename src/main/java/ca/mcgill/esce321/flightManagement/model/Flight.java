@@ -1,37 +1,49 @@
 package ca.mcgill.esce321.flightManagement.model;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long flightId;
 
-    private int capacity;
-    private Date departTime;
-    private Date arrivalTime;
-    private String departLocation;
-    private String arrivalLocation;
-    @ManyToOne
-    @JoinColumn(name = "flight_attendant_id", referencedColumnName = "id", nullable = false)
-    private FlightAttendant attendant;
+    @ManyToMany
+    @JoinTable(
+            name = "flight_attendant",
+            joinColumns = @JoinColumn(name = "flight_id"),
+            inverseJoinColumns = @JoinColumn(name = "attendant_id")
+    )
+    private List<FlightAttendant> attendants;
 
     @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id", nullable = false)
     private Manager manager;
 
-    @ManyToOne
-    @JoinColumn(name = "pilot_id", referencedColumnName = "id", nullable = false)
-    private Pilot pilot;
+    @ManyToMany
+    @JoinTable(
+            name = "pilot",
+            joinColumns = @JoinColumn(name = "flight_id"),
+            inverseJoinColumns = @JoinColumn(name = "pilot_id")
+    )
+    private List<Pilot> pilots;
 
-    public Flight(int capacity, Date departTime, Date arrivalTime, String departLocation, String arrivalLocation) {
+    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
+    private List<Booking> bookings;
+
+    private int capacity;
+    private LocalDateTime departTime;
+    private LocalDateTime arrivalTime;
+    private String departLocation;
+    private String arrivalLocation;
+
+    public Flight(){}
+    public Flight(int capacity, LocalDateTime departTime, LocalDateTime arrivalTime, String departLocation, String arrivalLocation) {
         this.capacity = capacity;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
@@ -55,19 +67,19 @@ public class Flight {
         this.capacity = capacity;
     }
 
-    public Date getDepartTime() {
+    public LocalDateTime getDepartTime() {
         return departTime;
     }
 
-    public void setDepartTime(Date departTime) {
+    public void setDepartTime(LocalDateTime departTime) {
         this.departTime = departTime;
     }
 
-    public Date getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(Date arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -85,5 +97,37 @@ public class Flight {
 
     public void setArrivalLocation(String arrivalLocation) {
         this.arrivalLocation = arrivalLocation;
+    }
+
+    public List<FlightAttendant> getAttendants() {
+        return attendants;
+    }
+
+    public void setAttendants(List<FlightAttendant> attendants) {
+        this.attendants = attendants;
+    }
+
+    public Manager getManager() {
+        return manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
+    }
+
+    public List<Pilot> getPilots() {
+        return pilots;
+    }
+
+    public void setPilots(List<Pilot> pilots) {
+        this.pilots = pilots;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

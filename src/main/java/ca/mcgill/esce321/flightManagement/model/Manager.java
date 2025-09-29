@@ -8,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Manager extends Employee{
 
-    @OneToMany(mappedBy = "manager")
+    @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
     private List<Flight> flights;
     public Manager(String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);

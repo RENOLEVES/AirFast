@@ -1,11 +1,8 @@
 package ca.mcgill.esce321.flightManagement.model;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Locale;
 
 @Entity
 public class Booking {
@@ -17,10 +14,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
-//
+
     @ManyToOne
     @JoinColumn(name = "flight_id", referencedColumnName = "flightId", nullable = false)
-   private Flight flight;
+    private Flight flight;
 
     private LocalDateTime bookingDate;
     private String seatNumber;
