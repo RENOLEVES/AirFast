@@ -1,0 +1,10 @@
+package ca.mcgill.esce321.flightManagement.repo;
+
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface FlightRepository extends JpaRepository<Flight, Long> {
+    Flight findByFlightId(Long flightId);
+}
