@@ -23,7 +23,7 @@ All stakeholders interact with the system through a web frontend; persistence is
 *(update hours after each deliverable; table shows accountability per rubric).*
 
 ## 📂 Documentation
-- Project Report (Wiki)– includes meeting minutes and design decisions.
+- Project Reports: each includes meeting minutes and design decisions per deliverable.
 - Requirements Model
 - Domain Model
 
