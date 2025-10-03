@@ -11,9 +11,7 @@ public abstract class Person {
     private Long id;
 
     private String email;
-
     private String password;
-
     private String firstName;
     private String lastName;
 

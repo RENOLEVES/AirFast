@@ -1,7 +1,6 @@
 package ca.mcgill.esce321.flightManagement.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,17 +19,15 @@ public class Booking {
     private Flight flight;
 
     private LocalDateTime bookingDate;
-    private String seatNumber;
-    private SeatClass seatClass;
-    private double price;
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
+    private boolean isActive;
 
     public Booking(){}
-    public Booking(Customer customer, Flight flight, double price){
+    public Booking(Customer customer, Flight flight){
         this.customer = customer;
         this.flight = flight;
         this.bookingDate = LocalDateTime.now();
-        this.price = price;
+        this.paymentStatus = PaymentStatus.NOTPAID;
     }
 
     public Long getBookingId() {
@@ -65,35 +62,11 @@ public class Booking {
         this.bookingDate = bookingDate;
     }
 
-    public String getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(String seatNumber) {
-        this.seatNumber = seatNumber;
-    }
-
-    public SeatClass getSeatClass() {
-        return seatClass;
-    }
-
-    public void setSeatClass(SeatClass seatClass) {
-        this.seatClass = seatClass;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getPaymentStatus() {
+    public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 }

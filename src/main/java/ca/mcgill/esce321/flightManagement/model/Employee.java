@@ -6,9 +6,18 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Employee extends Person{
 
+    private Long e_id;
+
     public Employee(){}
     public Employee(String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);
     }
 
+    public Long getE_id() {
+        return e_id;
+    }
+
+    public void setE_id(Long e_id) {
+        this.e_id = e_id;
+    }
 }
