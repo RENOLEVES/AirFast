@@ -1,13 +1,19 @@
 package ca.mcgill.esce321.flightManagement.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Customer extends Person {
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
-    private List<Booking> bookings;
+    private List<Booking> bookings = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private Owner owner;
 
     private int points;
     private int membershipNumber;
@@ -50,4 +56,14 @@ public class Customer extends Person {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+
 }

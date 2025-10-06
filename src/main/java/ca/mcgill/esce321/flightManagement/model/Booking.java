@@ -18,9 +18,13 @@ public class Booking {
     @JoinColumn(name = "flight_id", referencedColumnName = "flightId", nullable = false)
     private Flight flight;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    private Owner owner;
+
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
-    private boolean isActive;
+    private BookingStatus bookingStatus;
 
     public Booking(){}
     public Booking(Customer customer, Flight flight){
@@ -28,6 +32,7 @@ public class Booking {
         this.flight = flight;
         this.bookingDate = LocalDateTime.now();
         this.paymentStatus = PaymentStatus.NOTPAID;
+        this.bookingStatus = BookingStatus.WAITLISTED;
     }
 
     public Long getBookingId() {
@@ -68,6 +73,22 @@ public class Booking {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public BookingStatus getBookingStatus() {
+        return bookingStatus;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        this.bookingStatus = bookingStatus;
     }
 }
 

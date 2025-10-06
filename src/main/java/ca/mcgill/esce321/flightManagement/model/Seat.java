@@ -15,6 +15,10 @@ public class Seat {
     @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    private Owner owner;
+
     private SeatClass seatClass;
     private double price;
     private String seatNumber;

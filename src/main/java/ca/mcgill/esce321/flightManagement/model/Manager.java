@@ -2,13 +2,14 @@ package ca.mcgill.esce321.flightManagement.model;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Manager extends Employee{
 
     @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
-    private List<Flight> flights;
+    private List<Flight> flights = new ArrayList<>();
 
     public Manager(){}
     public Manager(String email, String password, String firstName, String lastName) {
@@ -22,4 +23,6 @@ public class Manager extends Employee{
     public void setFlights(List<Flight> flights) {
         this.flights = flights;
     }
+
+
 }

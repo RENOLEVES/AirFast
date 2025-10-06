@@ -3,6 +3,7 @@ package ca.mcgill.esce321.flightManagement.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,19 +26,23 @@ public class Flight {
     @JoinColumn(name = "manager_id", referencedColumnName = "id", nullable = false)
     private Manager manager;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    private Owner owner;
+
     @ManyToMany
     @JoinTable(
             name = "pilot",
             joinColumns = @JoinColumn(name = "flight_id"),
             inverseJoinColumns = @JoinColumn(name = "pilot_id")
     )
-    private List<Pilot> pilots;
+    private List<Pilot> pilots = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Booking> bookings;
+    private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Seat> seats;
+    private List<Seat> seats = new ArrayList<>();
 
     private int capacity;
     private int delayHours;
@@ -55,12 +60,8 @@ public class Flight {
     private String[] bookedCities;
 
     public Flight(){}
-    public Flight(List<FlightAttendant> attendants, Manager manager, List<Pilot> pilots, int capacity,
-                  LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
+    public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
                   int flightNumber, int flightTime, boolean isRecurring) {
-        this.attendants = attendants;
-        this.manager = manager;
-        this.pilots = pilots;
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -229,5 +230,13 @@ public class Flight {
 
     public void setBookedCities(String[] bookedCities) {
         this.bookedCities = bookedCities;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }
