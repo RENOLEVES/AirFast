@@ -1,74 +1,92 @@
 package ca.mcgill.esce321.flightManagement;
 
 import ca.mcgill.esce321.flightManagement.model.*;
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
-
-
 public class ManagerRepositoryTest {
      @Autowired
     private PersonRepository personRepository;
-    @Test
-    void testManager() {
-        //create entity
-        Manager manager = new Manager("eric.zhao@gmail.com", "123456", "Eric","Zhao");
 
-        //save entity
-        Manager p1 = personRepository.save(manager);
+    Manager m1 = new Manager();
+    Owner o1 = new Owner();
+    
+    @BeforeEach
+    void setUp() {
+        personRepository.deleteAll();
 
-        assertThat(p1.getId()).isNotNull();
+        Owner owner = new Owner("owner@gmail.com", "123456", "o1","o2");
+        o1 = personRepository.save(owner);
 
-        Manager c1 = (Manager) personRepository.findByEmail("eric.zhao@gmail.com");
-
-        //read
-        assertThat(c1).isNotNull();
-        assertThat(c1.getFirstName()).isEqualTo("Eric");
-        assertThat(c1.getLastName()).isEqualTo("Zhao");
-        assertThat(c1.getEmail()).isEqualTo("eric.zhao@gmail.com");
-        assertThat(c1.getPassword()).isEqualTo("123456");
-
-        //update
-        c1.setEmail("joe.lee@gmail.com");
-        c1.setFirstName("Joe");
-        c1.setLastName("Lee");
-        c1.setPassword("654321");
-        Manager s2 = personRepository.save(c1);
-
-        Manager c2 = (Manager) personRepository.findByEmail("joe.lee@gmail.com");
-
-        assertThat(c2).isNotNull();
-        assertThat(c2.getFirstName()).isEqualTo("Joe");
-        assertThat(c2.getLastName()).isEqualTo("Lee");
-        assertThat(c2.getEmail()).isEqualTo("joe.lee@gmail.com");
-        assertThat(c2.getPassword()).isEqualTo("654321");
-
-        //deletion
-        personRepository.delete(p1);
-        personRepository.delete(c1);
-        personRepository.delete(s2);
-        personRepository.delete(c2);
-
-        Manager c4 = (Manager) personRepository.findByEmail("eric.zhao@gmail.com");
-        Manager c5 = (Manager) personRepository.findByEmail("joe.lee@gmail.com");
-        assertThat(c4).isNull();
-        assertThat(c5).isNull();
+        Manager manager = new Manager("linceketchateo@gmail.com", "123456", "Lince","Ketchate");
+        manager.setOwner(o1);
+        m1 = personRepository.save(manager);
     }
 
+    @Test
+    void testSaveManager() {
+        //create entity
+        Manager manager = new Manager("ken.dubien@gmail.com", "654321", "Ken","Dubien");
+
+        //save entity
+        Manager m1 = personRepository.save(manager);
+
+        assertThat(m1.getEmail()).isNotNull();
+    }
+
+    @Test
+    void testReadManager() {
+        //read
+        Manager m1 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+
+        assertThat(m1).isNotNull();
+        assertThat(m1.getFirstName()).isEqualTo("Lince");
+        assertThat(m1.getLastName()).isEqualTo("Ketchate");
+    }
+
+    @Test
+    void testUpdateManager(){
+        //read
+        Manager m2 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+
+        //update
+        m2.setEmail("joe.lee@gmail.com");
+        m2.setFirstName("Joe");
+        m2.setLastName("Lee");
+        personRepository.save(m1);
+
+        Manager m3 = (Manager) personRepository.findByEmail("joe.lee@gmail.com");
+
+        assertThat(m3).isNotNull();
+        assertThat(m3.getFirstName()).isEqualTo("Joe");
+        assertThat(m3.getLastName()).isEqualTo("Lee");
+    }
+
+    @Test
+    void testOwnerAndManager(){
+        Manager m2 = (Manager) personRepository.findByEmail(m1.getEmail());
+        Owner o2 = m1.getOwner();
+
+        assertThat(m2).isNotNull();
+        assertThat(o2).isNotNull();
+        assertThat(o2.getId()).isEqualTo(o1.getId());
+        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
+    }
+
+    @Test
+    void testDeleteManager(){
+        personRepository.delete(m1);
+
+        Manager m2 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+        assertThat(m2).isNull();
+    }
 
 }

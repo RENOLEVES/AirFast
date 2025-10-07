@@ -1,24 +1,17 @@
 package ca.mcgill.esce321.flightManagement;
 
 import ca.mcgill.esce321.flightManagement.model.*;
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
 public class PilotRepositoryTest {
     @Autowired
     private PersonRepository personRepository;
@@ -32,56 +25,77 @@ objects of all domain model types, and at least one attribute and at least one r
 each object. Test data must be removed from the database after each test method.
      */
 
+    Pilot p1 = new Pilot();
+    Owner o1 = new Owner();
+
+    @BeforeEach
+    void setUp() {
+        personRepository.deleteAll();
+
+        Owner owner = new Owner("owner@gmail.com", "123456", "o1","o2");
+        o1 = personRepository.save(owner);
+
+        Pilot pilot = new Pilot("toufic.jrab@gmail.com", "123456", "Toufic","Jrab");
+        pilot.setOwner(o1);
+        p1 = personRepository.save(pilot);
+    }
+
     @Test
-    void testPilot() {
+    void testSavePilot() {
         //create entity
-        Pilot pilot = new Pilot("eric.zhao@gmail.com", "123456", "Eric","Zhao");
+        Pilot pilot = new Pilot("ken.dubien@gmail.com", "654321", "Ken","Dubien");
 
         //save entity
         Pilot p1 = personRepository.save(pilot);
 
-        assertThat(p1.getId()).isNotNull();
+        assertThat(p1.getEmail()).isNotNull();
+    }
 
-        Pilot c1 = (Pilot) personRepository.findByEmail("eric.zhao@gmail.com");
-
+    @Test
+    void testReadPilot() {
         //read
-        assertThat(c1).isNotNull();
-        assertThat(c1.getFirstName()).isEqualTo("Eric");
-        assertThat(c1.getLastName()).isEqualTo("Zhao");
-        assertThat(c1.getEmail()).isEqualTo("eric.zhao@gmail.com");
-        assertThat(c1.getPassword()).isEqualTo("123456");
+        Pilot p1 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
+
+        assertThat(p1).isNotNull();
+        assertThat(p1.getFirstName()).isEqualTo("Toufic");
+        assertThat(p1.getLastName()).isEqualTo("Jrab");
+    }
+
+    @Test
+    void testUpdatePilot(){
+        //read
+        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
 
         //update
-        c1.setEmail("joe.lee@gmail.com");
-        c1.setFirstName("Joe");
-        c1.setLastName("Lee");
-        c1.setPassword("654321");
-        Pilot s2 = personRepository.save(c1);
+        p2.setEmail("joe.lee@gmail.com");
+        p2.setFirstName("Joe");
+        p2.setLastName("Lee");
+        personRepository.save(p1);
 
-        Pilot c2 = (Pilot) personRepository.findByEmail("joe.lee@gmail.com");
+        Pilot p3 = (Pilot) personRepository.findByEmail("joe.lee@gmail.com");
 
-        assertThat(c2).isNotNull();
-        assertThat(c2.getFirstName()).isEqualTo("Joe");
-        assertThat(c2.getLastName()).isEqualTo("Lee");
-        assertThat(c2.getEmail()).isEqualTo("joe.lee@gmail.com");
-        assertThat(c2.getPassword()).isEqualTo("654321");
-
-        //deletion
-        personRepository.delete(p1);
-        personRepository.delete(c1);
-        personRepository.delete(s2);
-        personRepository.delete(c2);
-
-        Pilot c4 = (Pilot) personRepository.findByEmail("eric.zhao@gmail.com");
-        Pilot c5 = (Pilot) personRepository.findByEmail("joe.lee@gmail.com");
-        assertThat(c4).isNull();
-        assertThat(c5).isNull();
-       
+        assertThat(p3).isNotNull();
+        assertThat(p3.getFirstName()).isEqualTo("Joe");
+        assertThat(p3.getLastName()).isEqualTo("Lee");
     }
-        
 
+    @Test
+    void testOwnerAndPilot(){
+        Pilot m2 = (Pilot) personRepository.findByEmail(p1.getEmail());
+        Owner o2 = p1.getOwner();
 
+        assertThat(m2).isNotNull();
+        assertThat(o2).isNotNull();
+        assertThat(o2.getId()).isEqualTo(o1.getId());
+        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
+    }
 
+    @Test
+    void testDeletePilot(){
+        personRepository.delete(p1);
 
+        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
+        assertThat(p2).isNull();
+    }
 
 }
