@@ -11,15 +11,15 @@ public class Booking {
     private Long bookingId;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "flightId", nullable = false)
+    @JoinColumn(name = "flight_id", referencedColumnName = "flightId")
     private Flight flight;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private Owner owner;
 
     private LocalDateTime bookingDate;

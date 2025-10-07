@@ -2,6 +2,7 @@ package ca.mcgill.esce321.flightManagement;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FlightAttendantRepositoryTest {
     
-  @Autowired
+    @Autowired
     private PersonRepository personRepository;
 
     FlightAttendant fa1 = new FlightAttendant();

@@ -20,14 +20,14 @@ public class Flight {
             joinColumns = @JoinColumn(name = "flight_id"),
             inverseJoinColumns = @JoinColumn(name = "attendant_id")
     )
-    private List<FlightAttendant> attendants;
+    private List<FlightAttendant> attendants = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "manager_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Manager manager;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private Owner owner;
 
     @ManyToMany
@@ -56,7 +56,9 @@ public class Flight {
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
+    @Transient
     private HashMap<String, Integer> bookingFrequencyPerCity;
+    @Transient
     private String[] bookedCities;
 
     public Flight(){}

@@ -26,7 +26,7 @@ public class ManagerRepositoryTest {
         Owner owner = new Owner("owner@gmail.com", "123456", "o1","o2");
         o1 = personRepository.save(owner);
 
-        Manager manager = new Manager("linceketchateo@gmail.com", "123456", "Lince","Ketchate");
+        Manager manager = new Manager("eric.zhao@gmail.com", "123456", "Eric","Zhao");
         manager.setOwner(o1);
         m1 = personRepository.save(manager);
     }
@@ -45,17 +45,17 @@ public class ManagerRepositoryTest {
     @Test
     void testReadManager() {
         //read
-        Manager m1 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+        Manager m1 = (Manager) personRepository.findByEmail("eric.zhao@gmail.com");
 
         assertThat(m1).isNotNull();
-        assertThat(m1.getFirstName()).isEqualTo("Lince");
-        assertThat(m1.getLastName()).isEqualTo("Ketchate");
+        assertThat(m1.getFirstName()).isEqualTo("Eric");
+        assertThat(m1.getLastName()).isEqualTo("Zhao");
     }
 
     @Test
     void testUpdateManager(){
         //read
-        Manager m2 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+        Manager m2 = (Manager) personRepository.findByEmail("eric.zhao@gmail.com");
 
         //update
         m2.setEmail("joe.lee@gmail.com");
@@ -85,7 +85,7 @@ public class ManagerRepositoryTest {
     void testDeleteManager(){
         personRepository.delete(m1);
 
-        Manager m2 = (Manager) personRepository.findByEmail("linceketchate@gmail.com");
+        Manager m2 = (Manager) personRepository.findByEmail("eric.zhao@gmail.com");
         assertThat(m2).isNull();
     }
 
