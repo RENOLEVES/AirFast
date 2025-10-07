@@ -15,12 +15,11 @@ All stakeholders interact with the system through a web frontend; persistence is
 | Name        | Role                  | Deliverable 1 Effort (hrs) | Deliverable 2 Effort (hrs) | Deliverable 3 Effort (hrs) | Presentation Effort (hrs) | Total (hrs) |
 |-------------|----------------------|----------------------------|----------------------------|----------------------------|----------------------------|-------------|
 | Toufic | Project Manager and Scrum Master    | 8                          | …                          | …                          | …                          | …           |
-| Eric | X Lead  | 8                          | …                          | …                          | …                          | …           |
-| Marshall    | X Lead         | 8                          | …                          | …                          | …                          | …           |
-| Vincent    | X Lead        | 8                          | …                          | …                          | …                          | …           |
-| Lince    | X Lead   | 8                          | …                          | …                          | …                          | …           |
+| Eric | Backend & Testing Lead	  | 8                          | …                          | …                          | …                          | …           |
+| Marshall    | UML & Architecture Lead        | 8                          | …                          | …                          | …                          | …           |
+| Vincent    | Requirements & Documentation Lead       | 8                          | …                          | …                          | …                          | …           |
+| Lince    | Database & Integration Lead   | 8                          | …                          | …                          | …                          | …           |
 
-*(update hours after each deliverable; table shows accountability per rubric).*
 
 ## 📂 Documentation
 - Project Reports: each includes meeting minutes and design decisions per deliverable.
