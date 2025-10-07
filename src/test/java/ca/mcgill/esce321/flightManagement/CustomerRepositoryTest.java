@@ -1,19 +1,13 @@
 package ca.mcgill.esce321.flightManagement;
 
 import ca.mcgill.esce321.flightManagement.model.*;
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +34,11 @@ class CustomerRepositoryTest {
         c1 = personRepository.save(customer);
     }
 
+    @AfterEach
+    void clean(){
+        personRepository.deleteAll();
+    }
+
     @Test
     void testSaveCustomer() {
         //create entity
@@ -55,13 +54,13 @@ class CustomerRepositoryTest {
     @Test
     void testReadCustomer() {
         //read
-        Customer c1 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com");
+        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com");
 
-        assertThat(c1).isNotNull();
-        assertThat(c1.getFirstName()).isEqualTo("Eric");
-        assertThat(c1.getLastName()).isEqualTo("Zhao");
-        assertThat(c1.getPoints()).isEqualTo(500);
-        assertThat((c1.getMembershipNumber()) == 123456);
+        assertThat(c2).isNotNull();
+        assertThat(c2.getFirstName()).isEqualTo("Eric");
+        assertThat(c2.getLastName()).isEqualTo("Zhao");
+        assertThat(c2.getPoints()).isEqualTo(500);
+        assertThat((c2.getMembershipNumber()) == 123456);
     }
 
     @Test
@@ -74,7 +73,7 @@ class CustomerRepositoryTest {
         c2.setFirstName("Joe");
         c2.setLastName("Lee");
         c2.setPoints(100);
-        personRepository.save(c1);
+        personRepository.save(c2);
 
         Customer c3 = (Customer) personRepository.findByEmail("joe.lee@gmail.com");
 

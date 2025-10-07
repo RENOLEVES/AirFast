@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public abstract class Employee extends Person{
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private Owner owner;
 
     private Long e_id;
