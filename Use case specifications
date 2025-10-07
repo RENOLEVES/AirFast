@@ -1,0 +1,77 @@
+ID: UC1.1
+Title: Book avaliable flights
+Description: A customer books avalible flights on the system.
+Actor:A customer
+Main scenario:
+1) The user indicates that they want to book avalible flights.
+2) The user enters a destination and date of departure.
+3) The system displays the avalible flights the user chooses including starting time of the departure.
+4) The system confirms the flight is booked after the customer pays the booking fee.
+Alternative scenario:
+4a) The user enters a destination that does not exist.
+  4a.1) The system informs the user the destination does not exist.
+  4a.2) The use case contiues at step 2.
+4b) The user selected a date of departure in the past.
+  4b.1) The system informs the user the date of departure is invalid.
+  4b.2) The use case continues at step 2.
+
+ID: UC1.2
+Title: Manage Flight
+Description: A manager can manage flights on the system.
+Actor: A manager
+Main scenario:
+1) The user indicates to manage the flights.
+2) The system will display current flights.
+3) The user can assign pilots and flight attendants to specific flights while adding the flight.
+4) The user can enter the capacity of the flight, departure/arrival time and departure/arrival locations while adding the flight.
+5) The system confirms the new flight is added.
+Alternative scenarios:
+5a) The departure/arrival time and departure/arrival locations are the same as the existing flights.
+  5a.1) The system informs the user that they cannot add a new flight that has the same info as the existing flight.
+  5a.2) The use case continues to step 4.
+
+ID: UC2.1
+Title: Create employee
+Description: The owner creates a new employee(pilot, flight attendant, booking manager).
+Actor: Owner
+Main scenario:
+1) The owner indicates they want to create an employee.
+2) The system displays the employee creation form.
+3) The owner enters the role, id, name of employee and email.
+4) The system validates and creates the employee record and confirms success.
+Alternative scenarios:
+4a) Missing required fields (e.g., role, name, email)
+  4a.1) The system informs the owner that required fields are missing.
+  4a.2) The use case continues at step 3.
+4b) Duplicate account (email/ID already in use).
+  4b.1) The system informs the owner that the employee already exists.
+  4b.2) The use case continues at step 3.
+
+ID: UC2.2
+Title: Update airline info
+Description: The owner updates airline-level information (branding, policies, contacts).
+Actor: Owner
+Main sceanrio:
+1) The owner indicates that they want to update airline information.
+2) The system displays editable fields (name, branding, conatct info, policies, terms).
+3) The owner enters changes and submits.
+4) The system validates and saves the updates and confirms success.
+Alternative scenarios:
+4a) Required fields are empty or files types are invalid.
+  4a.1) The sytstem informs the owner which fields need attention.
+  4a.2) The use case continues at step 3.
+
+ID: UC2.3 
+Title: Manage prices of flights
+Description: The owner sets or update flight prices.
+Actor: Owner
+Main sceanrios:
+1) The owner indicates that they want to manage flight prices.
+2) The system shows the pricing dashboard with base fares, taxse/fees and promotions.
+3) The owner selects a flight /route or creates a pricing rule and enters prices details(base fare, class, effective dates).
+4）The system validates and applies pricing, recalculates displayed fares, and confirms success.
+Alternative sceanarios:
+4a)Entered price is negative and below minimum allowed threshold.
+  4a.1) The system informs the owener that the price is invalid.
+  4a.2) The use case continues at step 3.
+
