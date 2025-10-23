@@ -23,6 +23,8 @@ import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+
 
 
 @Service
@@ -58,7 +60,7 @@ public class ManagerService {
     public List<Manager> findAllManagers() {
         boolean hasManagers = false;
         List<Person> allPersons = personRepository.findAll();
-        List<Manager> allManagers = null;
+        List<Manager> allManagers = new ArrayList<>();
         for (Person p : allPersons) {
             if (p instanceof Manager) {
                 hasManagers = true;
@@ -79,7 +81,7 @@ public class ManagerService {
         // return personRepository.save(manager);
         Optional<Person> managerToUpdate = personRepository.findById(id);
         if(managerToUpdate.isPresent()) {
-            Manager foundManagerToUpdate =  (Manager) p.get();
+            Manager foundManagerToUpdate =  (Manager) managerToUpdate.get();
             foundManagerToUpdate.setEmail(manager.getEmail());
             foundManagerToUpdate.setFirstName(manager.getFirstName());
             foundManagerToUpdate.setLastName(manager.getLastName());
