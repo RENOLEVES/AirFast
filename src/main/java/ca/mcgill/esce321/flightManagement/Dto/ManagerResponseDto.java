@@ -1,17 +1,21 @@
 
-package ca.mcgill.esce321.flightManagement.Dto;
+package ca.mcgill.esce321.flightManagement.dto;
 
 import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.model.Person;
 
-
+//add flights list -> ResponseDto
+//update flight assign employee, all functions -> ManagerService
 public class ManagerResponseDto {
     private long id;
     private String firstName;
     private String lastName;
     private String email;
+    //password maybe
+
+
     // private LocalDate creationDate;
 
 
