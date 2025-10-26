@@ -20,6 +20,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import ca.mcgill.esce321.flightManagement.Dto.ManagerRequestDto;
+import ca.mcgill.esce321.flightManagement.Dto.ManagerResponseDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,37 +41,34 @@ public class ManagerService {
     // }
 
     @Transactional
-    public Manager createManager(String email, String password, String firstName, String lastName) {
+    public ManagerResponseDto createManager(ManagerRequestDto dto) {
         // Date today = Date.valueOf(LocalDate.now());
         
-        Manager managerToCreate = new Manager(email, password, firstName, lastName);
-
-        return personRepository.save(managerToCreate);
+        Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
+        Manager saved = personRepository.save(managerToCreate);
+        return new ManagerResponseDto(saved);
     }
 
-    public Manager findManagerById(long id) {
+    public ManagerResponseDto findManagerById(long id) {
         Optional<Person> p =  personRepository.findById(id);
-        if(p.isPresent()) {
-            return (Manager) p.get();
+        if(p.isPresent() && p.get() instanceof Manager manager) {
+            return new ManagerResponseDto(manager);
         }
         else {
             throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
         }
     }
 
-    public List<Manager> findAllManagers() {
-        boolean hasManagers = false;
+    public List<ManagerResponseDto> findAllManagers() {
         List<Person> allPersons = personRepository.findAll();
-        List<Manager> allManagers = new ArrayList<>();
+        List<ManagerResponseDto> allManagers = new ArrayList<>();
+
         for (Person p : allPersons) {
-            if (p instanceof Manager) {
-                hasManagers = true;
-                // Cast Person to Manager
-                Manager manager = (Manager) p;
-                allManagers.add(manager);
+            if (p instanceof Manager manager) {
+                allManagers.add(new ManagerResponseDto(manager));
             }
         }
-        if(!hasManagers) {
+        if(allManagers.isEmpty()) {
             throw new IllegalArgumentException("There are no Managers in the database.");
         }
         return allManagers;
@@ -77,28 +76,30 @@ public class ManagerService {
     }
 
     @Transactional
-    public Manager updateManager(long id, Manager manager) {
-        // return personRepository.save(manager);
-        Optional<Person> managerToUpdate = personRepository.findById(id);
-        if(managerToUpdate.isPresent()) {
-            Manager foundManagerToUpdate =  (Manager) managerToUpdate.get();
-            foundManagerToUpdate.setEmail(manager.getEmail());
-            foundManagerToUpdate.setFirstName(manager.getFirstName());
-            foundManagerToUpdate.setLastName(manager.getLastName());
-            foundManagerToUpdate.setPassword(manager.getPassword());
+public ManagerResponseDto updateManager(long id, ManagerRequestDto dto) {
+    Optional<Person> optionalPerson = personRepository.findById(id);
 
-            return (Manager) personRepository.save(foundManagerToUpdate);
-        }
-        else {
-            throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
-        }
+    if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
+        managerToUpdate.setEmail(dto.getEmail());
+        managerToUpdate.setFirstName(dto.getFirstName());
+        managerToUpdate.setLastName(dto.getLastName());
+        managerToUpdate.setPassword(dto.getPassword());
 
-
-      
+        Manager updated = personRepository.save(managerToUpdate);
+        return new ManagerResponseDto(updated);
+    } else {
+        throw new IllegalArgumentException("No Manager found with ID " + id);
     }
+}
 
-    public void deleteManager(Manager manager) {
-        personRepository.delete(manager);
+     // DELETE
+    public void deleteManager(long id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager manager) {
+            personRepository.delete(manager);
+        } else {
+            throw new IllegalArgumentException("No Manager found with ID " + id);
+        }
     }
 
 

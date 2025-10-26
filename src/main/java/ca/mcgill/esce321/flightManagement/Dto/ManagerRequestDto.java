@@ -9,6 +9,7 @@ public class ManagerRequestDto {
     // @NotBlank(message = "Name cannot be blank")
     private String firstName;
     private String lastName; 
+    private String password;
 
     // @Email(message = "Invalid email format")
     private String email;
@@ -22,6 +23,7 @@ public class ManagerRequestDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
     }
 
     // Getters and setters
@@ -47,5 +49,13 @@ public class ManagerRequestDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
