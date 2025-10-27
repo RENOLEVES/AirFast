@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.Dto;
+package ca.mcgill.esce321.flightManagement.dto;
 
 
 // import jakarta.validation.constraints.Email;
@@ -14,6 +14,8 @@ public class ManagerRequestDto {
     // @Email(message = "Invalid email format")
     private String email;
 
+    //maybe flights list
+
     // Default constructor (needed by Jackson)
     @SuppressWarnings("unused")
     private ManagerRequestDto() {
@@ -23,7 +25,7 @@ public class ManagerRequestDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
+        // this.password = password;
     }
 
     // Getters and setters
