@@ -14,9 +14,9 @@ public class Booking {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "flightId")
-    private Flight flight;
+    @OneToOne
+    @JoinColumn(name = "seat_id", referencedColumnName = "seatId")
+    private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
@@ -27,9 +27,9 @@ public class Booking {
     private BookingStatus bookingStatus;
 
     public Booking(){}
-    public Booking(Customer customer, Flight flight){
+    public Booking(Customer customer, Seat seat){
         this.customer = customer;
-        this.flight = flight;
+        this.seat = seat;
         this.bookingDate = LocalDateTime.now();
         this.paymentStatus = PaymentStatus.NOTPAID;
         this.bookingStatus = BookingStatus.WAITLISTED;
@@ -51,12 +51,12 @@ public class Booking {
         this.customer = customer;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public Seat getSeat() {
+        return seat;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 
     public LocalDateTime getBookingDate() {
