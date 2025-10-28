@@ -14,8 +14,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 
-//add flights list -> ResponseDto
-//update flight assign employee, all functions -> ManagerService
+//update flight assign employee, all functions -> ManagerService???
 public class ManagerResponseDto {
     private long id;
     private String firstName;
