@@ -5,30 +5,37 @@ import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.model.Person;
+import ca.mcgill.esce321.flightManagement.model.Flight;
 
-//add flights list -> ResponseDto
-//update flight assign employee, all functions -> ManagerService
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.*;
+
+
+//update flight assign employee, all functions -> ManagerService???
 public class ManagerResponseDto {
     private long id;
     private String firstName;
     private String lastName;
     private String email;
-    //password maybe
-
+    private List<Flight> flights;
 
     // private LocalDate creationDate;
 
-
-    // Jackson needs a default constructor, but it doesn't need to be public
     @SuppressWarnings("unused")
     private ManagerResponseDto() {
     }
 
-    public ManagerResponseDto(Person model) {
+    // do I need a new parameter to this Constructor, how do I get flights
+    // is the parameter Manager model or Person model
+    public ManagerResponseDto(Manager model) {
         this.id = model.getId();
         this.firstName = model.getFirstName();
         this.lastName = model.getLastName();
         this.email = model.getEmail();
+        this.flights = model.getFlights();
         // this.creationDate = model.getCreationDate().toLocalDate();
     }
 
@@ -48,9 +55,15 @@ public class ManagerResponseDto {
         return firstName;
     }
 
-     public String getLastName() {
+    public String getLastName() {
         return lastName;
     }
+      
+    public List<Flight> getFlights() {
+        return flights;
+    }
+
+
 
     // public void setCreationDate(LocalDate creationDate) {
     //     this.creationDate = creationDate;
@@ -70,5 +83,9 @@ public class ManagerResponseDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setFlights(List<Flight> flights) {
+        this.flights = flights;
     }
 }
