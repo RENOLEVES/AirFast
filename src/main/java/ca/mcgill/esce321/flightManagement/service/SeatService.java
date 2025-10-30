@@ -25,14 +25,12 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDto;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDto;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 
@@ -49,7 +47,7 @@ public class SeatService {
     // }
 
     @Transactional
-    public SeatResponseDto createSeat(SeatRequestDTO dto) {
+    public SeatResponseDto createSeat(SeatRequestDto dto) {
         // Date today = Date.valueOf(LocalDate.now());
         
         Seat seatToCreate = new Seat(dto.getSeatClass(), dto.getSeatNumber(), dto.getFlight());
@@ -78,7 +76,7 @@ public class SeatService {
     }
 
     @Transactional
-public SeatResponseDto updateManager(long id, SeatRequestDTO dto) {
+public SeatResponseDto updateManager(long id, SeatRequestDto dto) {
     Optional<Seat> optionalSeat = seatRepository.findById(id);
 
     if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seatToUpdate) {
@@ -94,6 +92,8 @@ public SeatResponseDto updateManager(long id, SeatRequestDTO dto) {
     }
 }
 
+//copy ownerservice to do the find and findall
+
 // why use the Optional<>
      // DELETE
     public void deleteSeat(long id) {
@@ -105,14 +105,6 @@ public SeatResponseDto updateManager(long id, SeatRequestDTO dto) {
         }
     }
 
-     @Override
-    public List<SeatResponseDTO> viewAllSeats() {
-        return seatRepository.findAll().stream()
-                .map(f -> new SeatResponseDTO(
-                        f.getSeatId(),
-                        f.getFlight()
-                )).collect(Collectors.toList());
-    }
 
 
 }
