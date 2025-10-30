@@ -4,6 +4,7 @@ import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,15 @@ class BookingRepositoryTest {
     @Autowired
     private FlightRepository flightRepository;
 
+    @Autowired
+    private SeatRepository seatRepository;
+
     Booking b1 = new Booking();
     Owner o1 = new Owner();
     Customer c1 = new Customer();
     Flight f1 = new Flight();
+
+    Seat s1 = new Seat();
 
     @BeforeEach
     void setUp() {
@@ -48,7 +54,11 @@ class BookingRepositoryTest {
         Flight flight = new Flight(100,expectedDepartTime,"Montreal","Toronto",11,3,true);
         f1 = flightRepository.save(flight);
 
-        Booking booking = new Booking(c1,f1);
+        Seat seat = new Seat(SeatClass.ECONOMY, 100, "A6",SeatStatus.AVAILABLE,f1);
+        seat.setOwner(o1);
+        s1 = seatRepository.save(seat);
+
+        Booking booking = new Booking(c1,s1);
         booking.setOwner(o1);
         b1 = bookingRepository.save(booking);
     }
@@ -65,7 +75,12 @@ class BookingRepositoryTest {
         Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa",100,3,true);
         Flight f2 = flightRepository.save(flight);
 
-        Booking booking = new Booking(c2,f2);
+        Seat seat = new Seat(SeatClass.ECONOMY, 100, "A6",SeatStatus.AVAILABLE,f1);
+        seat.setOwner(o1);
+
+        s1 = seatRepository.save(seat);
+
+        Booking booking = new Booking(c2,s1);
         Booking b2 = bookingRepository.save(booking);
 
         assertThat(b2.getBookingId()).isNotNull();
