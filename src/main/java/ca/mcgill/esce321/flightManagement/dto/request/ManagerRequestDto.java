@@ -1,64 +1,27 @@
 package ca.mcgill.esce321.flightManagement.dto.request;
 
+import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
 
-// import jakarta.validation.constraints.Email;
-// import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
-// what you're getting from front end
-public class ManagerRequestDto {
+public class ManagerRequestDTO extends EmployeeResponseDTO {
 
-    // @NotBlank(message = "Name cannot be blank")
-    private String firstName;
-    private String lastName; 
-    private String password;
+    private List<Long> flightIds;
 
-    // @Email(message = "Invalid email format")
-    private String email;
+    public ManagerRequestDTO() {}
 
-    //maybe flights list
-
-    // Default constructor (needed by Jackson)
-    @SuppressWarnings("unused")
-    private ManagerRequestDto() {
+    public ManagerRequestDTO(Long eId, String email, String password, String firstName, String lastName,
+                             List<Long> flightIds) {
+        super(eId, email, password, firstName, lastName);
+        this.setActive(true);
+        this.flightIds = flightIds;
     }
 
-    public ManagerRequestDto(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        // this.password = password;
+    public List<Long> getFlightIds() {
+        return flightIds;
     }
 
-    // Getters and setters
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setFirstName(String name) {
-        this.firstName = name;
-    }
-
-    public void setLastName(String name) {
-        this.lastName = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setFlightIds(List<Long> flightIds) {
+        this.flightIds = flightIds;
     }
 }

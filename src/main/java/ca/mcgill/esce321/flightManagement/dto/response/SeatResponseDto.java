@@ -1,32 +1,55 @@
 package ca.mcgill.esce321.flightManagement.dto.response;
-import ca.mcgill.esce321.flightManagement.model.Seat;
+
 import ca.mcgill.esce321.flightManagement.model.SeatClass;
 import ca.mcgill.esce321.flightManagement.model.SeatStatus;
-import ca.mcgill.esce321.flightManagement.model.Flight;
 
+public class SeatResponseDTO {
 
-public class SeatResponseDto {
+    private Long seatId;
+    private Long flightId;   // reference to Flight
+    private Long ownerId;    // reference to Owner
 
     private SeatClass seatClass;
     private double price;
     private String seatNumber;
-    private Flight flight;
     private SeatStatus seatStatus;
 
+    public SeatResponseDTO() {}
 
-    @SuppressWarnings("unused")
-    private SeatResponseDto() {
-
-    }
-
-    public SeatResponseDto(SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus, Flight flight) {
-            
+    public SeatResponseDTO(Long seatId, Long flightId, Long ownerId,
+                           SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus) {
+        this.seatId = seatId;
+        this.flightId = flightId;
+        this.ownerId = ownerId;
         this.seatClass = seatClass;
         this.price = price;
         this.seatNumber = seatNumber;
         this.seatStatus = seatStatus;
-        this.flight = flight;
-        
+    }
+
+    // Getters and Setters
+    public Long getSeatId() {
+        return seatId;
+    }
+
+    public void setSeatId(Long seatId) {
+        this.seatId = seatId;
+    }
+
+    public Long getFlightId() {
+        return flightId;
+    }
+
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public SeatClass getSeatClass() {
@@ -39,7 +62,6 @@ public class SeatResponseDto {
 
     public double getPrice() {
         return price;
-
     }
 
     public void setPrice(double price) {
@@ -60,19 +82,5 @@ public class SeatResponseDto {
 
     public void setSeatStatus(SeatStatus seatStatus) {
         this.seatStatus = seatStatus;
-        
     }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
-
-
-
-    
 }
