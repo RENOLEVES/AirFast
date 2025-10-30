@@ -1,9 +1,10 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
 
 // import jakarta.validation.constraints.Email;
 // import jakarta.validation.constraints.NotBlank;
 
+// what you're getting from front end
 public class ManagerRequestDto {
 
     // @NotBlank(message = "Name cannot be blank")

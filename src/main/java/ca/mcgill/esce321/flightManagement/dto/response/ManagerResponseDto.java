@@ -1,7 +1,7 @@
 
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
-import java.time.LocalDate;
+// import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.model.Person;
@@ -15,6 +15,7 @@ import jakarta.persistence.*;
 
 
 //update flight assign employee, all functions -> ManagerService???
+// what stuff you need to show on frontend
 public class ManagerResponseDto {
     private long id;
     private String firstName;

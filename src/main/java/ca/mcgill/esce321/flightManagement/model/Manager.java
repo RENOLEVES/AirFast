@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 public class Manager extends Employee{
+    // only getter and setters for attributes
 
     @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
     private List<Flight> flights = new ArrayList<>();
