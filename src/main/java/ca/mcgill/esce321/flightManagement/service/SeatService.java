@@ -25,8 +25,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDto;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDto;
 
 import java.util.List;
 import java.util.Optional;
