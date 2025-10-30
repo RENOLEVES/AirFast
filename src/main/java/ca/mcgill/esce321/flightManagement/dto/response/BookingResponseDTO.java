@@ -1,10 +1,10 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
 import java.time.LocalDateTime;
 import ca.mcgill.esce321.flightManagement.model.BookingStatus;
 import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
 
-public class BookingDTO {
+public class BookingResponseDTO {
 
     private Long bookingId;
     private Long customerId;  // Reference to Customer
@@ -15,10 +15,10 @@ public class BookingDTO {
     private PaymentStatus paymentStatus;
     private BookingStatus bookingStatus;
 
-    public BookingDTO() {}
+    public BookingResponseDTO() {}
 
-    public BookingDTO(Long bookingId, Long customerId, Long seatId, Long ownerId,
-                      LocalDateTime bookingDate, PaymentStatus paymentStatus, BookingStatus bookingStatus) {
+    public BookingResponseDTO(Long bookingId, Long customerId, Long seatId, Long ownerId,
+                              LocalDateTime bookingDate, PaymentStatus paymentStatus, BookingStatus bookingStatus) {
         this.bookingId = bookingId;
         this.customerId = customerId;
         this.seatId = seatId;

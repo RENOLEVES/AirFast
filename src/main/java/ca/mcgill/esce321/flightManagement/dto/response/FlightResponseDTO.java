@@ -1,8 +1,8 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
 import java.time.LocalDateTime;
 
-public class FlightDTO {
+public class FlightResponseDTO {
 
     private Long flightId;
     private int capacity;
@@ -28,13 +28,13 @@ public class FlightDTO {
     private int totalBookings;
     private int totalSeats;
 
-    public FlightDTO() {}
+    public FlightResponseDTO() {}
 
-    public FlightDTO(Long flightId, int capacity, int seatsRemaining, int delayHours,
-                     LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-                     String departLocation, String arrivalLocation, int flightNumber, int flightTime,
-                     boolean isRecurring, boolean isActive, Long managerId, Long ownerId,
-                     int totalPilots, int totalAttendants, int totalBookings, int totalSeats) {
+    public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining, int delayHours,
+                             LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
+                             String departLocation, String arrivalLocation, int flightNumber, int flightTime,
+                             boolean isRecurring, boolean isActive, Long managerId, Long ownerId,
+                             int totalPilots, int totalAttendants, int totalBookings, int totalSeats) {
         this.flightId = flightId;
         this.capacity = capacity;
         this.seatsRemaining = seatsRemaining;

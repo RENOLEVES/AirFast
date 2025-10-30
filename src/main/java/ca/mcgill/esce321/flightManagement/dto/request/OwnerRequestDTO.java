@@ -1,6 +1,6 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
-public class OwnerDTO {
+public class OwnerRequestDTO {
     private Long id;
     private String email;
     private String firstName;
@@ -13,10 +13,10 @@ public class OwnerDTO {
     private int totalBookings;
     private int totalSeats;
 
-    public OwnerDTO() {}
+    public OwnerRequestDTO() {}
 
-    public OwnerDTO(Long id, String email, String firstName, String lastName, double totalRevenue,
-                    int totalCustomers, int totalEmployees, int totalFlights, int totalBookings, int totalSeats) {
+    public OwnerRequestDTO(Long id, String email, String firstName, String lastName, double totalRevenue,
+                           int totalCustomers, int totalEmployees, int totalFlights, int totalBookings, int totalSeats) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;

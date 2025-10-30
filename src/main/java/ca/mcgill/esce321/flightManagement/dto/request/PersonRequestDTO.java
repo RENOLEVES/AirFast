@@ -1,6 +1,6 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
-public class PersonDTO {
+public class PersonRequestDTO {
 
     private Long id;
     private String email;
@@ -8,9 +8,9 @@ public class PersonDTO {
     private String firstName;
     private String lastName;
 
-    public PersonDTO() {}
+    public PersonRequestDTO() {}
 
-    public PersonDTO(String email, String password, String firstName, String lastName) {
+    public PersonRequestDTO(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;

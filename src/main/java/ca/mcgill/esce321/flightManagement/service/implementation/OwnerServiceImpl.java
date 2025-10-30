@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.service.implementation;
 
-import ca.mcgill.esce321.flightManagement.dto.*;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import ca.mcgill.esce321.flightManagement.service.OwnerService;
@@ -28,11 +28,11 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<CustomerDTO> viewAllCustomers() {
+    public List<CustomerResponseDTO> viewAllCustomers() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Customer)
                 .map(p -> (Customer) p)
-                .map(c -> new CustomerDTO(
+                .map(c -> new CustomerResponseDTO(
                         c.getId(),
                         c.getEmail(),
                         c.getFirstName(),
@@ -45,13 +45,13 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<EmployeeDTO> viewAllEmployees() {
+    public List<EmployeeResponseDTO> viewAllEmployees() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Employee)
                 .map(p -> (Employee) p)
                 .map(e -> {
                     if (e instanceof Pilot pilot) {
-                        return new PilotDTO(
+                        return new PilotResponseDTO(
                                 pilot.getE_id(),
                                 pilot.getEmail(),
                                 pilot.getPassword(),
@@ -60,7 +60,7 @@ public class OwnerServiceImpl implements OwnerService {
                                 pilot.getFlights().stream().map(Flight::getFlightId).toList()
                         );
                     } else if (e instanceof Manager manager) {
-                        return new ManagerDTO(
+                        return new ManagerResponseDTO(
                                 manager.getE_id(),
                                 manager.getEmail(),
                                 manager.getPassword(),
@@ -69,7 +69,7 @@ public class OwnerServiceImpl implements OwnerService {
                                 manager.getFlights().stream().map(Flight::getFlightId).toList()
                         );
                     } else if (e instanceof FlightAttendant attendant) {
-                        return new FlightAttendantDTO(
+                        return new FlightAttendantResponseDTO(
                                 attendant.getE_id(),
                                 attendant.getEmail(),
                                 attendant.getPassword(),
@@ -78,7 +78,7 @@ public class OwnerServiceImpl implements OwnerService {
                                 attendant.getFlights().stream().map(Flight::getFlightId).toList()
                         );
                     } else {
-                        return new EmployeeDTO(
+                        return new EmployeeResponseDTO(
                                 e.getE_id(),
                                 e.getEmail(),
                                 e.getPassword(),
@@ -90,9 +90,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<FlightDTO> viewAllFlights() {
+    public List<FlightResponseDTO> viewAllFlights() {
         return flightRepository.findAll().stream()
-                .map(f -> new FlightDTO(
+                .map(f -> new FlightResponseDTO(
                         f.getFlightId(),
                         f.getCapacity(),
                         f.getSeatsRemaining(),
@@ -116,9 +116,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<BookingDTO> viewAllBookings() {
+    public List<BookingResponseDTO> viewAllBookings() {
         return bookingRepository.findAll().stream()
-                .map(b -> new BookingDTO(
+                .map(b -> new BookingResponseDTO(
                         b.getBookingId(),
                         b.getCustomer() != null ? b.getCustomer().getId() : null,
                         b.getSeat() != null ? b.getSeat().getSeatId() : null,
@@ -130,9 +130,9 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public List<SeatDTO> viewAllSeats() {
+    public List<SeatResponseDTO> viewAllSeats() {
         return seatRepository.findAll().stream()
-                .map(s -> new SeatDTO(
+                .map(s -> new SeatResponseDTO(
                         s.getSeatId(),
                         s.getFlight() != null ? s.getFlight().getFlightId() : null,
                         s.getOwner() != null ? s.getOwner().getId() : null,
@@ -151,7 +151,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public double calculateTotalRevenue() {
         // Get all paid bookings
-        List<BookingDTO> paidBookings = viewAllBookings().stream()
+        List<BookingResponseDTO> paidBookings = viewAllBookings().stream()
                 .filter(b -> b.getPaymentStatus() == PaymentStatus.PAID)
                 .toList();
 

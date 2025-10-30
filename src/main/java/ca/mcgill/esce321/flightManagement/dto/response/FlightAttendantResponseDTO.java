@@ -1,15 +1,15 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
 import java.util.List;
 
-public class FlightAttendantDTO extends EmployeeDTO {
+public class FlightAttendantResponseDTO extends EmployeeResponseDTO {
 
     private List<Long> flightIds;
 
-    public FlightAttendantDTO() {}
+    public FlightAttendantResponseDTO() {}
 
-    public FlightAttendantDTO(Long eId, String email, String password, String firstName, String lastName,
-                              List<Long> flightIds) {
+    public FlightAttendantResponseDTO(Long eId, String email, String password, String firstName, String lastName,
+                                      List<Long> flightIds) {
         super(eId, email,password, firstName, lastName);
         this.setActive(true);
         this.flightIds = flightIds;

@@ -1,14 +1,15 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
+import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
-public class EmployeeDTO extends PersonDTO{
+public class EmployeeRequestDTO extends PersonResponseDTO {
     private Owner owner;
     private Long e_id;
     private boolean isActive;
 
-    public EmployeeDTO(){}
-    public EmployeeDTO(Long eId,String email, String password, String firstName, String lastName) {
+    public EmployeeRequestDTO(){}
+    public EmployeeRequestDTO(Long eId, String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);
         e_id = eId;
         this.isActive = true;

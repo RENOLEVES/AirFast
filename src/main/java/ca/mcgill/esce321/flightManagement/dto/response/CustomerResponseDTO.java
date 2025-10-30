@@ -1,6 +1,6 @@
-package ca.mcgill.esce321.flightManagement.dto;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
-public class CustomerDTO {
+public class CustomerResponseDTO {
     private Long id;
     private String email;
     private String firstName;
@@ -12,10 +12,10 @@ public class CustomerDTO {
 
     private int totalBookings;     // derived field
 
-    public CustomerDTO() {}
+    public CustomerResponseDTO() {}
 
-    public CustomerDTO(Long id, String email, String firstName, String lastName,
-                       int membershipNumber, int points, int timeInFlight, int totalBookings) {
+    public CustomerResponseDTO(Long id, String email, String firstName, String lastName,
+                               int membershipNumber, int points, int timeInFlight, int totalBookings) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;

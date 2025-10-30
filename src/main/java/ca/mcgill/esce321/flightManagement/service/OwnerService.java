@@ -1,21 +1,21 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.dto.*;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.Employee;
 
 import java.util.List;
 
 public interface OwnerService {
 
-    List<CustomerDTO> viewAllCustomers();
+    List<CustomerResponseDTO> viewAllCustomers();
 
-    List<EmployeeDTO> viewAllEmployees(); // returns base or subclass DTOs
+    List<EmployeeResponseDTO> viewAllEmployees(); // returns base or subclass DTOs
 
-    List<FlightDTO> viewAllFlights();
+    List<FlightResponseDTO> viewAllFlights();
 
-    List<BookingDTO> viewAllBookings();
+    List<BookingResponseDTO> viewAllBookings();
 
-    List<SeatDTO> viewAllSeats();
+    List<SeatResponseDTO> viewAllSeats();
 
     double viewSalary(Employee employee);
 
