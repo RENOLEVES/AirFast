@@ -24,9 +24,10 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDto;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDto;
+import ca.mcgill.esce321.flightManagement.model.Seat;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,71 +40,66 @@ import java.util.ArrayList;
 public class SeatService {
 
     @Autowired
-    private PersonRepository personRepository;
+    private SeatRepository seatRepository;
 
     // public Manager createManager(Manager manager) {
     //     return (Manager) personRepository.save(manager);
     // }
 
     @Transactional
-    public ManagerResponseDto createSeat(ManagerRequestDto dto) {
+    public SeatResponseDto createSeat(SeatRequestDto dto) {
         // Date today = Date.valueOf(LocalDate.now());
         
-        Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
-        Manager saved = personRepository.save(managerToCreate);
-        return new ManagerResponseDto(saved);
+        Seat seatToCreate = new Seat(dto.getSeatClass(), dto.getSeatNumber(), dto.getFlight());
+        Seat saved = seatRepository.save(seatToCreate);
+        return new SeatResponseDto(saved);
     }
 
-    public ManagerResponseDto findManagerById(long id) {
-        Optional<Person> p =  personRepository.findById(id);
-        if(p.isPresent() && p.get() instanceof Manager manager) {
-            return new ManagerResponseDto(manager);
+    public SeatResponseDto findSeatById(long id) {
+        Optional<Seat> p =  seatRepository.findById(id);
+        if(p.isPresent() && p.get() instanceof Seat seat) {
+            return new SeatResponseDto(seat);
         }
         else {
-            throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
+            throw new IllegalArgumentException("There is no Seat with ID " + id + ".");
         }
     }
 
-    public List<ManagerResponseDto> findAllManagers() {
-        List<Person> allPersons = personRepository.findAll();
-        List<ManagerResponseDto> allManagers = new ArrayList<>();
-
-        for (Person p : allPersons) {
-            if (p instanceof Manager manager) {
-                allManagers.add(new ManagerResponseDto(manager));
-            }
+    // return Dto list
+    public List<SeatResponseDto> findAllManagers() {
+        List<Seat> allSeats = seatRepository.findAll();
+        if(allSeats.isEmpty()) {
+            throw new IllegalArgumentException("There are no Seats in the database.");
         }
-        if(allManagers.isEmpty()) {
-            throw new IllegalArgumentException("There are no Managers in the database.");
-        }
-        return allManagers;
+        return allSeats;
         
     }
 
     @Transactional
-public ManagerResponseDto updateManager(long id, ManagerRequestDto dto) {
-    Optional<Person> optionalPerson = personRepository.findById(id);
+public SeatResponseDto updateManager(long id, SeatRequestDto dto) {
+    Optional<Seat> optionalSeat = seatRepository.findById(id);
 
-    if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
-        managerToUpdate.setEmail(dto.getEmail());
-        managerToUpdate.setFirstName(dto.getFirstName());
-        managerToUpdate.setLastName(dto.getLastName());
-        managerToUpdate.setPassword(dto.getPassword());
+    if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seatToUpdate) {
+        seatToUpdate.setSeatClass(dto.getSeatClass());
+        seatToUpdate.setSeatNumber(dto.getSeatNumber());
+        seatToUpdate.setFlight(dto.getFlight());
+        // seatToUpdate.setPassword(dto.getPassword());
 
-        Manager updated = personRepository.save(managerToUpdate);
-        return new ManagerResponseDto(updated);
+        Seat updated = seatRepository.save(seatToUpdate);
+        return new SeatResponseDto(updated);
     } else {
-        throw new IllegalArgumentException("No Manager found with ID " + id);
+        throw new IllegalArgumentException("No Seat found with ID " + id);
     }
 }
 
+// why use the Optional<>
      // DELETE
     public void deleteSeat(long id) {
-        Optional<Person> optionalPerson = personRepository.findById(id);
-        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager manager) {
-            personRepository.delete(manager);
+        Optional<Seat> optionalSeat = seatRepository.findById(id);
+        if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seat) {
+            seatRepository.delete(seat);
         } else {
-            throw new IllegalArgumentException("No Manager found with ID " + id);
+            throw new IllegalArgumentException("No Seat found with ID " + id);
         }
     }
 
