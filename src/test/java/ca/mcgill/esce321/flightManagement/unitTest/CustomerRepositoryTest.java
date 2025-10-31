@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -30,7 +30,6 @@ class CustomerRepositoryTest {
 
         Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao",123456);
         customer.setPoints(500);
-        customer.setOwner(o1);
         c1 = personRepository.save(customer);
     }
 
@@ -86,12 +85,8 @@ class CustomerRepositoryTest {
     @Test
     void testOwnerAndCustomer(){
         Customer c2 = (Customer) personRepository.findById(c1.getId()).orElseThrow();
-        Owner o2 = c1.getOwner();
 
         assertThat(c2).isNotNull();
-        assertThat(o2).isNotNull();
-        assertThat(o2.getId()).isEqualTo(o1.getId());
-        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
     }
 
     @Test

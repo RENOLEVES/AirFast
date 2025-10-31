@@ -14,7 +14,7 @@ public class Seat {
     private Booking booking;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "id")
+    @JoinColumn(name = "flight_id")
     private Flight flight;
 
     private SeatClass seatClass;

@@ -30,30 +30,10 @@ public class FlightRequestDTO {
 
     public FlightRequestDTO() {}
 
-    public FlightRequestDTO(Long flightId, int capacity, int seatsRemaining, int delayHours,
-                            LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-                            String departLocation, String arrivalLocation, int flightNumber, int flightTime,
-                            boolean isRecurring, boolean isActive, Long managerId, Long ownerId,
-                            int totalPilots, int totalAttendants, int totalBookings, int totalSeats) {
+    public FlightRequestDTO(Long flightId,int flightNumber, Long managerId) {
         this.flightId = flightId;
-        this.capacity = capacity;
-        this.seatsRemaining = seatsRemaining;
-        this.delayHours = delayHours;
-        this.departTime = departTime;
-        this.arrivalTime = arrivalTime;
-        this.expectedDepartTime = expectedDepartTime;
-        this.departLocation = departLocation;
-        this.arrivalLocation = arrivalLocation;
         this.flightNumber = flightNumber;
-        this.flightTime = flightTime;
-        this.isRecurring = isRecurring;
-        this.isActive = isActive;
         this.managerId = managerId;
-        this.ownerId = ownerId;
-        this.totalPilots = totalPilots;
-        this.totalAttendants = totalAttendants;
-        this.totalBookings = totalBookings;
-        this.totalSeats = totalSeats;
     }
 
     // Getters and Setters

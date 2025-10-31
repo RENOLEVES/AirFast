@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;

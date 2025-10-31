@@ -16,8 +16,8 @@ public class FlightResponseDTO {
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private int flightNumber;
-    private int flightTime;
+    private String flightNumber;
+    private double flightTime;
     private boolean isRecurring;
     private boolean isActive;
 
@@ -28,7 +28,7 @@ public class FlightResponseDTO {
 
     public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-                             String departLocation, String arrivalLocation, int flightNumber, int flightTime,
+                             String departLocation, String arrivalLocation, String flightNumber, double flightTime,
                              boolean isRecurring, boolean isActive) {
         this.flightId = flightId;
         this.capacity = capacity;
@@ -117,19 +117,19 @@ public class FlightResponseDTO {
         this.arrivalLocation = arrivalLocation;
     }
 
-    public int getFlightNumber() {
+    public String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(int flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 

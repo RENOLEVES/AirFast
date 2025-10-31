@@ -14,6 +14,10 @@ public class Booking {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    private Manager manager;
+
     @OneToOne
     @JoinColumn(name = "seat_id", referencedColumnName = "seatId")
     private Seat seat;
@@ -77,6 +81,14 @@ public class Booking {
 
     public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    public Manager getManager() {
+        return manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 }
 
