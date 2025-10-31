@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.model;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
+// import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
