@@ -1,6 +1,9 @@
 package ca.mcgill.esce321.flightManagement.dto.response;
 
+import ca.mcgill.esce321.flightManagement.model.Seat;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class FlightResponseDTO {
 
@@ -18,27 +21,18 @@ public class FlightResponseDTO {
     private boolean isRecurring;
     private boolean isActive;
 
-    // References
-    private Long managerId;
-    private Long ownerId;
+    private List<Seat> seats;
 
-    // Summary counts
-    private int totalPilots;
-    private int totalAttendants;
-    private int totalBookings;
-    private int totalSeats;
 
     public FlightResponseDTO() {}
 
-    public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining, int delayHours,
+    public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
                              String departLocation, String arrivalLocation, int flightNumber, int flightTime,
-                             boolean isRecurring, boolean isActive, Long managerId, Long ownerId,
-                             int totalPilots, int totalAttendants, int totalBookings, int totalSeats) {
+                             boolean isRecurring, boolean isActive) {
         this.flightId = flightId;
         this.capacity = capacity;
         this.seatsRemaining = seatsRemaining;
-        this.delayHours = delayHours;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.expectedDepartTime = expectedDepartTime;
@@ -48,12 +42,6 @@ public class FlightResponseDTO {
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
         this.isActive = isActive;
-        this.managerId = managerId;
-        this.ownerId = ownerId;
-        this.totalPilots = totalPilots;
-        this.totalAttendants = totalAttendants;
-        this.totalBookings = totalBookings;
-        this.totalSeats = totalSeats;
     }
 
     // Getters and Setters
@@ -161,51 +149,11 @@ public class FlightResponseDTO {
         isActive = active;
     }
 
-    public Long getManagerId() {
-        return managerId;
+    public List<Seat> getSeats() {
+        return seats;
     }
 
-    public void setManagerId(Long managerId) {
-        this.managerId = managerId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public int getTotalPilots() {
-        return totalPilots;
-    }
-
-    public void setTotalPilots(int totalPilots) {
-        this.totalPilots = totalPilots;
-    }
-
-    public int getTotalAttendants() {
-        return totalAttendants;
-    }
-
-    public void setTotalAttendants(int totalAttendants) {
-        this.totalAttendants = totalAttendants;
-    }
-
-    public int getTotalBookings() {
-        return totalBookings;
-    }
-
-    public void setTotalBookings(int totalBookings) {
-        this.totalBookings = totalBookings;
-    }
-
-    public int getTotalSeats() {
-        return totalSeats;
-    }
-
-    public void setTotalSeats(int totalSeats) {
-        this.totalSeats = totalSeats;
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
     }
 }

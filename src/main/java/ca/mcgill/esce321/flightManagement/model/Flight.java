@@ -26,10 +26,6 @@ public class Flight {
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Manager manager;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
     @ManyToMany
     @JoinTable(
             name = "pilot",
@@ -232,13 +228,5 @@ public class Flight {
 
     public void setBookedCities(String[] bookedCities) {
         this.bookedCities = bookedCities;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

@@ -48,5 +48,13 @@ public class PersonResponseDTO {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
 

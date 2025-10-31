@@ -18,10 +18,6 @@ public class Booking {
     @JoinColumn(name = "seat_id", referencedColumnName = "seatId")
     private Seat seat;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
     private BookingStatus bookingStatus;
@@ -73,14 +69,6 @@ public class Booking {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 
     public BookingStatus getBookingStatus() {
