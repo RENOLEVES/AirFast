@@ -8,9 +8,9 @@ public class FlightAttendantResponseDTO extends EmployeeResponseDTO {
 
     public FlightAttendantResponseDTO() {}
 
-    public FlightAttendantResponseDTO(Long eId, String email, String password, String firstName, String lastName,
+    public FlightAttendantResponseDTO(String email, String password, String firstName, String lastName,
                                       List<Long> flightIds) {
-        super(eId, email,password, firstName, lastName);
+        super(email,password, firstName, lastName);
         this.setActive(true);
         this.flightIds = flightIds;
     }

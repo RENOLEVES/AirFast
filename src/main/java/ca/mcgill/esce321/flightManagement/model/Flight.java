@@ -26,10 +26,6 @@ public class Flight {
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Manager manager;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
     @ManyToMany
     @JoinTable(
             name = "pilot",
@@ -37,9 +33,6 @@ public class Flight {
             inverseJoinColumns = @JoinColumn(name = "pilot_id")
     )
     private List<Pilot> pilots = new ArrayList<>();
-
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
-    private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
     private List<Seat> seats = new ArrayList<>();
@@ -51,7 +44,7 @@ public class Flight {
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private int flightNumber;
+    private String flightNumber;
     private int flightTime;
     private int seatsRemaining;
     private boolean isRecurring;
@@ -63,7 +56,7 @@ public class Flight {
 
     public Flight(){}
     public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                  int flightNumber, int flightTime, boolean isRecurring) {
+                  String flightNumber, int flightTime, boolean isRecurring) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -146,14 +139,6 @@ public class Flight {
         this.pilots = pilots;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     public int getDelayHours() {
         return delayHours;
     }
@@ -170,11 +155,11 @@ public class Flight {
         this.expectedDepartTime = expectedDepartTime;
     }
 
-    public int getFlightNumber() {
+    public String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(int flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
@@ -232,13 +217,5 @@ public class Flight {
 
     public void setBookedCities(String[] bookedCities) {
         this.bookedCities = bookedCities;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

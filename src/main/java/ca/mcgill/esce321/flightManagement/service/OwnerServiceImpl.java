@@ -1,16 +1,15 @@
-package ca.mcgill.esce321.flightManagement.service.implementation;
+package ca.mcgill.esce321.flightManagement.service;
 
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
-import ca.mcgill.esce321.flightManagement.service.OwnerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OwnerServiceImpl implements OwnerService {
+public class OwnerServiceImpl{
 
     private final PersonRepository personRepository;
     private final FlightRepository flightRepository;
@@ -27,24 +26,21 @@ public class OwnerServiceImpl implements OwnerService {
         this.seatRepository = seatRepository;
     }
 
-    @Override
     public List<CustomerResponseDTO> viewAllCustomers() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Customer)
                 .map(p -> (Customer) p)
                 .map(c -> new CustomerResponseDTO(
-                        c.getId(),
                         c.getEmail(),
+                        c.getPassword(),
                         c.getFirstName(),
                         c.getLastName(),
                         c.getMembershipNumber(),
                         c.getPoints(),
-                        c.getTimeInFlight(),
-                        c.getBookings().size()
+                        c.getTimeInFlight()
                 )).collect(Collectors.toList());
     }
 
-    @Override
     public List<EmployeeResponseDTO> viewAllEmployees() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Employee)
@@ -52,7 +48,6 @@ public class OwnerServiceImpl implements OwnerService {
                 .map(e -> {
                     if (e instanceof Pilot pilot) {
                         return new PilotResponseDTO(
-                                pilot.getE_id(),
                                 pilot.getEmail(),
                                 pilot.getPassword(),
                                 pilot.getFirstName(),
@@ -61,7 +56,6 @@ public class OwnerServiceImpl implements OwnerService {
                         );
                     } else if (e instanceof Manager manager) {
                         return new ManagerResponseDTO(
-                                manager.getE_id(),
                                 manager.getEmail(),
                                 manager.getPassword(),
                                 manager.getFirstName(),
@@ -70,7 +64,6 @@ public class OwnerServiceImpl implements OwnerService {
                         );
                     } else if (e instanceof FlightAttendant attendant) {
                         return new FlightAttendantResponseDTO(
-                                attendant.getE_id(),
                                 attendant.getEmail(),
                                 attendant.getPassword(),
                                 attendant.getFirstName(),
@@ -79,7 +72,6 @@ public class OwnerServiceImpl implements OwnerService {
                         );
                     } else {
                         return new EmployeeResponseDTO(
-                                e.getE_id(),
                                 e.getEmail(),
                                 e.getPassword(),
                                 e.getFirstName(),
@@ -89,14 +81,12 @@ public class OwnerServiceImpl implements OwnerService {
                 }).collect(Collectors.toList());
     }
 
-    @Override
     public List<FlightResponseDTO> viewAllFlights() {
         return flightRepository.findAll().stream()
                 .map(f -> new FlightResponseDTO(
                         f.getFlightId(),
                         f.getCapacity(),
                         f.getSeatsRemaining(),
-                        f.getDelayHours(),
                         f.getDepartTime(),
                         f.getArrivalTime(),
                         f.getExpectedDepartTime(),
@@ -105,50 +95,37 @@ public class OwnerServiceImpl implements OwnerService {
                         f.getFlightNumber(),
                         f.getFlightTime(),
                         f.isRecurring(),
-                        f.isActive(),
-                        f.getManager() != null ? f.getManager().getE_id() : null,
-                        f.getOwner() != null ? f.getOwner().getId() : null,
-                        f.getPilots().size(),
-                        f.getAttendants().size(),
-                        f.getBookings().size(),
-                        f.getSeats().size()
+                        f.isActive()
                 )).collect(Collectors.toList());
     }
 
-    @Override
     public List<BookingResponseDTO> viewAllBookings() {
         return bookingRepository.findAll().stream()
                 .map(b -> new BookingResponseDTO(
                         b.getBookingId(),
                         b.getCustomer() != null ? b.getCustomer().getId() : null,
                         b.getSeat() != null ? b.getSeat().getSeatId() : null,
-                        b.getOwner() != null ? b.getOwner().getId() : null,
                         b.getBookingDate(),
                         b.getPaymentStatus(),
                         b.getBookingStatus()
                 )).collect(Collectors.toList());
     }
 
-    @Override
     public List<SeatResponseDTO> viewAllSeats() {
         return seatRepository.findAll().stream()
                 .map(s -> new SeatResponseDTO(
                         s.getSeatId(),
                         s.getFlight() != null ? s.getFlight().getFlightId() : null,
-                        s.getOwner() != null ? s.getOwner().getId() : null,
                         s.getSeatClass(),
                         s.getPrice(),
                         s.getSeatNumber(),
                         s.getSeatStatus()
                 )).collect(Collectors.toList());
     }
-
-    @Override
     public double viewSalary(Employee employee) {
         return employee != null ? employee.getSalary() : 0.0;
     }
 
-    @Override
     public double calculateTotalRevenue() {
         // Get all paid bookings
         List<BookingResponseDTO> paidBookings = viewAllBookings().stream()

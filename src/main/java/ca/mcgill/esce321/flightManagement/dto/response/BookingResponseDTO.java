@@ -17,12 +17,11 @@ public class BookingResponseDTO {
 
     public BookingResponseDTO() {}
 
-    public BookingResponseDTO(Long bookingId, Long customerId, Long seatId, Long ownerId,
+    public BookingResponseDTO(Long bookingId, Long customerId, Long seatId,
                               LocalDateTime bookingDate, PaymentStatus paymentStatus, BookingStatus bookingStatus) {
         this.bookingId = bookingId;
         this.customerId = customerId;
         this.seatId = seatId;
-        this.ownerId = ownerId;
         this.bookingDate = bookingDate;
         this.paymentStatus = paymentStatus;
         this.bookingStatus = bookingStatus;

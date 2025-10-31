@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -36,7 +36,6 @@ each object. Test data must be removed from the database after each test method.
         o1 = personRepository.save(owner);
 
         Pilot pilot = new Pilot("toufic.jrab@gmail.com", "123456", "Toufic","Jrab");
-        pilot.setOwner(o1);
         p1 = personRepository.save(pilot);
     }
 
@@ -82,12 +81,8 @@ each object. Test data must be removed from the database after each test method.
     @Test
     void testOwnerAndPilot(){
         Pilot m2 = (Pilot) personRepository.findByEmail(p1.getEmail());
-        Owner o2 = p1.getOwner();
 
         assertThat(m2).isNotNull();
-        assertThat(o2).isNotNull();
-        assertThat(o2.getId()).isEqualTo(o1.getId());
-        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
     }
 
     @Test

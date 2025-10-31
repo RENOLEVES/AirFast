@@ -14,13 +14,13 @@ public class Booking {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    private Manager manager;
+
     @OneToOne
     @JoinColumn(name = "seat_id", referencedColumnName = "seatId")
     private Seat seat;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
 
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
@@ -75,20 +75,20 @@ public class Booking {
         this.paymentStatus = paymentStatus;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
     public BookingStatus getBookingStatus() {
         return bookingStatus;
     }
 
     public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    public Manager getManager() {
+        return manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 }
 
