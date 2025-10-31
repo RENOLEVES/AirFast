@@ -1,8 +1,8 @@
 package ca.mcgill.esce321.flightManagement.Controller; // <- keep consistent with your folders
 
-import ca.mcgill.esce321.flightManagement.Dto.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.Dto.ManagerResponseDto;
-import ca.mcgill.esce321.flightManagement.service.ManagerService;
+import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
+import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ManagerController {
 
     @Autowired
-    private ManagerService managerService;
+    private ManagerServiceImpl managerService;
 
     // CREATE
     @PostMapping

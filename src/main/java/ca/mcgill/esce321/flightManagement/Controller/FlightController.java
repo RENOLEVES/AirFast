@@ -1,8 +1,8 @@
 package ca.mcgill.esce321.flightManagement.Controller;
 
-import ca.mcgill.esce321.flightManagement.Dto.ManagerRequestDto;
+import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
 import ca.mcgill.esce321.flightManagement.service.FlightService;
-import ca.mcgill.esce321.flightManagement.Dto.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
