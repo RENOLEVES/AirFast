@@ -2,11 +2,7 @@ package ca.mcgill.esce321.flightManagement.Controller; // <- keep consistent wit
 
 import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
 import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
-<<<<<<< HEAD
-import ca.mcgill.esce321.flightManagement.service.ManagerService;
-=======
 import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
->>>>>>> main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
