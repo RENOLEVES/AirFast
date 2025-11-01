@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.dto.request;
+package ca.mcgill.esce321.flightManagement.Dto.request;
 
 import ca.mcgill.esce321.flightManagement.model.BookingStatus;
 import ca.mcgill.esce321.flightManagement.model.PaymentStatus;

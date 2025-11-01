@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.*;
+import ca.mcgill.esce321.flightManagement.Dto.request.*;
+
+import ca.mcgill.esce321.flightManagement.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +100,39 @@ public ManagerResponseDto updateManager(long id, ManagerRequestDto dto) {
             throw new IllegalArgumentException("No Manager found with ID " + id);
         }
     }
+
+    // functionalities
+
+       public ManagerResponseDto createManager(ManagerRequestDto dto) {
+        // Date today = Date.valueOf(LocalDate.now());
+        
+        Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
+        Manager saved = personRepository.save(managerToCreate);
+        return new ManagerResponseDto(saved);
+    }
+
+    public boolean setPrice(Seat seat, double price) {
+        seat.setPrice(price);
+
+
+    }
+
+    public boolean addFlight(FlightRequestDTO dto) {
+        
+        return true;
+
+
+
+    }
+
+    public boolean updateFlight(Flight flight) {
+
+    }
+
+    public boolean deleteFlight(Flight flight) {
+
+    }
+
 
 
 
