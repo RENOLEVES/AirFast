@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
@@ -37,11 +37,10 @@ public class FlightRepositoryTest {
         o1 = personRepository.save(owner);
 
         FlightAttendant flightAttendant = new FlightAttendant("eric.zhao@gmail.com", "123456", "Eric","Zhao");
-        flightAttendant.setOwner(o1);
         fa1 = personRepository.save(flightAttendant);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2025, 10, 6, 11, 15, 0);
-        Flight flight = new Flight(100,expectedDepartTime,"Montreal","Toronto",11,3,true);
+        Flight flight = new Flight(100,expectedDepartTime,"Montreal","Toronto","AC11",3,true);
 
         flight.setAttendants(List.of(fa1));
         f1 = flightRepository.save(flight);
@@ -51,7 +50,7 @@ public class FlightRepositoryTest {
     void testSaveFlight() {
         LocalDateTime expectedDepartTime = LocalDateTime.of(2024, 10, 6, 1, 15, 0);
         //create entity
-        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa",100,3,true);
+        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa","AC11",3,true);
 
         //save entity
         Flight f2 = flightRepository.save(flight);
@@ -65,7 +64,7 @@ public class FlightRepositoryTest {
         Flight f2 = flightRepository.findByFlightId(f1.getFlightId());
 
         assertThat(f2).isNotNull();
-        assertThat((f2.getFlightNumber()) == 100);
+        assertThat((f2.getFlightNumber()).equals("AC11"));
         assertThat((f2.getCapacity()) == 100);
         assertThat((f2.isRecurring()));
         assertThat((f2.getArrivalLocation())).isEqualTo("Toronto");

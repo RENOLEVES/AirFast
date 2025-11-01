@@ -6,10 +6,6 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Employee extends Person{
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
     private Long e_id;
     private double salary;
     private boolean isActive;
@@ -42,13 +38,5 @@ public abstract class Employee extends Person{
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

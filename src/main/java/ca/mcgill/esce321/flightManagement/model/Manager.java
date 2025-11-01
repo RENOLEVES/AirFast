@@ -12,6 +12,9 @@ public class Manager extends Employee{
     @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
     private List<Flight> flights = new ArrayList<>();
 
+    @OneToMany(mappedBy = "manager",cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
+
     public Manager(){}
     public Manager(String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);
@@ -25,5 +28,11 @@ public class Manager extends Employee{
         this.flights = flights;
     }
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
 
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 }

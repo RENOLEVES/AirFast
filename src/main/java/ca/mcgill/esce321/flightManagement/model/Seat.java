@@ -14,11 +14,7 @@ public class Seat {
     private Booking booking;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
-    @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "id")
+    @JoinColumn(name = "flight_id")
     private Flight flight;
 
     private SeatClass seatClass;
@@ -83,11 +79,11 @@ public class Seat {
         this.flight = flight;
     }
 
-    public Owner getOwner() {
-        return owner;
+    public Booking getBooking() {
+        return booking;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 }

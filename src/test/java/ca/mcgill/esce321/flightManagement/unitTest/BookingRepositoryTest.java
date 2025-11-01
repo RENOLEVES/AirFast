@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
@@ -31,7 +31,6 @@ class BookingRepositoryTest {
     private SeatRepository seatRepository;
 
     Booking b1 = new Booking();
-    Owner o1 = new Owner();
     Customer c1 = new Customer();
     Flight f1 = new Flight();
 
@@ -43,23 +42,18 @@ class BookingRepositoryTest {
         bookingRepository.deleteAll();
         flightRepository.deleteAll();
 
-        Owner owner = new Owner("owner@gmail.com", "123456", "o1","o2");
-        o1 = personRepository.save(owner);
-
         Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao",123456);
         customer.setPoints(500);
         c1 = personRepository.save(customer);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2025, 10, 6, 11, 15, 0);
-        Flight flight = new Flight(100,expectedDepartTime,"Montreal","Toronto",11,3,true);
+        Flight flight = new Flight(100,expectedDepartTime,"Montreal","Toronto","AC11",3,true);
         f1 = flightRepository.save(flight);
 
         Seat seat = new Seat(SeatClass.ECONOMY, 100, "A6",SeatStatus.AVAILABLE,f1);
-        seat.setOwner(o1);
         s1 = seatRepository.save(seat);
 
         Booking booking = new Booking(c1,s1);
-        booking.setOwner(o1);
         b1 = bookingRepository.save(booking);
     }
 
@@ -67,16 +61,14 @@ class BookingRepositoryTest {
     void testSaveBooking() {
         //create entity
         Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456);
-        customer.setOwner(o1);
         Customer c2 = personRepository.save(customer);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2024, 10, 6, 1, 15, 0);
         //create entity
-        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa",100,3,true);
+        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa","AC11",3,true);
         Flight f2 = flightRepository.save(flight);
 
         Seat seat = new Seat(SeatClass.ECONOMY, 100, "A6",SeatStatus.AVAILABLE,f1);
-        seat.setOwner(o1);
 
         s1 = seatRepository.save(seat);
 
@@ -93,7 +85,6 @@ class BookingRepositoryTest {
 
         assertThat(b2).isNotNull();
         assertThat(b2.getCustomer() == c1);
-        assertThat(b2.getOwner() == o1);
     }
 
     @Test
@@ -102,35 +93,28 @@ class BookingRepositoryTest {
         Booking b2 = bookingRepository.findByBookingId(b1.getBookingId());
 
         Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456);
-        customer.setOwner(o1);
         Customer c2 = personRepository.save(customer);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2024, 10, 6, 1, 15, 0);
         //create entity
-        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa",100,3,true);
+        Flight flight = new Flight(100,expectedDepartTime,"Texas","Ottawa","AC11",3,true);
         Flight f2 = flightRepository.save(flight);
 
         //update
         b2.setCustomer(c2);
-        b2.setFlight(f2);
         bookingRepository.save(b2);
 
         Booking b3 = bookingRepository.findByBookingId(b2.getBookingId());
 
         assertThat(b3).isNotNull();
         assertThat(b3.getCustomer() == c2);
-        assertThat(b3.getOwner() == o1);
     }
 
     @Test
     void testOwnerAndBooking(){
         Booking b2 = bookingRepository.findByBookingId(b1.getBookingId());
-        Owner o2 = b2.getOwner();
 
         assertThat(b2).isNotNull();
-        assertThat(o2).isNotNull();
-        assertThat(o2.getId()).isEqualTo(o1.getId());
-        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
     }
 
     @Test

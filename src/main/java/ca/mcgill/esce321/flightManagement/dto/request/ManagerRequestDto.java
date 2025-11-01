@@ -10,9 +10,9 @@ public class ManagerRequestDTO extends EmployeeResponseDTO {
 
     public ManagerRequestDTO() {}
 
-    public ManagerRequestDTO(Long eId, String email, String password, String firstName, String lastName,
+    public ManagerRequestDTO(String email, String password, String firstName, String lastName,
                              List<Long> flightIds) {
-        super(eId, email, password, firstName, lastName);
+        super(email, password, firstName, lastName);
         this.setActive(true);
         this.flightIds = flightIds;
     }

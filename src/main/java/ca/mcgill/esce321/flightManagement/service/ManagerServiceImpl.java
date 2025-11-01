@@ -13,12 +13,8 @@ import jakarta.transaction.Transactional;
 // import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.sql.Date;
-import java.time.LocalDate;
 
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDto;
@@ -32,7 +28,7 @@ import java.util.ArrayList;
 
 @Service
 @Validated
-public class ManagerService {
+public class ManagerServiceImpl {
 
     @Autowired
     private PersonRepository personRepository;

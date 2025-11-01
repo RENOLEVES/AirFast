@@ -8,20 +8,24 @@ import java.util.List;
 
 @Entity
 public class Owner extends Person{
-
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
+    @JoinColumn(name = "owner_id")
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
+    @JoinColumn(name = "owner_id")
     private List<Flight> flights = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
+    @JoinColumn(name = "owner_id")
     private List<Employee> employees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
+    @JoinColumn(name = "owner_id")
     private List<Customer> customers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
+    @JoinColumn(name = "owner_id")
     private List<Seat> seats = new ArrayList<>();
 
     private double totalRevenue;
