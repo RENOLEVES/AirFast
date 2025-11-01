@@ -1,13 +1,5 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-// import ca.mcgill.ecse321.eventregistration.dto.PersonCreationDto;
-// import ca.mcgill.ecse321.flightManagement.exception.FlightManagementException;
-
-import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.Person;
-
-
-
 // import ca.mcgill.ecse321.flightManagement.repo.PersonRepository;
 import jakarta.transaction.Transactional;
 // import jakarta.validation.Valid;
@@ -20,6 +12,8 @@ import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
 import ca.mcgill.esce321.flightManagement.Dto.request.*;
 
+// import ca.mcgill.ecse321.eventregistration.dto.PersonCreationDto;
+// import ca.mcgill.ecse321.flightManagement.exception.FlightManagementException;
 import ca.mcgill.esce321.flightManagement.model.*;
 
 import java.util.List;
@@ -40,31 +34,60 @@ public class ManagerServiceImpl {
     // }
 
     @Transactional
-    public ManagerResponseDto createManager(ManagerRequestDto dto) {
+    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {
         // Date today = Date.valueOf(LocalDate.now());
         
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
         Manager saved = personRepository.save(managerToCreate);
-        return new ManagerResponseDto(saved);
+
+        List<Long> fIds = new ArrayList<>();
+
+        for (Flight flight : managerToCreate.getFlights()) {
+            fIds.add(flight.getFlightId()); // or whatever attribute you need
+        }
+       
+        return new ManagerResponseDTO(managerToCreate.getEmail(), managerToCreate.getPassword(), managerToCreate.getFirstName(), managerToCreate.getLastName(), fIds);
+
+        // String email, String password, String firstName, String lastName,
+        //                       List<Long> flightIds
     }
 
-    public ManagerResponseDto findManagerById(long id) {
+    public ManagerResponseDTO findManagerById(long id) {
         Optional<Person> p =  personRepository.findById(id);
+        List<Long> fIds = new ArrayList<>();
+
         if(p.isPresent() && p.get() instanceof Manager manager) {
-            return new ManagerResponseDTO(manager);
+
+
+            for (Flight flight : manager.getFlights()) {
+                fIds.add(flight.getFlightId()); // or whatever attribute you need
+            }
+            return new ManagerResponseDTO(manager.getEmail(), manager.getPassword(), manager.getFirstName(), manager.getLastName(), fIds);
         }
         else {
             throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
         }
     }
 
-    public List<ManagerResponseDto> findAllManagers() {
+    public List<ManagerResponseDTO> findAllManagers() {
         List<Person> allPersons = personRepository.findAll();
-        List<ManagerResponseDto> allManagers = new ArrayList<>();
+        List<ManagerResponseDTO> allManagers = new ArrayList<>();
+        List<Long> fIds = new ArrayList<>();
+
+
+        
 
         for (Person p : allPersons) {
             if (p instanceof Manager manager) {
-                allManagers.add(new ManagerResponseDto(manager));
+
+                // get flightId's each time creating manager
+                for (Flight flight : manager.getFlights()) {
+                    fIds.add(flight.getFlightId()); // or whatever attribute you need
+                }
+                allManagers.add(new ManagerResponseDTO(manager.getEmail(), manager.getPassword(), manager.getFirstName(), manager.getLastName(), fIds));
+
+                // clear the fIds before moving into next Manager creation
+                fIds.clear();
             }
         }
         if(allManagers.isEmpty()) {
@@ -75,21 +98,26 @@ public class ManagerServiceImpl {
     }
 
     @Transactional
-public ManagerResponseDto updateManager(long id, ManagerRequestDto dto) {
+    public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
     Optional<Person> optionalPerson = personRepository.findById(id);
+     List<Long> fIds = new ArrayList<>();
 
-    if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
-        managerToUpdate.setEmail(dto.getEmail());
-        managerToUpdate.setFirstName(dto.getFirstName());
-        managerToUpdate.setLastName(dto.getLastName());
-        managerToUpdate.setPassword(dto.getPassword());
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
+            managerToUpdate.setEmail(dto.getEmail());
+            managerToUpdate.setFirstName(dto.getFirstName());
+            managerToUpdate.setLastName(dto.getLastName());
+            managerToUpdate.setPassword(dto.getPassword());
 
-        Manager updated = personRepository.save(managerToUpdate);
-        return new ManagerResponseDto(updated);
-    } else {
-        throw new IllegalArgumentException("No Manager found with ID " + id);
+            for (Flight flight : managerToUpdate.getFlights()) {
+                fIds.add(flight.getFlightId()); // or whatever attribute you need
+            }
+
+            Manager updated = personRepository.save(managerToUpdate);
+            return new ManagerResponseDTO(managerToUpdate.getEmail(), managerToUpdate.getPassword(), managerToUpdate.getFirstName(), managerToUpdate.getLastName(), fIds);
+        } else {
+            throw new IllegalArgumentException("No Manager found with ID " + id);
+        }
     }
-}
 
      // DELETE
     public void deleteManager(long id) {
@@ -103,13 +131,7 @@ public ManagerResponseDto updateManager(long id, ManagerRequestDto dto) {
 
     // functionalities
 
-       public ManagerResponseDto createManager(ManagerRequestDto dto) {
-        // Date today = Date.valueOf(LocalDate.now());
-        
-        Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
-        Manager saved = personRepository.save(managerToCreate);
-        return new ManagerResponseDto(saved);
-    }
+      
 
     public boolean setPrice(Seat seat, double price) {
         seat.setPrice(price);
