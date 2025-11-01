@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
 import ca.mcgill.esce321.flightManagement.Dto.request.*;
 
@@ -38,6 +39,9 @@ public class ManagerServiceImpl {
 
     @Autowired
     private FlightRepository flightRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
 
 
@@ -244,10 +248,80 @@ public class ManagerServiceImpl {
 
 
 
+     public void deleteFlight(Long flightId) {
+        Flight flight = flightRepository.findById(flightId)
+                .orElseThrow(() -> new RuntimeException("Flight not found with ID: " + flightId));
 
-    public boolean deleteFlight(Flight flight) {
+        flightRepository.delete(flight);
+    }
+
+     public void deleteBooking(Long bookingId) {
+        //Check if booking exists
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // 2️⃣ Delete it
+        bookingRepository.delete(booking);
+    }
+
+    public List<Person> viewAllPersons() {
+        // Simply fetch all records from the database
+        return personRepository.findAll();
+    }
+
+    public List<Flight> viewAllFlights() {
+        // Simply fetch all records from the database
+        return flightRepository.findAll();
+    }
+
+    public List<Booking> viewAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+     
+    public boolean makeFlightRecurring() {
+        // Example: you might mark all flights as recurring
+        List<Flight> flights = flightRepository.findAll();
+
+        if (flights.isEmpty()) {
+            return false; // no flights to mark
+        }
+
+        for (Flight flight : flights) {
+            flight.setRecurring(true);
+            flightRepository.save(flight);
+        }
+
+        return true; // successfully updated
+    }
+
+    public boolean assignFlight(Flight flight, List<Employee> employees) {
+
+        // attendant, manager, pilot
+
+        List<FlightAttendant> = new ArrayList<FlightAttendant>();
+        List<Pilot> = new ArrayList<Pilot>();
+
+       
+        
+    for (Employee e : employees) {
+        // Assuming Employee has a method to add a flight
+        // e.addFlight(flight);
+        if (e instanceof Manager) {
+            flight.setManager((Manager) e);
+        }
+    }
+   
+        
 
     }
+
+
+
+
+
+
+    
 
 
 
