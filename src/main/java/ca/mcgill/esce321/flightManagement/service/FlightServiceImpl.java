@@ -4,12 +4,12 @@ package ca.mcgill.ecse321.flightManagement.service;
 // import ca.mcgill.ecse321.flightManagement.dto.FlightCreateDTO;
 // import ca.mcgill.ecse321.flightManagement.dto.FlightUpdateDTO;
 
-import ca.mcgill.ecse321.flightManagement.model.Booking;
-import ca.mcgill.ecse321.flightManagement.model.BookingStatus;
-import ca.mcgill.ecse321.flightManagement.model.Flight;
-import ca.mcgill.ecse321.flightManagement.model.FlightStatus;
-import ca.mcgill.ecse321.flightManagement.repo.BookingRepository; 
-import ca.mcgill.ecse321.flightManagement.repo.FlightRepository;
+import ca.mcgill.esce321.flightManagement.model.Booking;
+import ca.mcgill.esce321.flightManagement.model.BookingStatus;
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.model.FlightStatus;
+import ca.mcgill.esce321.flightManagement.repo.BookingRepository; 
+import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

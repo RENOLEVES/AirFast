@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.dto.response.*;
+import ca.mcgill.esce321.flightManagement.Dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;
