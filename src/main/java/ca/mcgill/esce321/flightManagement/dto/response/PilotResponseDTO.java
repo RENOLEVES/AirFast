@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.dto.response;
+package ca.mcgill.esce321.flightManagement.Dto.response;
 
 import java.util.List;
 

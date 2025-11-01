@@ -1,10 +1,10 @@
 package ca.mcgill.esce321.flightManagement.Dto.request;
 
-import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
+// import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.PersonRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
-public class EmployeeRequestDTO extends PersonResponseDTO {
+public class EmployeeRequestDTO extends PersonRequestDTO {
     private Owner owner;
     private boolean isActive;
 

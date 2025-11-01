@@ -1,10 +1,12 @@
 package ca.mcgill.esce321.flightManagement.Dto.request;
 
-import ca.mcgill.esce321.flightManagement.Dto.response.EmployeeResponseDTO;
+// import ca.mcgill.esce321.flightManagement.Dto.response.EmployeeResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.EmployeeRequestDTO;
+
 
 import java.util.List;
 
-public class FlightAttendantRequestDTO extends EmployeeResponseDTO {
+public class FlightAttendantRequestDTO extends EmployeeRequestDTO {
 
     private List<Long> flightIds;
 
