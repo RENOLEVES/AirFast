@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
 import ca.mcgill.esce321.flightManagement.Dto.request.*;
 
@@ -17,7 +19,9 @@ import ca.mcgill.esce321.flightManagement.Dto.request.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -28,6 +32,14 @@ public class ManagerServiceImpl {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
+    @Autowired
+    private FlightRepository flightRepository;
+
+
 
     // public Manager createManager(Manager manager) {
     //     return (Manager) personRepository.save(manager);
@@ -131,25 +143,107 @@ public class ManagerServiceImpl {
 
     // functionalities
 
-      
+    
 
-    public boolean setPrice(Seat seat, double price) {
-        seat.setPrice(price);
-
-
-    }
-
-    public boolean addFlight(FlightRequestDTO dto) {
-        
+    @Transactional
+    public boolean setSeatPrice(Long seatId, double newPrice) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new NoSuchElementException("Seat not found: " + seatId));
+        seat.setPrice(newPrice);
+        seatRepository.save(seat);
         return true;
+    }
+
+  
+    public FlightResponseDTO addFlight(FlightRequestDTO dto) {
+        // 1️⃣ Create a new Flight entity
+        Flight flight = new Flight();
+        flight.setDepartLocation(dto.getDepartLocation());
+        flight.setArrivalLocation(dto.getArrivalLocation());
+        flight.setDepartTime(dto.getDepartTime());
+        flight.setArrivalTime(dto.getArrivalTime());
+        flight.setExpectedDepartTime(dto.getExpectedDepartTime());
+        flight.setCapacity(dto.getCapacity());
+        flight.setSeatsRemaining(dto.getSeatsRemaining());
+        flight.setDelayHours(dto.getDelayHours());
+        // flight.setFlightNumber(dto.getFlightNumber()); // error
+        flight.setFlightTime(dto.getFlightTime());
+        flight.setSeatsRemaining(dto.getSeatsRemaining());
+        flight.setRecurring(dto.isRecurring());
+        flight.setActive(dto.isActive());
 
 
+
+
+        // 2️⃣ Save to database
+        Flight savedFlight = flightRepository.save(flight);
+
+        // Long flightId, int capacity, int seatsRemaining,
+        //                      LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
+        //                      String departLocation, String arrivalLocation, String flightNumber, double flightTime,
+        //                      boolean isRecurring, boolean isActive
+
+        // 3️⃣ Return DTO
+        return new FlightResponseDTO(
+                savedFlight.getFlightId(),
+                savedFlight.getCapacity(),
+                savedFlight.getSeatsRemaining(),
+                savedFlight.getDepartTime(),
+                savedFlight.getArrivalTime(),
+                savedFlight.getExpectedDepartTime(),
+                savedFlight.getDepartLocation(),
+                savedFlight.getArrivalLocation(),
+                savedFlight.getFlightNumber(),
+                savedFlight.getFlightTime(),
+                savedFlight.isRecurring(),
+                savedFlight.isActive()
+        );
+    }
+    
+    public FlightResponseDTO updateFlight(Long flightId, FlightRequestDTO dto) {
+        // 1️⃣ Find existing flight
+        Flight existingFlight = flightRepository.findById(flightId)
+                .orElseThrow(() -> new RuntimeException("Flight not found"));
+
+        // 2️⃣ Update fields
+        existingFlight.setDepartLocation(dto.getDepartLocation());
+        existingFlight.setArrivalLocation(dto.getArrivalLocation());
+        existingFlight.setDepartTime(dto.getDepartTime());
+        existingFlight.setArrivalTime(dto.getArrivalTime());
+        existingFlight.setExpectedDepartTime(dto.getExpectedDepartTime());
+        existingFlight.setCapacity(dto.getCapacity());
+        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
+        existingFlight.setDelayHours(dto.getDelayHours());
+        // flight.setFlightNumber(dto.getFlightNumber()); // error
+        existingFlight.setFlightTime(dto.getFlightTime());
+        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
+        existingFlight.setRecurring(dto.isRecurring());
+        existingFlight.setActive(dto.isActive());
+
+        // 3️⃣ Save updated flight
+        Flight updatedFlight = flightRepository.save(existingFlight);
+
+    
+
+            return new FlightResponseDTO(
+                updatedFlight.getFlightId(),
+                updatedFlight.getCapacity(),
+                updatedFlight.getSeatsRemaining(),
+                updatedFlight.getDepartTime(),
+                updatedFlight.getArrivalTime(),
+                updatedFlight.getExpectedDepartTime(),
+                updatedFlight.getDepartLocation(),
+                updatedFlight.getArrivalLocation(),
+                updatedFlight.getFlightNumber(),
+                updatedFlight.getFlightTime(),
+                updatedFlight.isRecurring(),
+                updatedFlight.isActive()
+        );
 
     }
 
-    public boolean updateFlight(Flight flight) {
 
-    }
+
 
     public boolean deleteFlight(Flight flight) {
 
