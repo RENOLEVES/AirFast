@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDto;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDto;
+import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +49,7 @@ public class ManagerServiceImpl {
     public ManagerResponseDto findManagerById(long id) {
         Optional<Person> p =  personRepository.findById(id);
         if(p.isPresent() && p.get() instanceof Manager manager) {
-            return new ManagerResponseDto(manager);
+            return new ManagerResponseDTO(manager);
         }
         else {
             throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
