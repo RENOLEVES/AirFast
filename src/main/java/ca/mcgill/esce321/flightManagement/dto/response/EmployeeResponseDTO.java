@@ -3,7 +3,6 @@ package ca.mcgill.esce321.flightManagement.dto.response;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
 public class EmployeeResponseDTO extends PersonResponseDTO {
-    private Owner owner;
     private Long e_id;
     private boolean isActive;
 
@@ -27,13 +26,5 @@ public class EmployeeResponseDTO extends PersonResponseDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

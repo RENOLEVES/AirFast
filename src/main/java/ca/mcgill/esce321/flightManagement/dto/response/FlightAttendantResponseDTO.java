@@ -1,10 +1,11 @@
 package ca.mcgill.esce321.flightManagement.dto.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FlightAttendantResponseDTO extends EmployeeResponseDTO {
 
-    private List<Long> flightIds;
+    private List<Long> flightIds = new ArrayList<>();
 
     public FlightAttendantResponseDTO() {}
 

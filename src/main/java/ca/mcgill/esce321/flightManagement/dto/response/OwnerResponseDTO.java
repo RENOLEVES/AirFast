@@ -1,25 +1,32 @@
 package ca.mcgill.esce321.flightManagement.dto.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OwnerResponseDTO extends PersonResponseDTO{
-    private double totalRevenue;
-    private int totalCustomers;
-    private int totalEmployees;
-    private int totalFlights;
-    private int totalBookings;
-    private int totalSeats;
+    private double totalRevenue = -1d;
+    private List<Long> customerIds = new ArrayList<>();
+    private List<Long> employeeIds= new ArrayList<>();;
+    private List<Long> flightIds= new ArrayList<>();;
+    private List<Long> bookingIds= new ArrayList<>();;
+    private List<Long> seatIds= new ArrayList<>();;
 
     public OwnerResponseDTO() {}
 
-    public OwnerResponseDTO(Long id, String email,String password, String firstName, String lastName, double totalRevenue,
-                            int totalCustomers, int totalEmployees, int totalFlights, int totalBookings, int totalSeats) {
-
+    public OwnerResponseDTO(Long id, String email,String password, String firstName, String lastName) {
         super(id, email,password,firstName,lastName);
+    }
+
+    public OwnerResponseDTO(Long id, String email, String password, String firstName, String lastName,
+                            double totalRevenue, List<Long> customerIds, List<Long> employeeIds,
+                            List<Long> flightIds, List<Long> bookingIds, List<Long> seatIds) {
+        super(id, email, password, firstName, lastName);
         this.totalRevenue = totalRevenue;
-        this.totalCustomers = totalCustomers;
-        this.totalEmployees = totalEmployees;
-        this.totalFlights = totalFlights;
-        this.totalBookings = totalBookings;
-        this.totalSeats = totalSeats;
+        this.customerIds = customerIds;
+        this.employeeIds = employeeIds;
+        this.flightIds = flightIds;
+        this.bookingIds = bookingIds;
+        this.seatIds = seatIds;
     }
 
     // Getters and Setters
@@ -31,43 +38,43 @@ public class OwnerResponseDTO extends PersonResponseDTO{
         this.totalRevenue = totalRevenue;
     }
 
-    public int getTotalCustomers() {
-        return totalCustomers;
+    public List<Long> getCustomerIds() {
+        return customerIds;
     }
 
-    public void setTotalCustomers(int totalCustomers) {
-        this.totalCustomers = totalCustomers;
+    public void setCustomerIds(List<Long> customerIds) {
+        this.customerIds = customerIds;
     }
 
-    public int getTotalEmployees() {
-        return totalEmployees;
+    public List<Long> getEmployeeIds() {
+        return employeeIds;
     }
 
-    public void setTotalEmployees(int totalEmployees) {
-        this.totalEmployees = totalEmployees;
+    public void setEmployeeIds(List<Long> employeeIds) {
+        this.employeeIds = employeeIds;
     }
 
-    public int getTotalFlights() {
-        return totalFlights;
+    public List<Long> getFlightIds() {
+        return flightIds;
     }
 
-    public void setTotalFlights(int totalFlights) {
-        this.totalFlights = totalFlights;
+    public void setFlightIds(List<Long> flightIds) {
+        this.flightIds = flightIds;
     }
 
-    public int getTotalBookings() {
-        return totalBookings;
+    public List<Long> getBookingIds() {
+        return bookingIds;
     }
 
-    public void setTotalBookings(int totalBookings) {
-        this.totalBookings = totalBookings;
+    public void setBookingIds(List<Long> bookingIds) {
+        this.bookingIds = bookingIds;
     }
 
-    public int getTotalSeats() {
-        return totalSeats;
+    public List<Long> getSeatIds() {
+        return seatIds;
     }
 
-    public void setTotalSeats(int totalSeats) {
-        this.totalSeats = totalSeats;
+    public void setSeatIds(List<Long> seatIds) {
+        this.seatIds = seatIds;
     }
 }

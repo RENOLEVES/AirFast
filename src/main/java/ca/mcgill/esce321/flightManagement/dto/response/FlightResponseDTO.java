@@ -3,6 +3,7 @@ package ca.mcgill.esce321.flightManagement.dto.response;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FlightResponseDTO {
@@ -21,7 +22,7 @@ public class FlightResponseDTO {
     private boolean isRecurring;
     private boolean isActive;
 
-    private List<Seat> seats;
+    private List<Seat> seats = new ArrayList<>();
 
 
     public FlightResponseDTO() {}

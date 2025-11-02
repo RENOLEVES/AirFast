@@ -1,14 +1,19 @@
 package ca.mcgill.esce321.flightManagement.service;
 
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class OwnerServiceImpl{
 
     private final PersonRepository personRepository;
@@ -24,6 +29,36 @@ public class OwnerServiceImpl{
         this.flightRepository = flightRepository;
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
+    }
+
+    public OwnerResponseDTO createOwner(OwnerRequestDTO dto) {
+        // Date today = Date.valueOf(LocalDate.now());
+
+        Owner ownerToCreate = new Owner(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
+        Owner saved = personRepository.save(ownerToCreate);
+        return new OwnerResponseDTO(
+                saved.getId(),
+                saved.getEmail(),
+                saved.getPassword(),
+                saved.getFirstName(),
+                saved.getLastName()
+        );
+    }
+
+    public OwnerResponseDTO findOwnerById(long id) {
+        Optional<Person> p = personRepository.findById(id);
+        if (p.isPresent() && p.get() instanceof Owner owner) {
+
+            return new OwnerResponseDTO(
+                    owner.getId(),
+                    owner.getEmail(),
+                    owner.getPassword(),
+                    owner.getFirstName(),
+                    owner.getLastName()
+            );
+        } else {
+            throw new IllegalArgumentException("There is no Owner with ID " + id + ".");
+        }
     }
 
     public List<CustomerResponseDTO> viewAllCustomers() {
@@ -63,7 +98,8 @@ public class OwnerServiceImpl{
                                 manager.getPassword(),
                                 manager.getFirstName(),
                                 manager.getLastName(),
-                                manager.getFlights().stream().map(Flight::getFlightId).toList()
+                                manager.getFlights().stream().map(Flight::getFlightId).toList(),
+                                manager.getBookings().stream().map(Booking::getBookingId).toList()
                         );
                     } else if (e instanceof FlightAttendant attendant) {
                         return new FlightAttendantResponseDTO(
