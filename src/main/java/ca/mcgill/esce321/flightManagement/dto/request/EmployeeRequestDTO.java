@@ -3,8 +3,7 @@ package ca.mcgill.esce321.flightManagement.dto.request;
 import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
-public class EmployeeRequestDTO extends PersonResponseDTO {
-    private Owner owner;
+public class EmployeeRequestDTO extends PersonRequestDTO {
     private boolean isActive;
 
     public EmployeeRequestDTO(){}
@@ -19,13 +18,5 @@ public class EmployeeRequestDTO extends PersonResponseDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

@@ -31,6 +31,7 @@ public class OwnerServiceImpl{
                 .filter(p -> p instanceof Customer)
                 .map(p -> (Customer) p)
                 .map(c -> new CustomerResponseDTO(
+                        c.getId(),
                         c.getEmail(),
                         c.getPassword(),
                         c.getFirstName(),
@@ -48,6 +49,7 @@ public class OwnerServiceImpl{
                 .map(e -> {
                     if (e instanceof Pilot pilot) {
                         return new PilotResponseDTO(
+                                pilot.getId(),
                                 pilot.getEmail(),
                                 pilot.getPassword(),
                                 pilot.getFirstName(),
@@ -56,6 +58,7 @@ public class OwnerServiceImpl{
                         );
                     } else if (e instanceof Manager manager) {
                         return new ManagerResponseDTO(
+                                manager.getId(),
                                 manager.getEmail(),
                                 manager.getPassword(),
                                 manager.getFirstName(),
@@ -64,6 +67,7 @@ public class OwnerServiceImpl{
                         );
                     } else if (e instanceof FlightAttendant attendant) {
                         return new FlightAttendantResponseDTO(
+                                attendant.getId(),
                                 attendant.getEmail(),
                                 attendant.getPassword(),
                                 attendant.getFirstName(),
@@ -72,6 +76,7 @@ public class OwnerServiceImpl{
                         );
                     } else {
                         return new EmployeeResponseDTO(
+                                e.getId(),
                                 e.getEmail(),
                                 e.getPassword(),
                                 e.getFirstName(),

@@ -3,24 +3,20 @@ package ca.mcgill.esce321.flightManagement.dto.request;
 import ca.mcgill.esce321.flightManagement.model.SeatClass;
 import ca.mcgill.esce321.flightManagement.model.SeatStatus;
 
-public class SeatRequsetDTO {
+public class SeatRequestDTO {
 
-    private Long seatId;
     private Long flightId;   // reference to Flight
-    private Long ownerId;    // reference to Owner
 
     private SeatClass seatClass;
     private double price;
     private String seatNumber;
     private SeatStatus seatStatus;
 
-    public SeatRequsetDTO() {}
+    public SeatRequestDTO() {}
 
-    public SeatRequsetDTO(Long seatId, Long flightId, Long ownerId,
+    public SeatRequestDTO(Long flightId,
                           SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus) {
-        this.seatId = seatId;
         this.flightId = flightId;
-        this.ownerId = ownerId;
         this.seatClass = seatClass;
         this.price = price;
         this.seatNumber = seatNumber;
@@ -28,13 +24,6 @@ public class SeatRequsetDTO {
     }
 
     // Getters and Setters
-    public Long getSeatId() {
-        return seatId;
-    }
-
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
-    }
 
     public Long getFlightId() {
         return flightId;
@@ -42,14 +31,6 @@ public class SeatRequsetDTO {
 
     public void setFlightId(Long flightId) {
         this.flightId = flightId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public SeatClass getSeatClass() {

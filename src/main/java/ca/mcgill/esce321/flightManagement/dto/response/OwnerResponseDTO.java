@@ -10,10 +10,10 @@ public class OwnerResponseDTO extends PersonResponseDTO{
 
     public OwnerResponseDTO() {}
 
-    public OwnerResponseDTO(String email,String password, String firstName, String lastName, double totalRevenue,
+    public OwnerResponseDTO(Long id, String email,String password, String firstName, String lastName, double totalRevenue,
                             int totalCustomers, int totalEmployees, int totalFlights, int totalBookings, int totalSeats) {
 
-        super(email,password,firstName,lastName);
+        super(id, email,password,firstName,lastName);
         this.totalRevenue = totalRevenue;
         this.totalCustomers = totalCustomers;
         this.totalEmployees = totalEmployees;

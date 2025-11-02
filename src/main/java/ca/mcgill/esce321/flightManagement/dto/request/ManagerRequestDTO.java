@@ -4,7 +4,7 @@ import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
 
 import java.util.List;
 
-public class ManagerRequestDTO extends EmployeeResponseDTO {
+public class ManagerRequestDTO extends EmployeeRequestDTO {
 
     private List<Long> flightIds;
 

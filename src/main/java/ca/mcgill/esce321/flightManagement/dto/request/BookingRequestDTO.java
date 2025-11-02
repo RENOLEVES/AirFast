@@ -6,11 +6,8 @@ import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
 import java.time.LocalDateTime;
 
 public class BookingRequestDTO {
-
-    private Long bookingId;
-    private Long customerId;  // Reference to Customer
-    private Long seatId;    // Reference to Flight
-    private Long ownerId;     // Reference to Owner
+    private Long customerId;
+    private Long seatId;
 
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
@@ -18,23 +15,13 @@ public class BookingRequestDTO {
 
     public BookingRequestDTO() {}
 
-    public BookingRequestDTO(Long bookingId, Long customerId, Long seatId, Long ownerId,
+    public BookingRequestDTO(Long customerId, Long seatId,
                              LocalDateTime bookingDate, PaymentStatus paymentStatus, BookingStatus bookingStatus) {
-        this.bookingId = bookingId;
         this.customerId = customerId;
         this.seatId = seatId;
-        this.ownerId = ownerId;
         this.bookingDate = bookingDate;
         this.paymentStatus = paymentStatus;
         this.bookingStatus = bookingStatus;
-    }
-
-    public Long getBookingId() {
-        return bookingId;
-    }
-
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
     }
 
     public Long getCustomerId() {
@@ -51,14 +38,6 @@ public class BookingRequestDTO {
 
     public void setSeatId(Long flightId) {
         this.seatId = flightId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public LocalDateTime getBookingDate() {
