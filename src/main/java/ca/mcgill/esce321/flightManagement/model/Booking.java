@@ -15,21 +15,21 @@ public class Booking {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id", referencedColumnName = "flightId")
-    private Flight flight;
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    private Manager manager;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
+    @OneToOne
+    @JoinColumn(name = "seat_id", referencedColumnName = "seatId")
+    private Seat seat;
 
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
     private BookingStatus bookingStatus;
 
     public Booking(){}
-    public Booking(Customer customer, Flight flight){
+    public Booking(Customer customer, Seat seat){
         this.customer = customer;
-        this.flight = flight;
+        this.seat = seat;
         this.bookingDate = LocalDateTime.now();
         this.paymentStatus = PaymentStatus.NOTPAID;
         this.bookingStatus = BookingStatus.WAITLISTED;
@@ -51,12 +51,12 @@ public class Booking {
         this.customer = customer;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public Seat getSeat() {
+        return seat;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 
     public LocalDateTime getBookingDate() {
@@ -75,20 +75,20 @@ public class Booking {
         this.paymentStatus = paymentStatus;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
     public BookingStatus getBookingStatus() {
         return bookingStatus;
     }
 
     public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    public Manager getManager() {
+        return manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 }
 

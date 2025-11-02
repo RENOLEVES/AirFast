@@ -1,42 +1,45 @@
-package ca.mcgill.esce321.flightManagement.model;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
-import jakarta.persistence.*;
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.model.SeatClass;
+import ca.mcgill.esce321.flightManagement.model.SeatStatus;
 
-@Entity
-public class Seat {
+public class SeatResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatId;
-
-    @OneToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
-    @ManyToOne
-    @JoinColumn(name = "flight_id")
-    private Flight flight;
+    private Long flightId;
 
     private SeatClass seatClass;
     private double price;
     private String seatNumber;
     private SeatStatus seatStatus;
 
-    public Seat(){}
-    public Seat(SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus, Flight flight) {
+    public SeatResponseDTO() {}
+
+    public SeatResponseDTO(Long seatId, Long flightId, SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus) {
+        this.seatId = seatId;
+        this.flightId = flightId;
         this.seatClass = seatClass;
         this.price = price;
         this.seatNumber = seatNumber;
         this.seatStatus = seatStatus;
-        this.flight = flight;
     }
 
+    // Getters and Setters
     public Long getSeatId() {
         return seatId;
     }
 
     public void setSeatId(Long seatId) {
         this.seatId = seatId;
+    }
+
+    public Long getFlightId() {
+        return flightId;
+    }
+
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
     }
 
     public SeatClass getSeatClass() {
@@ -69,21 +72,5 @@ public class Seat {
 
     public void setSeatStatus(SeatStatus seatStatus) {
         this.seatStatus = seatStatus;
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
     }
 }

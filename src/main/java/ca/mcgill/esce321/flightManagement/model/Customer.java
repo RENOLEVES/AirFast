@@ -11,10 +11,6 @@ public class Customer extends Person {
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
     private int points;
     private int membershipNumber;
     private int timeInFlight;
@@ -56,14 +52,5 @@ public class Customer extends Person {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
 
 }

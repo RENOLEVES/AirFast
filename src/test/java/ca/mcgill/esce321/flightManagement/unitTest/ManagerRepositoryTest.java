@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -27,7 +27,6 @@ public class ManagerRepositoryTest {
         o1 = personRepository.save(owner);
 
         Manager manager = new Manager("eric.zhao@gmail.com", "123456", "Eric","Zhao");
-        manager.setOwner(o1);
         m1 = personRepository.save(manager);
     }
 
@@ -73,12 +72,8 @@ public class ManagerRepositoryTest {
     @Test
     void testOwnerAndManager(){
         Manager m2 = (Manager) personRepository.findByEmail(m1.getEmail());
-        Owner o2 = m1.getOwner();
 
         assertThat(m2).isNotNull();
-        assertThat(o2).isNotNull();
-        assertThat(o2.getId()).isEqualTo(o1.getId());
-        assertThat(o2.getEmail()).isEqualTo("owner@gmail.com");
     }
 
     @Test

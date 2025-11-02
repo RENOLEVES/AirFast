@@ -1,23 +1,17 @@
-package ca.mcgill.esce321.flightManagement.model;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
-import jakarta.persistence.*;
+public class PersonResponseDTO {
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Person {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String email;
-    private String password;
+    private  String password;
     private String firstName;
     private String lastName;
-    // add creation date
 
-    public Person(){}
-    public Person(String email, String password, String firstName, String lastName) {
+    public PersonResponseDTO() {}
+
+    public PersonResponseDTO(Long id, String email, String password, String firstName, String lastName) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -40,14 +34,6 @@ public abstract class Person {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -63,4 +49,13 @@ public abstract class Person {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
+
