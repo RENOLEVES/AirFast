@@ -4,15 +4,15 @@ public class PersonResponseDTO {
 
     private Long id;
     private String email;
-    private  String password;
+    // private  String password;
     private String firstName;
     private String lastName;
 
     public PersonResponseDTO() {}
 
-    public PersonResponseDTO(String email, String password, String firstName, String lastName) {
+    public PersonResponseDTO(String email, String firstName, String lastName) {
         this.email = email;
-        this.password = password;
+        // this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -49,12 +49,12 @@ public class PersonResponseDTO {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    // public String getPassword() {
+    //     return password;
+    // }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    // public void setPassword(String password) {
+    //     this.password = password;
+    // }
 }
 

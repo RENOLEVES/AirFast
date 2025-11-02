@@ -1,29 +1,45 @@
 package ca.mcgill.esce321.flightManagement.service;
 
+import java.time.LocalDateTime;
 // import ca.mcgill.ecse321.flightManagement.repo.PersonRepository;
-import jakarta.transaction.Transactional;
-// import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.EmployeeRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.BookingRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.FlightAttendantRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
+
+
+
+import ca.mcgill.esce321.flightManagement.Dto.response.BookingResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Booking;
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
+import ca.mcgill.esce321.flightManagement.model.Manager;
+import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
+import ca.mcgill.esce321.flightManagement.model.Person;
+import ca.mcgill.esce321.flightManagement.model.Pilot;
+import ca.mcgill.esce321.flightManagement.model.Seat;
+import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.Dto.response.*;
-import ca.mcgill.esce321.flightManagement.Dto.request.*;
-
-// import ca.mcgill.ecse321.eventregistration.dto.PersonCreationDto;
-// import ca.mcgill.ecse321.flightManagement.exception.FlightManagementException;
-import ca.mcgill.esce321.flightManagement.model.*;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import jakarta.transaction.Transactional;
 
 
 
@@ -128,7 +144,7 @@ public class ManagerServiceImpl {
                 fIds.add(flight.getFlightId()); // or whatever attribute you need
             }
 
-            Manager updated = personRepository.save(managerToUpdate);
+            personRepository.save(managerToUpdate);
             return new ManagerResponseDTO(managerToUpdate.getEmail(), managerToUpdate.getPassword(), managerToUpdate.getFirstName(), managerToUpdate.getLastName(), fIds);
         } else {
             throw new IllegalArgumentException("No Manager found with ID " + id);
@@ -149,16 +165,20 @@ public class ManagerServiceImpl {
 
     
 
-    @Transactional
-    public boolean setSeatPrice(Long seatId, double newPrice) {
-        Seat seat = seatRepository.findById(seatId)
-                .orElseThrow(() -> new NoSuchElementException("Seat not found: " + seatId));
-        seat.setPrice(newPrice);
-        seatRepository.save(seat);
+   @Transactional
+    public boolean setSeatPrice(SeatRequestDTO seat, double newPrice) {
+    Optional<Seat> seatToUpdate = seatRepository.findById(seat.getSeatId());
+    if (seatToUpdate.isPresent()) {
+        Seat s = seatToUpdate.get();
+        s.setPrice(newPrice);
+        seatRepository.save(s);
         return true;
     }
+    return false;
+}
 
-  
+   
+    
     public FlightResponseDTO addFlight(FlightRequestDTO dto) {
         // 1️⃣ Create a new Flight entity
         Flight flight = new Flight();
@@ -248,35 +268,92 @@ public class ManagerServiceImpl {
 
 
 
-     public void deleteFlight(Long flightId) {
-        Flight flight = flightRepository.findById(flightId)
-                .orElseThrow(() -> new RuntimeException("Flight not found with ID: " + flightId));
+    @Transactional
+    public boolean deleteFlight(FlightRequestDTO flightDTO) {
+        Long flightId = flightDTO.getFlightId();
 
-        flightRepository.delete(flight);
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+        if (optionalFlight.isEmpty()) {
+            return false; // or throw exception
+        }
+
+        flightRepository.delete(optionalFlight.get());
+        return true;
     }
 
-     public void deleteBooking(Long bookingId) {
-        //Check if booking exists
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+    @Transactional
+    public boolean deleteBooking(BookingRequestDTO bookingDTO) {
+        Long bookingId = bookingDTO.getBookingId();
 
-        // 2️⃣ Delete it
-        bookingRepository.delete(booking);
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isEmpty()) {
+            return false; // or throw exception if you prefer
+        }
+
+        bookingRepository.delete(optionalBooking.get());
+        return true;
     }
 
-    public List<Person> viewAllPersons() {
-        // Simply fetch all records from the database
-        return personRepository.findAll();
+    @Transactional
+    public List<PersonResponseDTO> viewAllPersons() {
+        List<Person> persons = personRepository.findAll();
+
+        // String email, String password, String firstName, String lastName
+
+        // Convert each Person entity to PersonResponseDTO
+        List<PersonResponseDTO> dtoList = persons.stream()
+            .map(p -> new PersonResponseDTO(
+                    p.getEmail(),
+                    p.getFirstName(),
+                    p.getLastName()
+            ))
+            .collect(Collectors.toList());
+
+        return dtoList;
     }
 
-    public List<Flight> viewAllFlights() {
-        // Simply fetch all records from the database
-        return flightRepository.findAll();
-    }
 
-    public List<Booking> viewAllBookings() {
-        return bookingRepository.findAll();
-    }
+    @Transactional
+    public List<FlightResponseDTO> viewAllFlights() {
+        return flightRepository.findAll().stream()
+            .map(f -> {
+                FlightResponseDTO dto = new FlightResponseDTO(
+                    f.getFlightId(),
+                    f.getCapacity(),
+                    f.getSeatsRemaining(),
+                    f.getDepartTime(),
+                    f.getArrivalTime(),
+                    f.getExpectedDepartTime(),
+                    f.getDepartLocation(),
+                    f.getArrivalLocation(),
+                    f.getFlightNumber(),
+                    f.getFlightTime(),
+                    f.isRecurring(),
+                    f.isActive()
+                );
+                
+            
+                // // Summary stats
+                // dto.setTotalPilots(f.getPilots() != null ? f.getPilots().size() : 0);
+                // dto.setTotalAttendants(f.getFlightAttendants() != null ? f.getFlightAttendants().size() : 0);
+                // dto.setTotalBookings(f.getBookings() != null ? f.getBookings().size() : 0);
+
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }   
+
+
+   @Transactional
+    public List<BookingResponseDTO> viewAllBookings() {
+    return bookingRepository.findAll().stream()
+        .map(b -> {
+            BookingResponseDTO dto = new BookingResponseDTO(b.getBookingId(), b.getCustomer().getId(), b.getSeat().getSeatId(), b.getBookingDate(), b.getPaymentStatus(), b.getBookingStatus());
+            return dto;
+        })
+        .collect(Collectors.toList());
+}   
+
 
      
     public boolean makeFlightRecurring() {
@@ -295,26 +372,116 @@ public class ManagerServiceImpl {
         return true; // successfully updated
     }
 
-    public boolean assignFlight(Flight flight, List<Employee> employees) {
-
-        // attendant, manager, pilot
-
-        List<FlightAttendant> = new ArrayList<FlightAttendant>();
-        List<Pilot> = new ArrayList<Pilot>();
-
-       
-        
-    for (Employee e : employees) {
-        // Assuming Employee has a method to add a flight
-        // e.addFlight(flight);
-        if (e instanceof Manager) {
-            flight.setManager((Manager) e);
+    // ERRORS here:...
+    @Transactional
+    public boolean assignFlight(FlightRequestDTO flightDTO, List<EmployeeRequestDTO> employees) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+        if (optionalFlight.isEmpty()) {
+            return false; // flight not found
         }
+
+        Flight flight = optionalFlight.get();
+
+        List<Pilot> pilots = new ArrayList<>();
+        List<FlightAttendant> attendants = new ArrayList<>();
+        Manager manager = null;
+
+        for (EmployeeRequestDTO e : employees) {
+            if (e instanceof ManagerRequestDTO) {
+                 Optional<Manager> optManager = PersonRepository.findById(e.getId());
+                if (optManager.isPresent()) {
+                    manager = optManager.get();
+                }
+
+            }
+            else if (e instanceof PilotRequestDTO) {
+                Optional<Pilot> optPilot = PersonRepository.findById(e.getId());
+                optPilot.ifPresent(pilots::add);
+            }
+
+            else if (e instance of FlightAttendantRequestDTO) {
+                Optional<FlightAttendant> optAttendant = PersonRepository.findById(e.getId());
+                optAttendant.ifPresent(attendants::add);
+
+            }
+ 
+
+            
+        }
+            // Assign relationships
+        flight.setManager(manager);
+        flight.setPilots(pilots);
+        flight.setAttendants(attendants);
+
+        flightRepository.save(flight);
+
+        return true;
     }
+
+    
+    
+
+
+ 
+
+    @Transactional
+    public boolean createEmployeeId(EmployeeRequestDTO e) {
+        if (e == null) {
+            return false;
+        }
+
+        long id = ThreadLocalRandom.current().nextLong(100000, 999999);
+        e.setId(id);
+
+        return true;
+    }   
+
+
+    @Transactional
+    public boolean makeFlightRecurring(FlightRequestDTO flightDTO) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+        if (optionalFlight.isEmpty()) {
+            return false;
+        }
+
+        Flight flight = optionalFlight.get();
+        flight.setRecurring(true);
+        flightRepository.save(flight);
+        return true;
+    }
+
+
+    @Transactional
+    public FlightResponseDTO viewFlightStats(long flightId) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+        if (optionalFlight.isEmpty()) {
+            return null;
+        }
+
+        Flight f = optionalFlight.get();
+
+        return new FlightResponseDTO(
+                f.getFlightId(),
+                f.getCapacity(),
+                f.getSeatsRemaining(),
+                f.getDepartTime(),
+                f.getArrivalTime(),
+                f.getExpectedDepartTime(),
+                f.getDepartLocation(),
+                f.getArrivalLocation(),
+                f.getFlightNumber(),
+                f.getFlightTime(),
+                f.isRecurring(),
+                f.isActive()
+        );
+    }
+
+
+
    
         
 
-    }
+    
 
 
 
