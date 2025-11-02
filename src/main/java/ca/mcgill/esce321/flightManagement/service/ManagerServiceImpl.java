@@ -54,7 +54,7 @@ public class ManagerServiceImpl {
         // Date today = Date.valueOf(LocalDate.now());
         
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
-        Manager saved = personRepository.save(managerToCreate);
+        personRepository.save(managerToCreate);
 
         List<Long> fIds = new ArrayList<>();
 
