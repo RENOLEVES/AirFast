@@ -10,7 +10,8 @@ public class PersonResponseDTO {
 
     public PersonResponseDTO() {}
 
-    public PersonResponseDTO(String email, String password, String firstName, String lastName) {
+    public PersonResponseDTO(Long id, String email, String password, String firstName, String lastName) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;

@@ -9,7 +9,6 @@ public class BookingResponseDTO {
     private Long bookingId;
     private Long customerId;  // Reference to Customer
     private Long seatId;    // Reference to Flight
-    private Long ownerId;     // Reference to Owner
 
     private LocalDateTime bookingDate;
     private PaymentStatus paymentStatus;
@@ -49,14 +48,6 @@ public class BookingResponseDTO {
 
     public void setSeatId(Long flightId) {
         this.seatId = flightId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public LocalDateTime getBookingDate() {

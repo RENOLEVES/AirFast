@@ -8,8 +8,8 @@ public class EmployeeResponseDTO extends PersonResponseDTO {
     private boolean isActive;
 
     public EmployeeResponseDTO(){}
-    public EmployeeResponseDTO(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+    public EmployeeResponseDTO(Long id, String email, String password, String firstName, String lastName) {
+        super(id, email,password,firstName,lastName);
         this.isActive = true;
     }
 
