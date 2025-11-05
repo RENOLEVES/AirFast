@@ -1,9 +1,10 @@
-package ca.mcgill.esce321.flightManagement.Dto.request;
+package ca.mcgill.esce321.flightManagement.dto.request;
+
+import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
 
 import java.util.List;
 
-public class ManagerRequestDTO extends EmployeeRequestDTO {
-    // show password, allow that to be gettable, since request can have password
+public class ManagerRequestDTO extends EmployeeResponseDTO {
 
     private List<Long> flightIds;
 
