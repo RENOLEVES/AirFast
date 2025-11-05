@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PilotRequestDTO extends EmployeeRequestDTO {
 
-    private List<Long> flightIds;  // store only IDs to avoid circular references
+    private List<Long> flightIds;
 
     public PilotRequestDTO() {}
 
