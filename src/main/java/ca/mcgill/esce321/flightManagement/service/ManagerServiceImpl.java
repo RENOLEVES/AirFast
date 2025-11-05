@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.PersonRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.EmployeeRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.BookingRequestDTO;
@@ -40,6 +41,8 @@ import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
 import ca.mcgill.esce321.flightManagement.model.Person;
+import ca.mcgill.esce321.flightManagement.model.Employee;
+
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
@@ -51,6 +54,7 @@ import jakarta.transaction.Transactional;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -77,9 +81,7 @@ public class ManagerServiceImpl {
         this.seatRepository = seatRepository;
     }
 
-    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {
-        // Date today = Date.valueOf(LocalDate.now());
-        
+    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {        
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
 
         Manager saved = personRepository.save(managerToCreate);
@@ -192,36 +194,20 @@ public class ManagerServiceImpl {
     }
 
    
-   // why so many parametrs.. 
     public FlightResponseDTO addFlight(FlightRequestDTO dto) {
         // 1️⃣ Create a new Flight entity
-        Flight flight = new Flight();
-        flight.setDepartLocation(dto.getDepartLocation());
-        flight.setArrivalLocation(dto.getArrivalLocation());
-        flight.setDepartTime(dto.getDepartTime());
-        flight.setArrivalTime(dto.getArrivalTime());
-        flight.setExpectedDepartTime(dto.getExpectedDepartTime());
-        flight.setCapacity(dto.getCapacity());
-        flight.setSeatsRemaining(dto.getSeatsRemaining());
-        flight.setDelayHours(dto.getDelayHours());
-        // flight.setFlightNumber(dto.getFlightNumber()); // error
-        flight.setFlightTime(dto.getFlightTime());
-        flight.setSeatsRemaining(dto.getSeatsRemaining());
-        flight.setRecurring(dto.isRecurring());
-        flight.setActive(dto.isActive());
+        Flight flight = new Flight(
+            dto.getCapacity(),
+            dto.getExpectedDepartTime(),
+            dto.getDepartLocation(),
+            dto.getArrivalLocation(),
+            dto.getFlightNumber(),
+            dto.getFlightTime(),
+            dto.isRecurring()
+        );
 
-
-
-
-        // 2️⃣ Save to database
         Flight savedFlight = flightRepository.save(flight);
 
-        // Long flightId, int capacity, int seatsRemaining,
-        //                      LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-        //                      String departLocation, String arrivalLocation, String flightNumber, double flightTime,
-        //                      boolean isRecurring, boolean isActive
-
-        // 3️⃣ Return DTO
         return new FlightResponseDTO(
                 savedFlight.getFlightId(),
                 savedFlight.getCapacity(),
@@ -238,27 +224,21 @@ public class ManagerServiceImpl {
         );
     }
     
-    public FlightResponseDTO updateFlight(Long flightId, FlightRequestDTO dto) {
+    public FlightResponseDTO updateFlight(long flightId, FlightRequestDTO dto) {
         // 1️⃣ Find existing flight
         Flight existingFlight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
 
-        // 2️⃣ Update fields
+       
+        existingFlight.setCapacity(dto.getCapacity());
+        existingFlight.setExpectedDepartTime(dto.getExpectedDepartTime());
         existingFlight.setDepartLocation(dto.getDepartLocation());
         existingFlight.setArrivalLocation(dto.getArrivalLocation());
-        existingFlight.setDepartTime(dto.getDepartTime());
-        existingFlight.setArrivalTime(dto.getArrivalTime());
-        existingFlight.setExpectedDepartTime(dto.getExpectedDepartTime());
-        existingFlight.setCapacity(dto.getCapacity());
-        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
-        existingFlight.setDelayHours(dto.getDelayHours());
-        // flight.setFlightNumber(dto.getFlightNumber()); // error
+        existingFlight.setFlightNumber(dto.getFlightNumber());
         existingFlight.setFlightTime(dto.getFlightTime());
-        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
         existingFlight.setRecurring(dto.isRecurring());
         existingFlight.setActive(dto.isActive());
 
-        // 3️⃣ Save updated flight
         Flight updatedFlight = flightRepository.save(existingFlight);
 
     
@@ -299,7 +279,7 @@ public class ManagerServiceImpl {
 
         Optional<Booking> optionalBooking = bookingRepository.findById(id);
         if (optionalBooking.isEmpty()) {
-            return false; // or throw exception if you prefer
+            return false; 
         }
 
         bookingRepository.delete(optionalBooking.get());
@@ -342,11 +322,6 @@ public class ManagerServiceImpl {
                     f.isActive()
                 );
                 
-            
-                // // Summary stats
-                // dto.setTotalPilots(f.getPilots() != null ? f.getPilots().size() : 0);
-                // dto.setTotalAttendants(f.getFlightAttendants() != null ? f.getFlightAttendants().size() : 0);
-                // dto.setTotalBookings(f.getBookings() != null ? f.getBookings().size() : 0);
 
                 return dto;
             })
@@ -380,7 +355,7 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    // ERRORS here:...
+    // fix to get employee ids and check what class they are
     @Transactional
     public boolean assignFlight(Long flightId, List<Long> employeeIds) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
@@ -389,7 +364,12 @@ public class ManagerServiceImpl {
         }
 
         Flight flight = optionalFlight.get();
-        List<Person> employees = personRepository.findAllById(employeeIds);
+
+        for(Long id: employeeIds) {
+            
+        }
+
+        
 
         List<Pilot> pilots = new ArrayList<>();
         List<FlightAttendant> attendants = new ArrayList<>();
@@ -405,16 +385,23 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    // should we do this or just createEmployee..
+    // when we createEmployee, how do we specify what kind of employee it is. Pilot, FlightAttendant
+    // createPerson for now
     @Transactional
-    public boolean createEmployeeId(EmployeeRequestDTO e) {
-        if (e == null) {
-            return false;
+    public boolean createEmployee(String email, String password, String firstName, String lastName, String type) {
+
+        if(type.equals("FlightAttendant")) {
+            FlightAttendant f = new FlightAttendant(email, password, firstName, lastName);
+            personRepository.save(f);
+
+            
         }
+        else if (type.equals("Pilot")) {
+            Pilot p = new Pilot(email, password, firstName, lastName);
+            personRepository.save(p);
 
-        long id = ThreadLocalRandom.current().nextLong(100000, 999999);
-        e.setId(id);
-
+        }
+      
         return true;
     }   
 
