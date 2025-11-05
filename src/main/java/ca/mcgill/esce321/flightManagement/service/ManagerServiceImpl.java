@@ -310,17 +310,15 @@ public class ManagerServiceImpl {
     public List<PersonResponseDTO> viewAllPersons() {
         List<Person> persons = personRepository.findAll();
 
-        // String email, String password, String firstName, String lastName
-
-        // Convert each Person entity to PersonResponseDTO
         List<PersonResponseDTO> dtoList = persons.stream()
             .map(p -> new PersonResponseDTO(
+                    p.getId(),
                     p.getEmail(),
+                    p.getPassword(),
                     p.getFirstName(),
                     p.getLastName()
             ))
             .collect(Collectors.toList());
-
         return dtoList;
     }
 
@@ -369,12 +367,11 @@ public class ManagerServiceImpl {
 
      
     public boolean makeFlightRecurring(long id) {
-        // List<Flight> flights = flightRepository.findAll();
 
         Optional<Flight> optionalFlight = flightRepository.findById(id);
 
         if (optionalFlight.isEmpty()) {
-            return false; // or throw exception if you prefer
+            return false; 
         }
 
         Flight flight = optionalFlight.get();
@@ -408,9 +405,7 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    
- 
-
+    // should we do this or just createEmployee..
     @Transactional
     public boolean createEmployeeId(EmployeeRequestDTO e) {
         if (e == null) {
@@ -462,22 +457,4 @@ public class ManagerServiceImpl {
                 f.isActive()
         );
     }
-
-
-
-   
-        
-
-    
-
-
-
-
-
-
-    
-
-
-
-
 }
