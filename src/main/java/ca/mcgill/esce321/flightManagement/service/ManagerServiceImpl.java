@@ -1,6 +1,5 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-<<<<<<< HEAD
 import java.time.LocalDateTime;
 // import ca.mcgill.ecse321.flightManagement.repo.PersonRepository;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-=======
 import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.Manager;
@@ -17,13 +15,11 @@ import ca.mcgill.esce321.flightManagement.model.Person;
 
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-<<<<<<< HEAD
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
@@ -52,16 +48,14 @@ import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import jakarta.transaction.Transactional;
 
-=======
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
 
 
 @Service
@@ -72,26 +66,7 @@ public class ManagerServiceImpl {
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
 
-<<<<<<< HEAD
-    @Autowired
-    private SeatRepository seatRepository;
-
-    @Autowired
-    private FlightRepository flightRepository;
-
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    // constructio
-
-
-
-    // public Manager createManager(Manager manager) {
-    //     return (Manager) personRepository.save(manager);
-    // }
-
-    @Transactional
-=======
+    
     ManagerServiceImpl(PersonRepository personRepository,
                        FlightRepository flightRepository,
                        BookingRepository bookingRepository){
@@ -100,40 +75,11 @@ public class ManagerServiceImpl {
         this.bookingRepository = bookingRepository;
     }
 
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
     public ManagerResponseDTO createManager(ManagerRequestDTO dto) {
         // Date today = Date.valueOf(LocalDate.now());
         
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
-<<<<<<< HEAD
-        personRepository.save(managerToCreate);
 
-        List<Long> fIds = new ArrayList<>();
-
-        for (Flight flight : managerToCreate.getFlights()) {
-            fIds.add(flight.getFlightId()); // or whatever attribute you need
-        }
-       
-        return new ManagerResponseDTO(managerToCreate.getEmail(), managerToCreate.getPassword(), managerToCreate.getFirstName(), managerToCreate.getLastName(), fIds);
-
-        // String email, String password, String firstName, String lastName,
-        //                       List<Long> flightIds
-    }
-
-    public ManagerResponseDTO findManagerById(long id) {
-        Optional<Person> p =  personRepository.findById(id);
-        List<Long> fIds = new ArrayList<>();
-
-        if(p.isPresent() && p.get() instanceof Manager manager) {
-
-
-            for (Flight flight : manager.getFlights()) {
-                fIds.add(flight.getFlightId()); // or whatever attribute you need
-            }
-            return new ManagerResponseDTO(manager.getEmail(), manager.getPassword(), manager.getFirstName(), manager.getLastName(), fIds);
-        }
-        else {
-=======
         Manager saved = personRepository.save(managerToCreate);
         return new ManagerResponseDTO(
                 saved.getId(),
@@ -158,7 +104,6 @@ public class ManagerServiceImpl {
                     manager.getBookings().stream().map(Booking::getBookingId).toList()
             );
         } else {
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
             throw new IllegalArgumentException("There is no Manager with ID " + id + ".");
         }
     }
@@ -166,27 +111,10 @@ public class ManagerServiceImpl {
     public List<ManagerResponseDTO> findAllManagers() {
         List<Person> allPersons = personRepository.findAll();
         List<ManagerResponseDTO> allManagers = new ArrayList<>();
-<<<<<<< HEAD
-        List<Long> fIds = new ArrayList<>();
-
-
-        
-=======
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
-
         for (Person p : allPersons) {
             if (p instanceof Manager manager) {
 
-<<<<<<< HEAD
-                // get flightId's each time creating manager
-                for (Flight flight : manager.getFlights()) {
-                    fIds.add(flight.getFlightId()); // or whatever attribute you need
-                }
-                allManagers.add(new ManagerResponseDTO(manager.getEmail(), manager.getPassword(), manager.getFirstName(), manager.getLastName(), fIds));
 
-                // clear the fIds before moving into next Manager creation
-                fIds.clear();
-=======
                 allManagers.add(new ManagerResponseDTO(
                         manager.getId(),
                         manager.getEmail(),
@@ -195,7 +123,6 @@ public class ManagerServiceImpl {
                         manager.getLastName(),
                         manager.getFlights().stream().map(Flight::getFlightId).toList(),
                         manager.getBookings().stream().map(Booking::getBookingId).toList()));
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
             }
         }
         if(allManagers.isEmpty()) {
@@ -204,15 +131,9 @@ public class ManagerServiceImpl {
         return allManagers;
     }
 
-<<<<<<< HEAD
-    @Transactional
-    public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
-    Optional<Person> optionalPerson = personRepository.findById(id);
-     List<Long> fIds = new ArrayList<>();
-=======
+
     public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
             managerToUpdate.setEmail(dto.getEmail());
@@ -220,14 +141,7 @@ public class ManagerServiceImpl {
             managerToUpdate.setLastName(dto.getLastName());
             managerToUpdate.setPassword(dto.getPassword());
 
-<<<<<<< HEAD
-            for (Flight flight : managerToUpdate.getFlights()) {
-                fIds.add(flight.getFlightId()); // or whatever attribute you need
-            }
 
-            personRepository.save(managerToUpdate);
-            return new ManagerResponseDTO(managerToUpdate.getEmail(), managerToUpdate.getPassword(), managerToUpdate.getFirstName(), managerToUpdate.getLastName(), fIds);
-=======
             List<Flight> flights = flightRepository.findAllById(dto.getFlightIds());
             List<Booking> bookings = bookingRepository.findAllById(dto.getBookingIds());
 
@@ -245,7 +159,6 @@ public class ManagerServiceImpl {
                     updated.getFlights().stream().map(Flight::getFlightId).toList(),
                     updated.getBookings().stream().map(Booking::getBookingId).toList()
             );
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
         } else {
             throw new IllegalArgumentException("No Manager found with ID " + id);
         }
@@ -259,7 +172,6 @@ public class ManagerServiceImpl {
             throw new IllegalArgumentException("No Manager found with ID " + id);
         }
     }
-<<<<<<< HEAD
 
     // functionalities
 
@@ -595,6 +507,4 @@ public class ManagerServiceImpl {
 
 
 
-=======
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
 }
