@@ -377,29 +377,11 @@ public class ManagerServiceImpl {
             return false; // or throw exception if you prefer
         }
 
-        // how to use the function when optionalFlight is Optional<Flight>
-        optionalFlight.setRecurring(true);
+        Flight flight = optionalFlight.get();
 
-
-        
-
-
-
-
+        flight.setRecurring(true);
         return true;
-
-        
-
     }
-
-
-        // for (Flight flight : flights) {
-        //     flight.setRecurring(true);
-        //     flightRepository.save(flight);
-        // }
-
-        // return true; // successfully updated
-    
 
     // ERRORS here:...
     @Transactional
