@@ -65,14 +65,16 @@ public class ManagerServiceImpl {
     private final PersonRepository personRepository;
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
+    private final SeatRepository seatRepository;
 
     
     ManagerServiceImpl(PersonRepository personRepository,
                        FlightRepository flightRepository,
-                       BookingRepository bookingRepository){
+                       BookingRepository bookingRepository, SeatRepository seatRepository){
         this.personRepository = personRepository;
         this.flightRepository = flightRepository;
         this.bookingRepository = bookingRepository;
+        this.seatRepository = seatRepository;
     }
 
     public ManagerResponseDTO createManager(ManagerRequestDTO dto) {
@@ -178,8 +180,8 @@ public class ManagerServiceImpl {
     
 
    @Transactional
-    public boolean setSeatPrice(SeatRequestDTO seat, double newPrice) {
-        Optional<Seat> seatToUpdate = seatRepository.findById(seat.getSeatId());
+    public boolean setSeatPrice(long id, double newPrice) {
+        Optional<Seat> seatToUpdate = seatRepository.findById(id);// need to get SeatID?? how??s
         if (seatToUpdate.isPresent()) {
             Seat s = seatToUpdate.get();
             s.setPrice(newPrice);
@@ -190,7 +192,7 @@ public class ManagerServiceImpl {
     }
 
    
-    
+   // why so many parametrs.. 
     public FlightResponseDTO addFlight(FlightRequestDTO dto) {
         // 1️⃣ Create a new Flight entity
         Flight flight = new Flight();
@@ -281,10 +283,9 @@ public class ManagerServiceImpl {
 
 
     @Transactional
-    public boolean deleteFlight(FlightRequestDTO flightDTO) {
-        Long flightId = flightDTO.getFlightId();
+    public boolean deleteFlight(long id) {
 
-        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
         if (optionalFlight.isEmpty()) {
             return false; // or throw exception
         }
@@ -294,10 +295,9 @@ public class ManagerServiceImpl {
     }
 
     @Transactional
-    public boolean deleteBooking(BookingRequestDTO bookingDTO) {
-        Long bookingId = bookingDTO.getBookingId();
+    public boolean deleteBooking(long id) {
 
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        Optional<Booking> optionalBooking = bookingRepository.findById(id);
         if (optionalBooking.isEmpty()) {
             return false; // or throw exception if you prefer
         }
@@ -368,60 +368,54 @@ public class ManagerServiceImpl {
 
 
      
-    public boolean makeFlightRecurring() {
-        // Example: you might mark all flights as recurring
-        List<Flight> flights = flightRepository.findAll();
+    public boolean makeFlightRecurring(long id) {
+        // List<Flight> flights = flightRepository.findAll();
 
-        if (flights.isEmpty()) {
-            return false; // no flights to mark
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
+
+        if (optionalFlight.isEmpty()) {
+            return false; // or throw exception if you prefer
         }
 
-        for (Flight flight : flights) {
-            flight.setRecurring(true);
-            flightRepository.save(flight);
-        }
+        // how to use the function when optionalFlight is Optional<Flight>
+        optionalFlight.setRecurring(true);
 
-        return true; // successfully updated
+
+        
+
+
+
+
+        return true;
+
+        
+
     }
+
+
+        // for (Flight flight : flights) {
+        //     flight.setRecurring(true);
+        //     flightRepository.save(flight);
+        // }
+
+        // return true; // successfully updated
+    
 
     // ERRORS here:...
     @Transactional
-    public boolean assignFlight(FlightRequestDTO flightDTO, List<EmployeeRequestDTO> employees) {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+    public boolean assignFlight(Long flightId, List<Long> employeeIds) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
             return false; // flight not found
         }
 
         Flight flight = optionalFlight.get();
+        List<Person> employees = personRepository.findAllById(employeeIds);
 
         List<Pilot> pilots = new ArrayList<>();
         List<FlightAttendant> attendants = new ArrayList<>();
         Manager manager = null;
 
-        for (EmployeeRequestDTO e : employees) {
-            if (e instanceof ManagerRequestDTO) {
-                 Optional<Manager> optManager = PersonRepository.findById(e.getId());
-                if (optManager.isPresent()) {
-                    manager = optManager.get();
-                }
-
-            }
-            else if (e instanceof PilotRequestDTO) {
-                Optional<Pilot> optPilot = PersonRepository.findById(e.getId());
-                optPilot.ifPresent(pilots::add);
-            }
-
-            else if (e instance of FlightAttendantRequestDTO) {
-                
-                Optional<FlightAttendant> optAttendant = (FlightAttendant) PersonRepository.findById(e.getId());
-               
-                optAttendant.ifPresent(attendants::add);
-
-            }
- 
-
-            
-        }
             // Assign relationships
         flight.setManager(manager);
         flight.setPilots(pilots);
@@ -433,9 +427,6 @@ public class ManagerServiceImpl {
     }
 
     
-    
-
-
  
 
     @Transactional
@@ -452,8 +443,8 @@ public class ManagerServiceImpl {
 
 
     @Transactional
-    public boolean makeFlightRecurring(FlightRequestDTO flightDTO) {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+    public boolean makeFlightRecurring(Long id) {
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
         if (optionalFlight.isEmpty()) {
             return false;
         }
