@@ -1,7 +1,6 @@
 package ca.mcgill.esce321.flightManagement.Dto.response;
 
 import ca.mcgill.esce321.flightManagement.model.Owner;
-import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
 
 public class EmployeeResponseDTO extends PersonResponseDTO {
     private Long e_id;
