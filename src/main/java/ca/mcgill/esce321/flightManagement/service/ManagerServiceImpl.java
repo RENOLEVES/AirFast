@@ -59,6 +59,8 @@ public class ManagerServiceImpl {
     @Autowired
     private BookingRepository bookingRepository;
 
+    // constructio
+
 
 
     // public Manager createManager(Manager manager) {
@@ -167,15 +169,15 @@ public class ManagerServiceImpl {
 
    @Transactional
     public boolean setSeatPrice(SeatRequestDTO seat, double newPrice) {
-    Optional<Seat> seatToUpdate = seatRepository.findById(seat.getSeatId());
-    if (seatToUpdate.isPresent()) {
-        Seat s = seatToUpdate.get();
-        s.setPrice(newPrice);
-        seatRepository.save(s);
-        return true;
+        Optional<Seat> seatToUpdate = seatRepository.findById(seat.getSeatId());
+        if (seatToUpdate.isPresent()) {
+            Seat s = seatToUpdate.get();
+            s.setPrice(newPrice);
+            seatRepository.save(s);
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 
    
     
@@ -400,7 +402,9 @@ public class ManagerServiceImpl {
             }
 
             else if (e instance of FlightAttendantRequestDTO) {
-                Optional<FlightAttendant> optAttendant = PersonRepository.findById(e.getId());
+                
+                Optional<FlightAttendant> optAttendant = (FlightAttendant) PersonRepository.findById(e.getId());
+               
                 optAttendant.ifPresent(attendants::add);
 
             }

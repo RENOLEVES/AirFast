@@ -30,6 +30,8 @@ import java.util.ArrayList;
 @Validated
 public class SeatServiceImpl {
 
+
+    // use constructor instead of autowired.. see owner
     @Autowired
     private SeatRepository seatRepository;
 
