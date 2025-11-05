@@ -1,65 +1,21 @@
 package ca.mcgill.esce321.flightManagement.Dto.request;
 
-public class CustomerRequestDTO {
-    private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
-
+public class CustomerRequestDTO extends PersonRequestDTO{
     private int membershipNumber;
     private int points;
     private int timeInFlight;      // total hours or minutes spent flying
 
-    private int totalBookings;     // derived field
-
     public CustomerRequestDTO() {}
 
-    public CustomerRequestDTO(Long id, String email, String firstName, String lastName,
-                              int membershipNumber, int points, int timeInFlight, int totalBookings) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public CustomerRequestDTO(String email,String password, String firstName, String lastName,
+                              int membershipNumber, int points, int timeInFlight) {
+        super(email,password,firstName,lastName);
         this.membershipNumber = membershipNumber;
         this.points = points;
         this.timeInFlight = timeInFlight;
-        this.totalBookings = totalBookings;
     }
 
     // Getters & Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public int getMembershipNumber() {
         return membershipNumber;
     }
@@ -82,13 +38,5 @@ public class CustomerRequestDTO {
 
     public void setTimeInFlight(int timeInFlight) {
         this.timeInFlight = timeInFlight;
-    }
-
-    public int getTotalBookings() {
-        return totalBookings;
-    }
-
-    public void setTotalBookings(int totalBookings) {
-        this.totalBookings = totalBookings;
     }
 }

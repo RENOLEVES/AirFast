@@ -73,6 +73,4 @@ public class SeatResponseDTO {
     public void setSeatStatus(SeatStatus seatStatus) {
         this.seatStatus = seatStatus;
     }
-
-
 }

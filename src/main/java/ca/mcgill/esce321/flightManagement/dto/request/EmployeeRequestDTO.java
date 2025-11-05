@@ -5,7 +5,7 @@ import ca.mcgill.esce321.flightManagement.Dto.request.PersonRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
 public class EmployeeRequestDTO extends PersonRequestDTO {
-    private Owner owner;
+
     private boolean isActive;
 
     public EmployeeRequestDTO(){}
@@ -20,13 +20,5 @@ public class EmployeeRequestDTO extends PersonRequestDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

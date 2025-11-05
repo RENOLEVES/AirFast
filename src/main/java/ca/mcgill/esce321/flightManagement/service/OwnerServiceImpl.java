@@ -1,14 +1,23 @@
 package ca.mcgill.esce321.flightManagement.service;
 
+<<<<<<< HEAD
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
+=======
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
+>>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class OwnerServiceImpl{
 
     private final PersonRepository personRepository;
@@ -26,11 +35,42 @@ public class OwnerServiceImpl{
         this.seatRepository = seatRepository;
     }
 
+    public OwnerResponseDTO createOwner(OwnerRequestDTO dto) {
+        // Date today = Date.valueOf(LocalDate.now());
+
+        Owner ownerToCreate = new Owner(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
+        Owner saved = personRepository.save(ownerToCreate);
+        return new OwnerResponseDTO(
+                saved.getId(),
+                saved.getEmail(),
+                saved.getPassword(),
+                saved.getFirstName(),
+                saved.getLastName()
+        );
+    }
+
+    public OwnerResponseDTO findOwnerById(long id) {
+        Optional<Person> p = personRepository.findById(id);
+        if (p.isPresent() && p.get() instanceof Owner owner) {
+
+            return new OwnerResponseDTO(
+                    owner.getId(),
+                    owner.getEmail(),
+                    owner.getPassword(),
+                    owner.getFirstName(),
+                    owner.getLastName()
+            );
+        } else {
+            throw new IllegalArgumentException("There is no Owner with ID " + id + ".");
+        }
+    }
+
     public List<CustomerResponseDTO> viewAllCustomers() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Customer)
                 .map(p -> (Customer) p)
                 .map(c -> new CustomerResponseDTO(
+                        c.getId(),
                         c.getEmail(),
                         c.getPassword(),
                         c.getFirstName(),
@@ -48,6 +88,7 @@ public class OwnerServiceImpl{
                 .map(e -> {
                     if (e instanceof Pilot pilot) {
                         return new PilotResponseDTO(
+                                pilot.getId(),
                                 pilot.getEmail(),
                                 pilot.getPassword(),
                                 pilot.getFirstName(),
@@ -56,14 +97,17 @@ public class OwnerServiceImpl{
                         );
                     } else if (e instanceof Manager manager) {
                         return new ManagerResponseDTO(
+                                manager.getId(),
                                 manager.getEmail(),
                                 manager.getPassword(),
                                 manager.getFirstName(),
                                 manager.getLastName(),
-                                manager.getFlights().stream().map(Flight::getFlightId).toList()
+                                manager.getFlights().stream().map(Flight::getFlightId).toList(),
+                                manager.getBookings().stream().map(Booking::getBookingId).toList()
                         );
                     } else if (e instanceof FlightAttendant attendant) {
                         return new FlightAttendantResponseDTO(
+                                attendant.getId(),
                                 attendant.getEmail(),
                                 attendant.getPassword(),
                                 attendant.getFirstName(),
@@ -72,6 +116,7 @@ public class OwnerServiceImpl{
                         );
                     } else {
                         return new EmployeeResponseDTO(
+                                e.getId(),
                                 e.getEmail(),
                                 e.getPassword(),
                                 e.getFirstName(),

@@ -1,15 +1,16 @@
 package ca.mcgill.esce321.flightManagement.Dto.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PilotResponseDTO extends EmployeeResponseDTO {
 
-    private List<Long> flightIds;  // store only IDs to avoid circular references
+    private List<Long> flightIds = new ArrayList<>();
 
     public PilotResponseDTO() {}
 
-    public PilotResponseDTO(String email, String password, String firstName, String lastName, List<Long> flightIds) {
-        super(email,password, firstName, lastName);
+    public PilotResponseDTO(Long id, String email, String password, String firstName, String lastName, List<Long> flightIds) {
+        super(id, email,password, firstName, lastName);
         this.setActive(true);
         this.flightIds = flightIds;
     }
