@@ -1,12 +1,8 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-<<<<<<< HEAD
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
-=======
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.*;
->>>>>>> fd43660470cbdb426c5788b762e53b3136972afb
+import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;

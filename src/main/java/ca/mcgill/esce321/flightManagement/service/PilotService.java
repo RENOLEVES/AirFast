@@ -64,7 +64,6 @@ public class PilotService {
                 );
 
 
-                id, email,password, firstName, lastName
     }
 
 }
