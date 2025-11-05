@@ -48,23 +48,29 @@ public class PilotService {
     }
 
 
-      public ManagerResponseDTO createPilot(PilotRequestDTO dto) {
+      public PilotResponseDTO createPilot(PilotRequestDTO dto) {
 
         
         // Date today = Date.valueOf(LocalDate.now());
         
         Pilot pilotToCreate = new Pilot(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
         Pilot saved = personRepository.save(pilotToCreate);
+        List<Long> newFlightIds = new ArrayList<Long>();
+
+        for (Flight e : saved.getFlights()) {
+            newFlightIds.add(e.getFlightId());
+            
+        }
         return new PilotResponseDTO(
                 saved.getId(),
                 saved.getEmail(),
                 saved.getPassword(),
                 saved.getFirstName(),
-                saved.getLastName()
+                saved.getLastName(),
+                newFlightIds
                 );
-
-
-                id, email,password, firstName, lastName
     }
+
+
 
 }
