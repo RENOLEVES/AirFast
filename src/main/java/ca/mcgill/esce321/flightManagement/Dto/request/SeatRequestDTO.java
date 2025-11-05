@@ -1,23 +1,23 @@
-package ca.mcgill.esce321.flightManagement.Dto.response;
+package ca.mcgill.esce321.flightManagement.Dto.request;
 
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.SeatClass;
 import ca.mcgill.esce321.flightManagement.model.SeatStatus;
 
-public class SeatResponseDTO {
 
-    private Long seatId;
-    private Long flightId;
+public class SeatRequestDTO {
 
+    private Long flightId;   // reference to Flight
     private SeatClass seatClass;
     private double price;
     private String seatNumber;
     private SeatStatus seatStatus;
 
-    public SeatResponseDTO() {}
 
-    public SeatResponseDTO(Long seatId, Long flightId, SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus) {
-        this.seatId = seatId;
+    public SeatRequestDTO() {}
+
+    public SeatRequestDTO(Long flightId,
+                          SeatClass seatClass, double price, String seatNumber, SeatStatus seatStatus) {
         this.flightId = flightId;
         this.seatClass = seatClass;
         this.price = price;

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class FlightRequestDTO {
 
-    private Long flightId;
     private int capacity;
     private int seatsRemaining;
     private int delayHours;
@@ -13,38 +12,25 @@ public class FlightRequestDTO {
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private int flightNumber;
-    private int flightTime;
+    private String flightNumber;
+    private double flightTime;
     private boolean isRecurring;
     private boolean isActive;
 
-    // References
-    private Long managerId;
-    private Long ownerId;
-
-    // Summary counts
-    private int totalPilots;
-    private int totalAttendants;
-    private int totalBookings;
-    private int totalSeats;
-
     public FlightRequestDTO() {}
 
-    public FlightRequestDTO(Long flightId,int flightNumber, Long managerId) {
-        this.flightId = flightId;
+    public FlightRequestDTO(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
+                            String flightNumber, double flightTime, boolean isRecurring) {
+        this.capacity = capacity;
+        this.expectedDepartTime = expectedDepartTime;
+        this.departLocation = departLocation;
+        this.arrivalLocation = arrivalLocation;
         this.flightNumber = flightNumber;
-        this.managerId = managerId;
+        this.flightTime = flightTime;
+        this.isRecurring = isRecurring;
     }
 
     // Getters and Setters
-    public Long getFlightId() {
-        return flightId;
-    }
-
-    public void setFlightId(Long flightId) {
-        this.flightId = flightId;
-    }
-
     public int getCapacity() {
         return capacity;
     }
@@ -109,19 +95,19 @@ public class FlightRequestDTO {
         this.arrivalLocation = arrivalLocation;
     }
 
-    public int getFlightNumber() {
+    public String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(int flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 
@@ -139,53 +125,5 @@ public class FlightRequestDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public Long getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(Long managerId) {
-        this.managerId = managerId;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public int getTotalPilots() {
-        return totalPilots;
-    }
-
-    public void setTotalPilots(int totalPilots) {
-        this.totalPilots = totalPilots;
-    }
-
-    public int getTotalAttendants() {
-        return totalAttendants;
-    }
-
-    public void setTotalAttendants(int totalAttendants) {
-        this.totalAttendants = totalAttendants;
-    }
-
-    public int getTotalBookings() {
-        return totalBookings;
-    }
-
-    public void setTotalBookings(int totalBookings) {
-        this.totalBookings = totalBookings;
-    }
-
-    public int getTotalSeats() {
-        return totalSeats;
-    }
-
-    public void setTotalSeats(int totalSeats) {
-        this.totalSeats = totalSeats;
     }
 }

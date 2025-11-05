@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.Controller; // <- keep consistent with your folders
 
-import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
 import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +22,9 @@ public class ManagerController {
     private ManagerServiceImpl managerService;
 
     // CREATE
-    @PostMapping
-    public ResponseEntity<ManagerResponseDto> create(@RequestBody ManagerRequestDto request) {
-        final ManagerResponseDto created = managerService.createManager(request);
+    @PostMapping("/api/managers/")
+    public ResponseEntity<ManagerResponseDTO> create(@RequestBody ManagerRequestDTO request) {
+        final ManagerResponseDTO created = managerService.createManager(request);
         // Location header is optional but nice to have:
         return ResponseEntity
                 .created(URI.create("/api/managers/" + created.getId()))
@@ -33,20 +33,21 @@ public class ManagerController {
 
     // READ one
     @GetMapping("/{id}")
-    public ManagerResponseDto getById(@PathVariable("id") long id) {
+    public ManagerResponseDTO getById(@PathVariable("id") long id) {
+
         return managerService.findManagerById(id);
     }
 
     // READ all
     @GetMapping
-    public List<ManagerResponseDto> getAll() {
+    public List<ManagerResponseDTO> getAll() {
         return managerService.findAllManagers();
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public ManagerResponseDto update(@PathVariable("id") long id,
-                                     @RequestBody ManagerRequestDto request) {
+    public ManagerResponseDTO update(@PathVariable("id") long id,
+                                     @RequestBody ManagerRequestDTO request) {
         return managerService.updateManager(id, request);
     }
 

@@ -2,7 +2,6 @@ package ca.mcgill.esce321.flightManagement.Dto.request;
 
 public class PersonRequestDTO {
 
-    private Long id;
     private String email;
     private  String password;
     private String firstName;
@@ -15,14 +14,6 @@ public class PersonRequestDTO {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -55,6 +46,7 @@ public class PersonRequestDTO {
 
     public void setPassword(String password) {
         this.password = password;
+
 
     }
 }

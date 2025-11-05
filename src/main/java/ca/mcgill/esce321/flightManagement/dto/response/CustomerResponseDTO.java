@@ -9,10 +9,10 @@ public class CustomerResponseDTO extends PersonResponseDTO{
 
     public CustomerResponseDTO() {}
 
-    public CustomerResponseDTO(String email,String password, String firstName, String lastName,
+    public CustomerResponseDTO(Long id, String email,String password, String firstName, String lastName,
                                int membershipNumber, int points, int timeInFlight) {
 
-        super(email,password,firstName,lastName);
+        super(id, email,password,firstName,lastName);
         this.membershipNumber = membershipNumber;
         this.points = points;
         this.timeInFlight = timeInFlight;
