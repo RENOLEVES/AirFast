@@ -1,35 +1,15 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import java.time.LocalDateTime;
-// import ca.mcgill.ecse321.flightManagement.repo.PersonRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import ca.mcgill.esce321.flightManagement.model.Booking;
-import ca.mcgill.esce321.flightManagement.model.Flight;
-import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.Person;
 
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.EmployeeRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.BookingRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightAttendantRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
-
-
-
 import ca.mcgill.esce321.flightManagement.Dto.response.BookingResponseDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
@@ -38,7 +18,6 @@ import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.model.Seat;
@@ -48,15 +27,6 @@ import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import jakarta.transaction.Transactional;
 
-import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 
 @Service
 @Validated
@@ -65,19 +35,20 @@ public class ManagerServiceImpl {
     private final PersonRepository personRepository;
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
+    private final SeatRepository seatRepository;
 
     
     ManagerServiceImpl(PersonRepository personRepository,
                        FlightRepository flightRepository,
-                       BookingRepository bookingRepository){
+                       BookingRepository bookingRepository, SeatRepository seatRepository){
         this.personRepository = personRepository;
         this.flightRepository = flightRepository;
         this.bookingRepository = bookingRepository;
+        this.seatRepository = seatRepository;
     }
 
-    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {
-        // Date today = Date.valueOf(LocalDate.now());
-        
+    @Transactional
+    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {        
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
 
         Manager saved = personRepository.save(managerToCreate);
@@ -89,6 +60,7 @@ public class ManagerServiceImpl {
                 saved.getLastName()
                 );
     }
+
 
     public ManagerResponseDTO findManagerById(long id) {
         Optional<Person> p = personRepository.findById(id);
@@ -132,6 +104,7 @@ public class ManagerServiceImpl {
     }
 
 
+    @Transactional
     public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
@@ -164,6 +137,8 @@ public class ManagerServiceImpl {
         }
     }
 
+
+    @Transactional
     public void deleteManager(long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager manager) {
@@ -178,8 +153,8 @@ public class ManagerServiceImpl {
     
 
    @Transactional
-    public boolean setSeatPrice(SeatRequestDTO seat, double newPrice) {
-        Optional<Seat> seatToUpdate = seatRepository.findById(seat.getSeatId());
+    public boolean setSeatPrice(long id, double newPrice) {
+        Optional<Seat> seatToUpdate = seatRepository.findById(id);
         if (seatToUpdate.isPresent()) {
             Seat s = seatToUpdate.get();
             s.setPrice(newPrice);
@@ -189,102 +164,50 @@ public class ManagerServiceImpl {
         return false;
     }
 
-   
-    
-    public FlightResponseDTO addFlight(FlightRequestDTO dto) {
-        // 1️⃣ Create a new Flight entity
-        Flight flight = new Flight();
-        flight.setDepartLocation(dto.getDepartLocation());
-        flight.setArrivalLocation(dto.getArrivalLocation());
-        flight.setDepartTime(dto.getDepartTime());
-        flight.setArrivalTime(dto.getArrivalTime());
-        flight.setExpectedDepartTime(dto.getExpectedDepartTime());
-        flight.setCapacity(dto.getCapacity());
-        flight.setSeatsRemaining(dto.getSeatsRemaining());
-        flight.setDelayHours(dto.getDelayHours());
-        // flight.setFlightNumber(dto.getFlightNumber()); // error
-        flight.setFlightTime(dto.getFlightTime());
-        flight.setSeatsRemaining(dto.getSeatsRemaining());
-        flight.setRecurring(dto.isRecurring());
-        flight.setActive(dto.isActive());
-
-
-
-
-        // 2️⃣ Save to database
-        Flight savedFlight = flightRepository.save(flight);
-
-        // Long flightId, int capacity, int seatsRemaining,
-        //                      LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-        //                      String departLocation, String arrivalLocation, String flightNumber, double flightTime,
-        //                      boolean isRecurring, boolean isActive
-
-        // 3️⃣ Return DTO
-        return new FlightResponseDTO(
-                savedFlight.getFlightId(),
-                savedFlight.getCapacity(),
-                savedFlight.getSeatsRemaining(),
-                savedFlight.getDepartTime(),
-                savedFlight.getArrivalTime(),
-                savedFlight.getExpectedDepartTime(),
-                savedFlight.getDepartLocation(),
-                savedFlight.getArrivalLocation(),
-                savedFlight.getFlightNumber(),
-                savedFlight.getFlightTime(),
-                savedFlight.isRecurring(),
-                savedFlight.isActive()
+    @Transactional
+    public boolean addFlight(FlightRequestDTO dto) {
+        Flight flight = new Flight(
+            dto.getCapacity(),
+            dto.getExpectedDepartTime(),
+            dto.getDepartLocation(),
+            dto.getArrivalLocation(),
+            dto.getFlightNumber(),
+            dto.getFlightTime(),
+            dto.isRecurring()
         );
+
+        flightRepository.save(flight);
+
+        return true;
     }
     
-    public FlightResponseDTO updateFlight(Long flightId, FlightRequestDTO dto) {
-        // 1️⃣ Find existing flight
+    @Transactional
+    public boolean updateFlight(long flightId, FlightRequestDTO dto) {
         Flight existingFlight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
 
-        // 2️⃣ Update fields
+       
+        existingFlight.setCapacity(dto.getCapacity());
+        existingFlight.setExpectedDepartTime(dto.getExpectedDepartTime());
         existingFlight.setDepartLocation(dto.getDepartLocation());
         existingFlight.setArrivalLocation(dto.getArrivalLocation());
-        existingFlight.setDepartTime(dto.getDepartTime());
-        existingFlight.setArrivalTime(dto.getArrivalTime());
-        existingFlight.setExpectedDepartTime(dto.getExpectedDepartTime());
-        existingFlight.setCapacity(dto.getCapacity());
-        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
-        existingFlight.setDelayHours(dto.getDelayHours());
-        // flight.setFlightNumber(dto.getFlightNumber()); // error
+        existingFlight.setFlightNumber(dto.getFlightNumber());
         existingFlight.setFlightTime(dto.getFlightTime());
-        existingFlight.setSeatsRemaining(dto.getSeatsRemaining());
         existingFlight.setRecurring(dto.isRecurring());
         existingFlight.setActive(dto.isActive());
 
-        // 3️⃣ Save updated flight
         Flight updatedFlight = flightRepository.save(existingFlight);
 
-    
 
-            return new FlightResponseDTO(
-                updatedFlight.getFlightId(),
-                updatedFlight.getCapacity(),
-                updatedFlight.getSeatsRemaining(),
-                updatedFlight.getDepartTime(),
-                updatedFlight.getArrivalTime(),
-                updatedFlight.getExpectedDepartTime(),
-                updatedFlight.getDepartLocation(),
-                updatedFlight.getArrivalLocation(),
-                updatedFlight.getFlightNumber(),
-                updatedFlight.getFlightTime(),
-                updatedFlight.isRecurring(),
-                updatedFlight.isActive()
-        );
+        return true;
 
     }
 
 
-
     @Transactional
-    public boolean deleteFlight(FlightRequestDTO flightDTO) {
-        Long flightId = flightDTO.getFlightId();
+    public boolean deleteFlight(long id) {
 
-        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
         if (optionalFlight.isEmpty()) {
             return false; // or throw exception
         }
@@ -294,38 +217,33 @@ public class ManagerServiceImpl {
     }
 
     @Transactional
-    public boolean deleteBooking(BookingRequestDTO bookingDTO) {
-        Long bookingId = bookingDTO.getBookingId();
+    public boolean deleteBooking(long id) {
 
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        Optional<Booking> optionalBooking = bookingRepository.findById(id);
         if (optionalBooking.isEmpty()) {
-            return false; // or throw exception if you prefer
+            return false; 
         }
 
         bookingRepository.delete(optionalBooking.get());
         return true;
     }
 
-    @Transactional
     public List<PersonResponseDTO> viewAllPersons() {
         List<Person> persons = personRepository.findAll();
 
-        // String email, String password, String firstName, String lastName
-
-        // Convert each Person entity to PersonResponseDTO
         List<PersonResponseDTO> dtoList = persons.stream()
             .map(p -> new PersonResponseDTO(
+                    p.getId(),
                     p.getEmail(),
+                    p.getPassword(),
                     p.getFirstName(),
                     p.getLastName()
             ))
             .collect(Collectors.toList());
-
         return dtoList;
     }
 
 
-    @Transactional
     public List<FlightResponseDTO> viewAllFlights() {
         return flightRepository.findAll().stream()
             .map(f -> {
@@ -344,11 +262,6 @@ public class ManagerServiceImpl {
                     f.isActive()
                 );
                 
-            
-                // // Summary stats
-                // dto.setTotalPilots(f.getPilots() != null ? f.getPilots().size() : 0);
-                // dto.setTotalAttendants(f.getFlightAttendants() != null ? f.getFlightAttendants().size() : 0);
-                // dto.setTotalBookings(f.getBookings() != null ? f.getBookings().size() : 0);
 
                 return dto;
             })
@@ -356,7 +269,6 @@ public class ManagerServiceImpl {
     }   
 
 
-   @Transactional
     public List<BookingResponseDTO> viewAllBookings() {
     return bookingRepository.findAll().stream()
         .map(b -> {
@@ -367,27 +279,26 @@ public class ManagerServiceImpl {
 }   
 
 
-     
-    public boolean makeFlightRecurring() {
-        // Example: you might mark all flights as recurring
-        List<Flight> flights = flightRepository.findAll();
+     @Transactional
+    public boolean makeFlightRecurring(long id) {
 
-        if (flights.isEmpty()) {
-            return false; // no flights to mark
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
+
+        if (optionalFlight.isEmpty()) {
+            return false; 
         }
 
-        for (Flight flight : flights) {
-            flight.setRecurring(true);
-            flightRepository.save(flight);
-        }
+        Flight flight = optionalFlight.get();
 
-        return true; // successfully updated
+        flight.setRecurring(true);
+
+        flightRepository.save(flight);
+        return true;
     }
 
-    // ERRORS here:...
     @Transactional
-    public boolean assignFlight(FlightRequestDTO flightDTO, List<EmployeeRequestDTO> employees) {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+    public boolean assignFlight(Long flightId, List<Long> employeeIds) {
+        Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
             return false; // flight not found
         }
@@ -398,31 +309,27 @@ public class ManagerServiceImpl {
         List<FlightAttendant> attendants = new ArrayList<>();
         Manager manager = null;
 
-        for (EmployeeRequestDTO e : employees) {
-            if (e instanceof ManagerRequestDTO) {
-                 Optional<Manager> optManager = PersonRepository.findById(e.getId());
-                if (optManager.isPresent()) {
-                    manager = optManager.get();
-                }
+        for(Long id: employeeIds) {
+            Optional<Person> optionalPerson = personRepository.findById(id);
+            if (optionalPerson.isEmpty()) continue;
 
-            }
-            else if (e instanceof PilotRequestDTO) {
-                Optional<Pilot> optPilot = PersonRepository.findById(e.getId());
-                optPilot.ifPresent(pilots::add);
+            Person person = optionalPerson.get();
+
+            if (person instanceof Pilot pilot) {
+                pilots.add(pilot);
             }
 
-            else if (e instance of FlightAttendantRequestDTO) {
-                
-                Optional<FlightAttendant> optAttendant = (FlightAttendant) PersonRepository.findById(e.getId());
-               
-                optAttendant.ifPresent(attendants::add);
-
+            else if (person instanceof FlightAttendant attendant) {
+                attendants.add(attendant);
             }
- 
 
+            else if (person instanceof Manager man) {
+                manager = man;
+            }
             
         }
-            // Assign relationships
+
+
         flight.setManager(manager);
         flight.setPilots(pilots);
         flight.setAttendants(attendants);
@@ -432,28 +339,30 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    
-    
-
-
- 
-
+    // when we createEmployee, how do we specify what kind of employee it is. Pilot, FlightAttendant
+    // like this for now
     @Transactional
-    public boolean createEmployeeId(EmployeeRequestDTO e) {
-        if (e == null) {
-            return false;
+    public boolean createEmployee(String email, String password, String firstName, String lastName, String type) {
+
+        if(type.equals("FlightAttendant")) {
+            FlightAttendant f = new FlightAttendant(email, password, firstName, lastName);
+            personRepository.save(f);
+
+            
         }
+        else if (type.equals("Pilot")) {
+            Pilot p = new Pilot(email, password, firstName, lastName);
+            personRepository.save(p);
 
-        long id = ThreadLocalRandom.current().nextLong(100000, 999999);
-        e.setId(id);
-
+        }
+      
         return true;
     }   
 
 
     @Transactional
-    public boolean makeFlightRecurring(FlightRequestDTO flightDTO) {
-        Optional<Flight> optionalFlight = flightRepository.findById(flightDTO.getFlightId());
+    public boolean makeFlightRecurring(Long id) {
+        Optional<Flight> optionalFlight = flightRepository.findById(id);
         if (optionalFlight.isEmpty()) {
             return false;
         }
@@ -465,7 +374,6 @@ public class ManagerServiceImpl {
     }
 
 
-    @Transactional
     public FlightResponseDTO viewFlightStats(long flightId) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
@@ -489,22 +397,4 @@ public class ManagerServiceImpl {
                 f.isActive()
         );
     }
-
-
-
-   
-        
-
-    
-
-
-
-
-
-
-    
-
-
-
-
 }

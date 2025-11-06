@@ -35,6 +35,14 @@ public class SeatResponseDTO {
         this.flightId = flightId;
     }
 
+    public Long getSeatId() {
+        return seatId;
+    }
+
+    public void setSeatId(Long seatId) {
+        this.seatId = seatId;
+    }
+
     public SeatClass getSeatClass() {
         return seatClass;
     }
