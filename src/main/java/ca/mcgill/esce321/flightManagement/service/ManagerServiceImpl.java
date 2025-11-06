@@ -51,7 +51,6 @@ import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import jakarta.transaction.Transactional;
 
-import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
 
@@ -81,6 +80,7 @@ public class ManagerServiceImpl {
         this.seatRepository = seatRepository;
     }
 
+    @Transactional
     public ManagerResponseDTO createManager(ManagerRequestDTO dto) {        
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
 
@@ -93,6 +93,7 @@ public class ManagerServiceImpl {
                 saved.getLastName()
                 );
     }
+
 
     public ManagerResponseDTO findManagerById(long id) {
         Optional<Person> p = personRepository.findById(id);
@@ -136,6 +137,7 @@ public class ManagerServiceImpl {
     }
 
 
+    @Transactional
     public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
@@ -168,6 +170,8 @@ public class ManagerServiceImpl {
         }
     }
 
+
+    @Transactional
     public void deleteManager(long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager manager) {
@@ -183,7 +187,7 @@ public class ManagerServiceImpl {
 
    @Transactional
     public boolean setSeatPrice(long id, double newPrice) {
-        Optional<Seat> seatToUpdate = seatRepository.findById(id);// need to get SeatID?? how??s
+        Optional<Seat> seatToUpdate = seatRepository.findById(id);
         if (seatToUpdate.isPresent()) {
             Seat s = seatToUpdate.get();
             s.setPrice(newPrice);
@@ -193,9 +197,8 @@ public class ManagerServiceImpl {
         return false;
     }
 
-   
-    public FlightResponseDTO addFlight(FlightRequestDTO dto) {
-        // 1️⃣ Create a new Flight entity
+    @Transactional
+    public boolean addFlight(FlightRequestDTO dto) {
         Flight flight = new Flight(
             dto.getCapacity(),
             dto.getExpectedDepartTime(),
@@ -206,26 +209,13 @@ public class ManagerServiceImpl {
             dto.isRecurring()
         );
 
-        Flight savedFlight = flightRepository.save(flight);
+        flightRepository.save(flight);
 
-        return new FlightResponseDTO(
-                savedFlight.getFlightId(),
-                savedFlight.getCapacity(),
-                savedFlight.getSeatsRemaining(),
-                savedFlight.getDepartTime(),
-                savedFlight.getArrivalTime(),
-                savedFlight.getExpectedDepartTime(),
-                savedFlight.getDepartLocation(),
-                savedFlight.getArrivalLocation(),
-                savedFlight.getFlightNumber(),
-                savedFlight.getFlightTime(),
-                savedFlight.isRecurring(),
-                savedFlight.isActive()
-        );
+        return true;
     }
     
-    public FlightResponseDTO updateFlight(long flightId, FlightRequestDTO dto) {
-        // 1️⃣ Find existing flight
+    @Transactional
+    public boolean updateFlight(long flightId, FlightRequestDTO dto) {
         Flight existingFlight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
 
@@ -241,25 +231,10 @@ public class ManagerServiceImpl {
 
         Flight updatedFlight = flightRepository.save(existingFlight);
 
-    
 
-            return new FlightResponseDTO(
-                updatedFlight.getFlightId(),
-                updatedFlight.getCapacity(),
-                updatedFlight.getSeatsRemaining(),
-                updatedFlight.getDepartTime(),
-                updatedFlight.getArrivalTime(),
-                updatedFlight.getExpectedDepartTime(),
-                updatedFlight.getDepartLocation(),
-                updatedFlight.getArrivalLocation(),
-                updatedFlight.getFlightNumber(),
-                updatedFlight.getFlightTime(),
-                updatedFlight.isRecurring(),
-                updatedFlight.isActive()
-        );
+        return true;
 
     }
-
 
 
     @Transactional
@@ -286,7 +261,6 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    @Transactional
     public List<PersonResponseDTO> viewAllPersons() {
         List<Person> persons = personRepository.findAll();
 
@@ -303,7 +277,6 @@ public class ManagerServiceImpl {
     }
 
 
-    @Transactional
     public List<FlightResponseDTO> viewAllFlights() {
         return flightRepository.findAll().stream()
             .map(f -> {
@@ -329,7 +302,6 @@ public class ManagerServiceImpl {
     }   
 
 
-   @Transactional
     public List<BookingResponseDTO> viewAllBookings() {
     return bookingRepository.findAll().stream()
         .map(b -> {
@@ -340,7 +312,7 @@ public class ManagerServiceImpl {
 }   
 
 
-     
+     @Transactional
     public boolean makeFlightRecurring(long id) {
 
         Optional<Flight> optionalFlight = flightRepository.findById(id);
@@ -352,10 +324,11 @@ public class ManagerServiceImpl {
         Flight flight = optionalFlight.get();
 
         flight.setRecurring(true);
+
+        flightRepository.save(flight);
         return true;
     }
 
-    // fix to get employee ids and check what class they are
     @Transactional
     public boolean assignFlight(Long flightId, List<Long> employeeIds) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
@@ -365,17 +338,31 @@ public class ManagerServiceImpl {
 
         Flight flight = optionalFlight.get();
 
-        for(Long id: employeeIds) {
-            
-        }
-
-        
-
         List<Pilot> pilots = new ArrayList<>();
         List<FlightAttendant> attendants = new ArrayList<>();
         Manager manager = null;
 
-            // Assign relationships
+        for(Long id: employeeIds) {
+            Optional<Person> optionalPerson = personRepository.findById(id);
+            if (optionalPerson.isEmpty()) continue;
+
+            Person person = optionalPerson.get();
+
+            if (person instanceof Pilot pilot) {
+                pilots.add(pilot);
+            }
+
+            else if (person instanceof FlightAttendant attendant) {
+                attendants.add(attendant);
+            }
+
+            else if (person instanceof Manager man) {
+                manager = man;
+            }
+            
+        }
+
+
         flight.setManager(manager);
         flight.setPilots(pilots);
         flight.setAttendants(attendants);
@@ -386,7 +373,7 @@ public class ManagerServiceImpl {
     }
 
     // when we createEmployee, how do we specify what kind of employee it is. Pilot, FlightAttendant
-    // createPerson for now
+    // like this for now
     @Transactional
     public boolean createEmployee(String email, String password, String firstName, String lastName, String type) {
 
@@ -420,7 +407,6 @@ public class ManagerServiceImpl {
     }
 
 
-    @Transactional
     public FlightResponseDTO viewFlightStats(long flightId) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
