@@ -1,36 +1,15 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import java.time.LocalDateTime;
-// import ca.mcgill.ecse321.flightManagement.repo.PersonRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import ca.mcgill.esce321.flightManagement.model.Booking;
-import ca.mcgill.esce321.flightManagement.model.Flight;
-import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.Person;
 
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.PersonRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.EmployeeRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.BookingRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightAttendantRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
-
-
-
 import ca.mcgill.esce321.flightManagement.Dto.response.BookingResponseDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
@@ -39,10 +18,7 @@ import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.PaymentStatus;
 import ca.mcgill.esce321.flightManagement.model.Person;
-import ca.mcgill.esce321.flightManagement.model.Employee;
-
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
@@ -50,15 +26,6 @@ import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import jakarta.transaction.Transactional;
-
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-
-
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 
 @Service
