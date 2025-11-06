@@ -1,16 +1,27 @@
-package ca.mcgill.esce321.flightManagement.Controller;
+package ca.mcgill.esce321.flightManagement.controller;
 
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Seat;
+import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
 import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/seats")
+@CrossOrigin(origins = "*")
+
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,27 +54,65 @@ public class SeatController {
     @Autowired
     private SeatServiceImpl seatService;
 
-    // READ one
+    /**
+     * Create a new seat
+     */
+    @PostMapping
+    public ResponseEntity<SeatResponseDTO> createSeat(@RequestBody SeatRequestDTO request) {
+        Seat created = seatService.createSeat(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(new SeatResponseDto(created));
+    }
+
+    /**
+     * Get seat by ID
+     */
     @GetMapping("/{id}")
-    public SeatResponseDTO getById(@PathVariable("id") long id) {
-
-        return seatService.findSeatById(id);
+    public ResponseEntity<SeatResponseDTO> getSeatById(@PathVariable Long id) {
+        Seat seat = seatService.getSeatById(id);
+        return ResponseEntity.ok(new SeatResponseDTO(seat));
     }
 
-    
-    // READ all
+    /**
+     * Get all seats
+     */
     @GetMapping
-    public List<SeatResponseDTO> getAll() {
-        return seatService.viewAllSeats();
+    public ResponseEntity<List<SeatResponseDTO>> getAllSeats() {
+        List<Seat> seats = seatService.getAllSeats();
+        List<SeatResponseDTO> dtos = seats.stream()
+                                          .map(SeatResponseDTO::new)
+                                          .toList();
+        return ResponseEntity.ok(dtos);
     }
 
-    // Map your service's IllegalArgumentException to HTTP codes
+    /**
+     * Update a seat (for example, change availability or type)
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<SeatResponseDTO> updateSeat(
+            @PathVariable Long id,
+            @RequestBody SeatRequestDTO request) {
+        Seat updated = seatService.updateSeat(id, request);
+        return ResponseEntity.ok(new SeatResponseDto(updated));
+    }
+
+    /**
+     * Delete a seat (if unassigned or cancelled)
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSeat(@PathVariable Long id) {
+        seatService.deleteSeat(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Handle validation and missing resource errors
+     */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArg(IllegalArgumentException ex) {
-        // Use 404 if it's “not found”; otherwise 400 is fine.
-        String msg = ex.getMessage() == null ? "Bad request" : ex.getMessage();
-        HttpStatus status = msg != null && msg.toLowerCase().contains("no Seat")
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        String msg = ex.getMessage() == null ? "Invalid request" : ex.getMessage();
+        HttpStatus status = msg.toLowerCase().contains("not found")
                 ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(msg);
-    }  
+    }
 }

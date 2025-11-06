@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.Dto.response;
+package ca.mcgill.esce321.flightManagement.dto.response;
 
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
