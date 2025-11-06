@@ -45,7 +45,7 @@ public class Flight {
     private String departLocation;
     private String arrivalLocation;
     private String flightNumber;
-    private int flightTime;
+    private double flightTime;
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
@@ -56,7 +56,7 @@ public class Flight {
 
     public Flight(){}
     public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                  String flightNumber, int flightTime, boolean isRecurring) {
+                  String flightNumber, double flightTime, boolean isRecurring) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -163,11 +163,11 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 

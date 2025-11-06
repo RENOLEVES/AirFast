@@ -11,6 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
+import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
+import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
@@ -32,8 +35,11 @@ public class SeatServiceImpl {
 
 
     // use constructor instead of autowired.. see owner
-    @Autowired
-    private SeatRepository seatRepository;
+    private final SeatRepository seatRepository;
+
+    public SeatServiceImpl(SeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+    }
 
     public SeatResponseDTO findSeatById(long id) {
         Optional<Seat> s = seatRepository.findById(id);
