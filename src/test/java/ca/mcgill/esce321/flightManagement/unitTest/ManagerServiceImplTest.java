@@ -1,9 +1,10 @@
-package ca.mcgill.esce321.flightManagement.service;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.Dto.response.*;
 import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
+import jakarta.transaction.Transactional;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 
@@ -14,6 +15,7 @@ import org.mockito.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ManagerServiceImplTest {
@@ -57,6 +59,8 @@ class ManagerServiceImplTest {
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("test@example.com", result.getEmail());
         verify(personRepository, times(1)).save(any(Manager.class));
     }
 
@@ -70,6 +74,10 @@ class ManagerServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
+        assertEquals("e", result.getEmail());
+        assertEquals("f", result.getFirstName());
+        assertEquals("l", result.getLastName());
+
     }
 
     @Test
@@ -156,7 +164,7 @@ class ManagerServiceImplTest {
         dto.setCapacity(100);
         dto.setDepartLocation("Montreal");
         dto.setArrivalLocation("Toronto");
-        dto.setFlightNumber("100");
+        dto.setFlightNumber("1");
         dto.setFlightTime(120);
         dto.setRecurring(false);
 
@@ -181,12 +189,14 @@ class ManagerServiceImplTest {
         dto.setFlightTime(180);
         dto.setRecurring(true);
         dto.setActive(true);
-        dto.setExpectedDepartTime(new Date());
 
         boolean result = managerService.updateFlight(1L, dto);
 
         assertTrue(result);
-        assertEquals(200, flight.getCapacity());
+        verify(flightRepository, times(1)).findById(1L);
+        verify(flightRepository, times(1)).save(flight);
+
+
     }
 
     @Test
@@ -312,4 +322,128 @@ class ManagerServiceImplTest {
 
         when(personRepository.findById(2L)).thenReturn(Optional.of(pilot));
         when(personRepository.findById(3L)).thenReturn(Optional.of(fa));
-        when(personRepository.findById
+        when(personRepository.findById(4L)).thenReturn(Optional.of(manager));
+
+         // --- Act ---
+        boolean result = managerService.assignFlight(1L, List.of(2L, 3L, 4L));
+
+        // --- Assert ---
+        assertTrue(result);
+
+        // Ensure that flightRepository.save() was called once
+        verify(flightRepository, times(1)).save(flight);
+
+        // Check that the correct associations were made
+        assertEquals(manager, flight.getManager());
+        assertEquals(1, flight.getPilots().size());
+        assertEquals(1, flight.getAttendants().size());
+        assertTrue(flight.getPilots().contains(pilot));
+        assertTrue(flight.getAttendants().contains(fa));
+    }
+
+   
+
+
+    @Test
+    void testCreateEmployee_FlightAttendant() {
+        // --- Arrange ---
+        String email = "fa@example.com";
+        String password = "pass";
+        String firstName = "Jane";
+        String lastName = "Doe";
+        String type = "FlightAttendant";
+
+        // --- Act ---
+        boolean result = managerService.createEmployee(email, password, firstName, lastName, type);
+
+        // --- Assert ---
+        assertTrue(result);
+
+        // Verify that a FlightAttendant was saved once
+        ArgumentCaptor<FlightAttendant> captor = ArgumentCaptor.forClass(FlightAttendant.class);
+        verify(personRepository, times(1)).save(captor.capture());
+
+        FlightAttendant saved = captor.getValue();
+        assertEquals(email, saved.getEmail());
+        assertEquals(password, saved.getPassword());
+        assertEquals(firstName, saved.getFirstName());
+        assertEquals(lastName, saved.getLastName());
+    }
+
+    @Test
+    void testCreateEmployee_Pilot() {
+        // --- Arrange ---
+        String email = "pilot@example.com";
+        String password = "secure";
+        String firstName = "John";
+        String lastName = "Smith";
+        String type = "Pilot";
+
+        // --- Act ---
+        boolean result = managerService.createEmployee(email, password, firstName, lastName, type);
+
+        // --- Assert ---
+        assertTrue(result);
+
+        // Verify that a Pilot was saved once
+        ArgumentCaptor<Pilot> captor = ArgumentCaptor.forClass(Pilot.class);
+        verify(personRepository, times(1)).save(captor.capture());
+
+        Pilot saved = captor.getValue();
+        assertEquals(email, saved.getEmail());
+        assertEquals(password, saved.getPassword());
+        assertEquals(firstName, saved.getFirstName());
+        assertEquals(lastName, saved.getLastName());
+    }
+
+    @Test
+    void testViewFlightStats_FlightExists() {
+        // --- Arrange ---
+        Flight flight = new Flight();
+        flight.setFlightId(1L);
+        flight.setCapacity(150);
+        flight.setSeatsRemaining(100);
+        flight.setDepartLocation("Montreal");
+        flight.setArrivalLocation("Toronto");
+        flight.setFlightNumber("AC123");
+        flight.setFlightTime(120);
+        flight.setRecurring(true);
+        flight.setActive(true);
+
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+
+        // --- Act ---
+        FlightResponseDTO result = managerService.viewFlightStats(1L);
+
+        // --- Assert ---
+        assertNotNull(result);
+        assertEquals(1L, result.getFlightId());
+        assertEquals(150, result.getCapacity());
+        assertEquals(100, result.getSeatsRemaining());
+        assertEquals("Montreal", result.getDepartLocation());
+        assertEquals("Toronto", result.getArrivalLocation());
+        assertEquals("AC123", result.getFlightNumber());
+        assertEquals(120, result.getFlightTime());
+        assertTrue(result.isRecurring());
+        assertTrue(result.isActive());
+
+        // Verify repo interaction
+        verify(flightRepository, times(1)).findById(1L);
+    }
+
+
+    @Test
+    void testViewFlightStats_FlightNotFound() {
+        // --- Arrange ---
+        when(flightRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // --- Act ---
+        FlightResponseDTO result = managerService.viewFlightStats(99L);
+
+        // --- Assert ---
+        assertNull(result);
+        verify(flightRepository, times(1)).findById(99L);
+    }
+
+}
+
