@@ -63,7 +63,7 @@ public class ManagerController {
     public ResponseEntity<String> handleIllegalArg(IllegalArgumentException ex) {
         // Use 404 if it's “not found”; otherwise 400 is fine.
         String msg = ex.getMessage() == null ? "Bad request" : ex.getMessage();
-        HttpStatus status = msg != null && msg.toLowerCase().contains("no manager")
+        HttpStatus status = msg != null && msg.toLowerCase().contains("no seat")
                 ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(msg);
     }
