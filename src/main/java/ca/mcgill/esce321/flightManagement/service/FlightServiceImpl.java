@@ -17,9 +17,22 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+package ca.mcgill.ecse321.flightManagement.service;
+
+@Service
+public class FlightServiceImpl implements FlightService { ... }
+
+
 
 @Service
 public class FlightServiceImpl implements FlightService {
+
+
+    Flight createFlight(FlightRequestDTO dto);
+    Flight getFlightById(Long id);
+    List<Flight> getAllFlights();
+    Flight updateFlight(Long id, FlightRequestDTO dto);
+    void deleteFlight(Long id);
 
     private final FlightRepository flightRepo;
     private final BookingRepository bookingRepo;

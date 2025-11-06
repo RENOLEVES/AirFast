@@ -34,6 +34,18 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.model.Pilot;
+import java.util.List;
+
+public interface PilotService {
+    Pilot createPilot(PilotRequestDTO dto);
+    Pilot getPilotById(Long id);
+    List<Pilot> getAllPilots();
+    Pilot updatePilot(Long id, PilotRequestDTO dto);
+    void deletePilot(Long id);
+}
+
 @Service
 @Validated
 public class PilotService {

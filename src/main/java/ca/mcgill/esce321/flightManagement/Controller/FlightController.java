@@ -1,18 +1,15 @@
 package ca.mcgill.esce321.flightManagement.Controller;
 
-import ca.mcgill.esce321.flightManagement.dto.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.service.FlightService;
-import ca.mcgill.esce321.flightManagement.dto.ManagerResponseDto;
+import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,62 +18,66 @@ import java.util.List;
 public class FlightController {
 
     @Autowired
-    private FlightService flightService;
+    private  FlightServiceImpl flightService;
 
-    // ---------- CREATE ----------
+    /**
+     * Create a new Flight
+     */
     @PostMapping
-    public ResponseEntity<Flight> createFlight(@RequestBody FlightCreateDTO dto) {
-        Flight created = flightService.create(dto);
-        return ResponseEntity
-                .created(URI.create("/api/flights/" + created.getId()))
-                .body(created);
+    public ResponseEntity<FlightResponseDTO> createFlight(@RequestBody FlightRequestDTO request) {
+        Flight created = flightService.createFlight(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new FlightResponseDTO(created));
     }
 
-    // ---------- READ ----------
     /**
-     * @param id
-     * @return
+     * Get a flight by its ID
      */
     @GetMapping("/{id}")
-    public Flight getFlight(@PathVariable Long id) {
-        return flightService.get(id);
+    public ResponseEntity<FlightResponseDTO> getFlightById(@PathVariable Long id) {
+        Flight flight = flightService.getFlightById(id);
+        return ResponseEntity.ok(new FlightResponseDTO(flight));
     }
 
-    // Search flights by from/to/date (e.g. /api/flights/search?from=YUL&to=YYZ&date=2025-11-01)
-    @GetMapping("/search")
-    public List<Flight> searchFlights(
-            @RequestParam String from,
-            @RequestParam String to,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return flightService.search(from, to, date);
+    /**
+     * Get all flights
+     */
+    @GetMapping
+    public ResponseEntity<List<FlightResponseDTO>> getAllFlights() {
+        List<Flight> flights = flightService.getAllFlights();
+        List<FlightResponseDTO> dtos = flights.stream()
+                                              .map(FlightResponseDTO::new)
+                                              .toList();
+        return ResponseEntity.ok(dtos);
     }
 
-    // ---------- UPDATE ----------
+    /**
+     * Update flight information
+     */
     @PutMapping("/{id}")
-    public Flight updateFlight(@PathVariable Long id, @RequestBody FlightUpdateDTO dto) {
-        return flightService.update(id, dto);
+    public ResponseEntity<FlightResponseDTO> updateFlight(
+            @PathVariable Long id,
+            @RequestBody FlightRequestDTO request) {
+        Flight updated = flightService.updateFlight(id, request);
+        return ResponseEntity.ok(new FlightResponseDTO(updated));
     }
 
-    // ---------- DELAY ----------
-    // Example: PATCH /api/flights/5/delay?minutes=45
-    @PatchMapping("/{id}/delay")
-    public Flight delayFlight(@PathVariable Long id, @RequestParam long minutes) {
-        return flightService.delay(id, Duration.ofMinutes(minutes));
-    }
-
-    // ---------- DELETE ----------
+    /**
+     * Delete a flight by ID
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelFlight(@PathVariable Long id) {
-        flightService.delete(id);
+    public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
+        flightService.deleteFlight(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ---------- EXCEPTION HANDLER ----------
+    /**
+     * Handle illegal arguments or missing resources gracefully
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        String msg = ex.getMessage() != null ? ex.getMessage() : "Bad request";
-        HttpStatus status = msg.toLowerCase().contains("not found") ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        String msg = ex.getMessage() == null ? "Invalid request" : ex.getMessage();
+        HttpStatus status = msg.toLowerCase().contains("not found")
+                ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(msg);
     }
 }
-
