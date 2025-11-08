@@ -15,9 +15,9 @@ import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.model.Seat;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import java.util.List;
 

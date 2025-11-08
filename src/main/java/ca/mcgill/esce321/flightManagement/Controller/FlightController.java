@@ -1,7 +1,7 @@
-package ca.mcgill.esce321.flightManagement.Controller;
+package ca.mcgill.esce321.flightManagement.controller;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
 

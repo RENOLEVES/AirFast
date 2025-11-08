@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import java.util.List;
 

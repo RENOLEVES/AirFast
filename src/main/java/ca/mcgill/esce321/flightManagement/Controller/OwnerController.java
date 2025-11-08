@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 import ca.mcgill.esce321.flightManagement.service.OwnerService;
 

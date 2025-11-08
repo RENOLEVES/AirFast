@@ -4,8 +4,8 @@ package ca.mcgill.ecse321.flightManagement.service;
 // import ca.mcgill.ecse321.flightManagement.dto.FlightCreateDTO;
 // import ca.mcgill.ecse321.flightManagement.dto.FlightUpdateDTO;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
 
 
 
