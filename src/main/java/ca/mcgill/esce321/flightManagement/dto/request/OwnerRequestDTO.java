@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.Dto.request;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
 public class OwnerRequestDTO extends PersonRequestDTO{
 

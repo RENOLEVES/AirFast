@@ -1,9 +1,8 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
 import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDto;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDto;
-import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
