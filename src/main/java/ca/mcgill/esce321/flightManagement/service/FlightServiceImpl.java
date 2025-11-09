@@ -7,8 +7,6 @@ package ca.mcgill.esce321.flightManagement.service;
 import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
 
-
-
 import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.BookingStatus;
 import ca.mcgill.esce321.flightManagement.model.Flight;

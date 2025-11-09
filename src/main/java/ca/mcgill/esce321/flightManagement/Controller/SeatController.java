@@ -1,7 +1,7 @@
-package ca.mcgill.esce321.flightManagement.Controller;
+package ca.mcgill.esce321.flightManagement.controller;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
 import java.net.URI;
@@ -20,8 +20,16 @@ import java.util.List;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/seats")
+@CrossOrigin(origins = "*")
+
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

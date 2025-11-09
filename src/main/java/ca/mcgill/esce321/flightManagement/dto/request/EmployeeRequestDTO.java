@@ -1,6 +1,5 @@
 package ca.mcgill.esce321.flightManagement.dto.request;
 
-// import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.PersonRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 
