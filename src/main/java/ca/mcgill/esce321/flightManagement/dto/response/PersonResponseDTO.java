@@ -4,11 +4,12 @@ public class PersonResponseDTO {
 
     private Long id;
     private String email;
-    private  String password;
+    private String password;
     private String firstName;
     private String lastName;
 
     public PersonResponseDTO() {}
+
 
     public PersonResponseDTO(Long id, String email, String password, String firstName, String lastName) {
         this.id = id;

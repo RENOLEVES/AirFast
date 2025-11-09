@@ -1,16 +1,18 @@
 package ca.mcgill.esce321.flightManagement.dto.request;
 
+import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.SeatClass;
 import ca.mcgill.esce321.flightManagement.model.SeatStatus;
+
 
 public class SeatRequestDTO {
 
     private Long flightId;   // reference to Flight
-
     private SeatClass seatClass;
     private double price;
     private String seatNumber;
     private SeatStatus seatStatus;
+
 
     public SeatRequestDTO() {}
 
@@ -64,4 +66,6 @@ public class SeatRequestDTO {
     public void setSeatStatus(SeatStatus seatStatus) {
         this.seatStatus = seatStatus;
     }
+
+
 }

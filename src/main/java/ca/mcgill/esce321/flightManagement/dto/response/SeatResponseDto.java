@@ -26,13 +26,6 @@ public class SeatResponseDTO {
     }
 
     // Getters and Setters
-    public Long getSeatId() {
-        return seatId;
-    }
-
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
-    }
 
     public Long getFlightId() {
         return flightId;
@@ -40,6 +33,14 @@ public class SeatResponseDTO {
 
     public void setFlightId(Long flightId) {
         this.flightId = flightId;
+    }
+
+    public Long getSeatId() {
+        return seatId;
+    }
+
+    public void setSeatId(Long seatId) {
+        this.seatId = seatId;
     }
 
     public SeatClass getSeatClass() {
@@ -73,4 +74,6 @@ public class SeatResponseDTO {
     public void setSeatStatus(SeatStatus seatStatus) {
         this.seatStatus = seatStatus;
     }
+
+
 }
