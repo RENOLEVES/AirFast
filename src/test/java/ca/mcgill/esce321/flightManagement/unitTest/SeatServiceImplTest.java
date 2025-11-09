@@ -21,6 +21,9 @@ public class SeatServiceImplTest {
     @Mock
     private SeatRepository seatRepository;
 
+    @Mock
+    private FlightRepository flightRepository;
+
     @InjectMocks
     private SeatServiceImpl seatService;
 
@@ -158,9 +161,9 @@ public class SeatServiceImplTest {
         existingSeat.setFlight(flight);
 
         SeatRequestDTO dto = new SeatRequestDTO();
-        dto.setSeatClass("BUSINESS");
-        dto.setSeatNumber(1);
-        dto.setSeatStatus("BOOKED");
+        dto.setSeatClass(SeatClass.BUSINESS);
+        dto.setSeatNumber("1");
+        dto.setSeatStatus(SeatStatus.TOBEDETERMINED);
         dto.setPrice(250.0);
         dto.setFlightId(1L);
 
@@ -176,10 +179,10 @@ public class SeatServiceImplTest {
         assertNotNull(result);
         assertEquals(10L, result.getSeatId());
         assertEquals(1L, result.getFlightId());
-        assertEquals("BUSINESS", result.getSeatClass());
-        assertEquals("BOOKED", result.getSeatStatus());
+        assertEquals(SeatClass.BUSINESS, result.getSeatClass());
+        assertEquals(SeatStatus.TOBEDETERMINED, result.getSeatStatus());
         assertEquals(250.0, result.getPrice());
-        assertEquals(1, result.getSeatNumber());
+        assertEquals("1", result.getSeatNumber());
 
         verify(seatRepository).findById(10L);
         verify(flightRepository).findById(1L);
