@@ -14,33 +14,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/seats")
-@CrossOrigin(origins = "*")
+// @RestController
+// @RequestMapping("/api/seats")
+// @CrossOrigin(origins = "*")
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/seats")
-@CrossOrigin(origins = "*")
+
 
 import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.SeatResponseDTO;
 import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
 
 
@@ -62,23 +48,21 @@ public class SeatController {
     @Autowired
     private SeatServiceImpl seatService;
 
-    /**
-     * Create a new seat
-     */
+
     @PostMapping
     public ResponseEntity<SeatResponseDTO> createSeat(@RequestBody SeatRequestDTO request) {
-        Seat created = seatService.createSeat(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(new SeatResponseDto(created));
+        // seatService.createSeat() returns SeatResponseDTO
+        SeatResponseDTO created = seatService.createSeat(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     /**
      * Get seat by ID
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<SeatResponseDTO> getSeatById(@PathVariable Long id) {
-        Seat seat = seatService.getSeatById(id);
-        return ResponseEntity.ok(new SeatResponseDTO(seat));
+     @GetMapping("/{id}")
+    public ResponseEntity<SeatResponseDTO> getSeatById(@PathVariable long id) {
+        SeatResponseDTO seat = seatService.getSeatById(id); // returns SeatResponseDTO
+        return ResponseEntity.ok(seat);
     }
 
     /**
@@ -86,11 +70,8 @@ public class SeatController {
      */
     @GetMapping
     public ResponseEntity<List<SeatResponseDTO>> getAllSeats() {
-        List<Seat> seats = seatService.getAllSeats();
-        List<SeatResponseDTO> dtos = seats.stream()
-                                          .map(SeatResponseDTO::new)
-                                          .toList();
-        return ResponseEntity.ok(dtos);
+        List<SeatResponseDTO> seats = seatService.getAllSeats();
+        return ResponseEntity.ok(seats);
     }
 
     /**
@@ -100,8 +81,8 @@ public class SeatController {
     public ResponseEntity<SeatResponseDTO> updateSeat(
             @PathVariable Long id,
             @RequestBody SeatRequestDTO request) {
-        Seat updated = seatService.updateSeat(id, request);
-        return ResponseEntity.ok(new SeatResponseDto(updated));
+        SeatResponseDTO updated = seatService.updateSeat(id, request);
+        return ResponseEntity.ok(updated);
     }
 
     /**
