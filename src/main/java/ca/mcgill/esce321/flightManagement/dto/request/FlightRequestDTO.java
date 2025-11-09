@@ -14,7 +14,8 @@ public class FlightRequestDTO {
     private int flightTime;               
     private boolean isRecurring;
     private Boolean isActive;             
-    private Integer delayInHours;        
+    private Integer delayHours;
+    private int seatsRemaining;        
 
     public FlightRequestDTO() {}
 
@@ -99,11 +100,11 @@ public class FlightRequestDTO {
         this.arrivalLocation = arrivalLocation;
     }
 
-    public String getFlightNumber() {
+    public int getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(String flightNumber) {
+    public void setFlightNumber(int flightNumber) {
         this.flightNumber = flightNumber;
     }
 
@@ -111,7 +112,7 @@ public class FlightRequestDTO {
         return flightTime;
     }
 
-    public void setFlightTime(double flightTime) {
+    public void setFlightTime(int flightTime) {
         this.flightTime = flightTime;
     }
 
