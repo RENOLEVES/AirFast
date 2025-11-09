@@ -240,4 +240,3 @@ public class SeatIntegrationTests {
         assertEquals(0, seats.length, "Should return an empty array when no seats exist");
     }
 }
-
