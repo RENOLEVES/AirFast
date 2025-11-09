@@ -1,9 +1,9 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
-import ca.mcgill.esce321.flightManagement.service.OwnerService;
+import ca.mcgill.esce321.flightManagement.service.OwnerServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 public class OwnerController {
 
     @Autowired
-    private OwnerService ownerService;
+    private OwnerServiceImpl ownerService;
 
     /**
      * Create a new Owner

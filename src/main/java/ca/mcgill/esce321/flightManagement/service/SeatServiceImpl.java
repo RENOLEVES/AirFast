@@ -1,48 +1,26 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import jakarta.transaction.Transactional;
-// import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
-import java.sql.Date;
-import java.time.LocalDate;
-
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
-import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.SeatResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.Person;
-import ca.mcgill.esce321.flightManagement.model.Seat;
-import ca.mcgill.esce321.flightManagement.model.SeatClass;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
-package ca.mcgill.esce321.flightManagement.service;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Booking;
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.model.Manager;
+import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.model.Seat;
-import java.util.List;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 
-public interface SeatServiceImpl {
-    Seat createSeat(SeatRequestDTO dto);
-    Seat getSeatById(Long id);
-    List<Seat> getAllSeats();
-    Seat updateSeat(Long id, SeatRequestDTO dto);
-    void deleteSeat(Long id);
-}
-
-
+import jakarta.transaction.Transactional;
+// import jakarta.validation.Valid;
 
 
 @Service
@@ -52,12 +30,38 @@ public class SeatServiceImpl {
 
     // use constructor instead of autowired.. see owner
     private final SeatRepository seatRepository;
+    private final FlightRepository flightRepository;
 
-    public SeatServiceImpl(SeatRepository seatRepository) {
+
+    public SeatServiceImpl(SeatRepository seatRepository, FlightRepository flightRepository) {
         this.seatRepository = seatRepository;
+        this.flightRepository = flightRepository;
     }
 
-    public SeatResponseDTO findSeatById(long id) {
+     @Transactional
+    public SeatResponseDTO createSeat(SeatRequestDTO dto) {        
+        Optional<Flight> f = flightRepository.findById(dto.getFlightId());
+        Flight flight = null;
+        if (f.isPresent()) {
+            flight = f.get();
+
+        }
+        Seat seatToCreate = new Seat(dto.getSeatClass(), dto.getPrice(), dto.getSeatNumber(), dto.getSeatStatus(), flight);
+
+        Seat saved = seatRepository.save(seatToCreate);
+        return new SeatResponseDTO(
+                saved.getSeatId(),
+                saved.getFlight().getFlightId(),
+                saved.getSeatClass(),
+                saved.getPrice(),
+                saved.getSeatNumber(),
+                saved.getSeatStatus()
+                );
+    }
+
+    
+
+    public SeatResponseDTO getSeatById(long id) {
         Optional<Seat> s = seatRepository.findById(id);
         if(s.isPresent() && s.get() instanceof Seat seat) {
             return new SeatResponseDTO(seat.getSeatId(), seat.getFlight().getFlightId(), seat.getSeatClass(), seat.getPrice(), seat.getSeatNumber(), seat.getSeatStatus()); 
@@ -69,7 +73,7 @@ public class SeatServiceImpl {
     }
 
    
-    public List<SeatResponseDTO> viewAllSeats() {
+    public List<SeatResponseDTO> getAllSeats() {
         return seatRepository.findAll().stream()
                 .map(f -> new SeatResponseDTO(
 
@@ -82,12 +86,54 @@ public class SeatServiceImpl {
                 )).collect(Collectors.toList());
     }
 
+    
+    @Transactional
+    public SeatResponseDTO updateSeat(long id, SeatRequestDTO dto) {
+        Optional<Seat> optionalSeat = seatRepository.findById(id);
 
-    public void deleteSeat(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteSeat'");
+        if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seatToUpdate) {
+            // set attributes for seat
+            
+       
+            Optional<Flight> f = flightRepository.findById(dto.getFlightId());
+            Flight flight = null;
+            if (f.isPresent()) {
+                flight = f.get();
+
+            }
+            seatToUpdate.setSeatClass(dto.getSeatClass());
+            seatToUpdate.setPrice(dto.getPrice());
+            seatToUpdate.setSeatNumber(dto.getSeatNumber());
+            seatToUpdate.setSeatStatus(dto.getSeatStatus());
+            seatToUpdate.setFlight(flight);
+
+        
+            Seat updated = seatRepository.save(seatToUpdate);
+
+            return new SeatResponseDTO(
+                    updated.getSeatId(),
+                    updated.getFlight().getFlightId(),
+                    updated.getSeatClass(),
+                    updated.getPrice(),
+                    updated.getSeatNumber(),
+                    updated.getSeatStatus()
+            );
+    } else {
+        throw new IllegalArgumentException("No Seat found with ID " + id);
+    }
     }
 
+    @Transactional
+    public void deleteSeat(long id) {
+        Optional<Seat> optionalSeat = seatRepository.findById(id);
+        if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seat) {
+            seatRepository.delete(seat);
+        } else {
+            throw new IllegalArgumentException("No Seat found with ID " + id);
+        }
+    }
+
+ 
 
 
 }

@@ -1,26 +1,30 @@
-package ca.mcgill.esce321.flightManagement.Dto.request;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
 import java.time.LocalDateTime;
 
 public class FlightRequestDTO {
 
     private int capacity;
-    private int seatsRemaining;
-    private int delayHours;
-    private LocalDateTime departTime;
-    private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
+    private LocalDateTime departTime;     
+    private LocalDateTime arrivalTime;    
     private String departLocation;
     private String arrivalLocation;
-    private String flightNumber;
-    private double flightTime;
+    private int flightNumber;             
+    private int flightTime;               
     private boolean isRecurring;
-    private boolean isActive;
+    private Boolean isActive;             
+    private Integer delayInHours;        
 
     public FlightRequestDTO() {}
 
-    public FlightRequestDTO(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                            String flightNumber, double flightTime, boolean isRecurring) {
+    public FlightRequestDTO(int capacity,
+                            LocalDateTime expectedDepartTime,
+                            String departLocation,
+                            String arrivalLocation,
+                            int flightNumber,
+                            int flightTime,
+                            boolean isRecurring) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;

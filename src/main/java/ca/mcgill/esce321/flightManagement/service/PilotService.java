@@ -3,16 +3,18 @@ package ca.mcgill.esce321.flightManagement.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.PilotResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import jakarta.transaction.Transactional;
-
-
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.Manager;
@@ -34,17 +36,17 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import java.util.List;
 
-public interface PilotService {
-    Pilot createPilot(PilotRequestDTO dto);
-    Pilot getPilotById(Long id);
-    List<Pilot> getAllPilots();
-    Pilot updatePilot(Long id, PilotRequestDTO dto);
-    void deletePilot(Long id);
-}
+// public interface PilotService {
+//     Pilot createPilot(PilotRequestDTO dto); V
+//     Pilot getPilotById(Long id); V
+//     List<Pilot> getAllPilots(); V
+//     Pilot updatePilot(Long id, PilotRequestDTO dto); V
+//     void deletePilot(Long id); V
+// }
 
 @Service
 @Validated
@@ -75,7 +77,7 @@ public class PilotService {
                 );
     }
 
-    public PilotResponseDTO findPilotById(long id) {
+    public PilotResponseDTO getPilotById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
      
@@ -94,7 +96,7 @@ public class PilotService {
         }
     }
 
-     public List<PilotResponseDTO> findAllPilots() {
+     public List<PilotResponseDTO> getAllPilots() {
         List<Person> allPersons = personRepository.findAll();
         List<PilotResponseDTO> allPilots = new ArrayList<>();
         for (Person p : allPersons) {

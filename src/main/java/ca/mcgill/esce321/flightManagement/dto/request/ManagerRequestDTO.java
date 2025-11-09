@@ -1,8 +1,10 @@
-package ca.mcgill.esce321.flightManagement.Dto.request;
+package ca.mcgill.esce321.flightManagement.dto.request;
 
-import ca.mcgill.esce321.flightManagement.Dto.response.EmployeeResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
 
 import java.util.List;
+
+import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
 
 public class ManagerRequestDTO extends EmployeeRequestDTO {
 

@@ -1,10 +1,13 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.*;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
 import jakarta.transaction.Transactional;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 

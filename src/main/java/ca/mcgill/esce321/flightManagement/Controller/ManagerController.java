@@ -1,11 +1,11 @@
-package ca.mcgill.esce321.flightManagement.Controller; // <- keep consistent with your folders
+package ca.mcgill.esce321.flightManagement.controller; // <- keep consistent with your folders
 
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.BookingResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
 import ca.mcgill.esce321.flightManagement.service.ManagerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

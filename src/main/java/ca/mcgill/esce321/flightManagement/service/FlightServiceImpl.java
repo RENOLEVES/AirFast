@@ -1,154 +1,118 @@
-package ca.mcgill.ecse321.flightManagement.service;
+package ca.mcgill.esce321.flightManagement.service;
 
-// to be implemented:
-// import ca.mcgill.ecse321.flightManagement.dto.FlightCreateDTO;
-// import ca.mcgill.ecse321.flightManagement.dto.FlightUpdateDTO;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import ca.mcgill.esce321.flightManagement.Dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.Dto.response.FlightResponseDTO;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-
-
-import ca.mcgill.esce321.flightManagement.model.Booking;
-import ca.mcgill.esce321.flightManagement.model.BookingStatus;
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
-import ca.mcgill.esce321.flightManagement.model.FlightStatus;
-import ca.mcgill.esce321.flightManagement.repo.BookingRepository; 
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-package ca.mcgill.ecse321.flightManagement.service;
 
 @Service
-public class FlightServiceImpl implements FlightService { ... }
+@Validated
+public class FlightServiceImpl {
 
+    private final FlightRepository flightRepository;
 
-
-@Service
-public class FlightServiceImpl implements FlightService {
-
-
-    Flight createFlight(FlightRequestDTO dto);
-    Flight getFlightById(Long id);
-    List<Flight> getAllFlights();
-    Flight updateFlight(Long id, FlightRequestDTO dto);
-    void deleteFlight(Long id);
-
-    private final FlightRepository flightRepo;
-    private final BookingRepository bookingRepo;
-
-    public FlightServiceImpl(FlightRepository flightRepo, BookingRepository bookingRepo) {
-        this.flightRepo = flightRepo;
-        this.bookingRepo = bookingRepo;
+    public FlightServiceImpl(FlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
     }
 
-    // ---------- CREATE ----------
-
-    @Override
+    // --------- CREATE ----------
     @Transactional
-    public Flight create(FlightCreateDTO d) {
-        require(d.flightNumber(), "flightNumber");
-        require(d.departLocation(), "departLocation");
-        require(d.arrivalLocation(), "arrivalLocation");
-        Objects.requireNonNull(d.departTime(), "departTime is required");
-        Objects.requireNonNull(d.arriveTime(), "arriveTime is required");
-        Objects.requireNonNull(d.capacity(), "capacity is required");
-
-        // Optional: reject duplicate (same number + departTime) if you add this finder to repo
-        // if (flightRepo.existsByFlightNumberAndDepartTime(d.flightNumber(), d.departTime()))
-        //     throw new IllegalArgumentException("Duplicate flightNumber for same departure time");
-
-        Flight f = new Flight();
-        f.setFlightNumber(d.flightNumber());
-        f.setDepartLocation(d.departLocation());
-        f.setArrivalLocation(d.arrivalLocation());
-        f.setDepartTime(d.departTime());
-        f.setArriveTime(d.arriveTime());
-        f.setCapacity(d.capacity());
-        f.setStatus(FlightStatus.SCHEDULED);
-        return flightRepo.save(f);
-    }
-
-    // ---------- UPDATE ------------
-
-    @Override
-    @Transactional
-    public Flight update(Long id, FlightUpdateDTO d) {
-        Flight f = flightRepo.findById(id).orElseThrow(() -> notFound(id));
-
-        if (d.flightNumber() != null) f.setFlightNumber(d.flightNumber());
-        if (d.departLocation() != null) f.setDepartLocation(d.departLocation());
-        if (d.arrivalLocation() != null) f.setArrivalLocation(d.arrivalLocation());
-        if (d.departTime() != null) f.setDepartTime(d.departTime());
-        if (d.arriveTime() != null) f.setArriveTime(d.arriveTime());
-
-        if (d.capacity() != null) {
-            // Safety: do not shrink below current active bookings (confirmed+waitlist)
-            int currentActive = bookingRepo.countActiveByFlight(id); // see repo helper below
-            if (d.capacity() < currentActive) {
-                throw new IllegalArgumentException("Cannot set capacity below current active bookings (" + currentActive + ")");
-            }
-            f.setCapacity(d.capacity());
+    public FlightResponseDTO createFlight(FlightRequestDTO dto) {
+        Flight f = new Flight(
+                dto.getCapacity(),
+                dto.getExpectedDepartTime(),
+                dto.getDepartLocation(),
+                dto.getArrivalLocation(),
+                dto.getFlightNumber(),
+                dto.getFlightTime(),
+                dto.isRecurring()
+        );
+        f.setDepartTime(dto.getDepartTime());
+        f.setArrivalTime(dto.getArrivalTime());
+        f.setActive(dto.isActive());
+        // seatsRemaining typically starts at capacity (until bookings reduce it)
+        if (dto.getSeatsRemaining() > 0) {
+            f.setSeatsRemaining(dto.getSeatsRemaining());
+        } else {
+            f.setSeatsRemaining(dto.getCapacity());
         }
+        f.setDelayInHours(dto.getDelayHours());
 
-        return f; // managed entity; will be flushed by @Transactional
+        Flight saved = flightRepository.save(f);
+        return toResponse(saved);
     }
 
-    // ---------- DELETE (airline cancel) ----------
+    // --------- READ ----------
+    public FlightResponseDTO getFlightById(long id) {
+        Flight f = flightRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
+        return toResponse(f);
+    }
 
-    @Override
+    public List<FlightResponseDTO> getAllFlights() {
+        return flightRepository.findAll().stream()
+            .map(this::toResponse)
+            .collect(Collectors.toList());
+    }
+
+    // --------- UPDATE ----------
     @Transactional
-    public void delete(Long id) {
-        Flight f = flightRepo.findById(id).orElseThrow(() -> notFound(id));
-        // mark flight as cancelled
-        f.setStatus(FlightStatus.CANCELLED);
+    public FlightResponseDTO updateFlight(long id, FlightRequestDTO dto) {
+        Flight f = flightRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
 
-        // cascade effect on bookings (CANCELLED_BY_AIRLINE), but keep history
-        List<Booking> bookings = bookingRepo.findByFlight(f);
-        for (Booking b : bookings) {
-            if (b.getBookingStatus() != BookingStatus.CANCELLED_BY_CUSTOMER) {
-                b.setBookingStatus(BookingStatus.CANCELLED_BY_AIRLINE);
-            }
-        }
+        // map fields one-by-one to avoid null overwrites
+        f.setCapacity(dto.getCapacity());
+        f.setExpectedDepartTime(dto.getExpectedDepartTime());
+        f.setDepartLocation(dto.getDepartLocation());
+        f.setArrivalLocation(dto.getArrivalLocation());
+        f.setFlightNumber(dto.getFlightNumber());
+        f.setFlightTime(dto.getFlightTime());
+        f.setRecurring(dto.isRecurring());
+        f.setActive(dto.isActive());
+
+        if (dto.getDepartTime() != null) f.setDepartTime(dto.getDepartTime());
+        if (dto.getArrivalTime() != null) f.setArrivalTime(dto.getArrivalTime());
+        if (dto.getSeatsRemaining() > 0) f.setSeatsRemaining(dto.getSeatsRemaining());
+        f.setDelayInHours(dto.getDelayHours());
+
+        Flight saved = flightRepository.save(f);
+        return toResponse(saved);
     }
 
-    // ---------- READ ----------
-
-    @Override
-    public Flight get(Long id) {
-        return flightRepo.findById(id).orElseThrow(() -> notFound(id));
-    }
-
-    @Override
-    public List<Flight> search(String from, String to, LocalDate date) {
-        // Implemented as a custom JPQL query in FlightRepository
-        return flightRepo.search(from, to, date);
-    }
-
-    // ---------- DELAY ----------
-
-    @Override
+    // --------- DELETE ----------
     @Transactional
-    public Flight delay(Long id, Duration delay) {
-        Flight f = flightRepo.findById(id).orElseThrow(() -> notFound(id));
-        f.setDepartTime(f.getDepartTime().plus(delay));
-        f.setArriveTime(f.getArriveTime().plus(delay));
-        f.setStatus(FlightStatus.DELAYED);
-        return f;
+    public void deleteFlight(long id) {
+        Optional<Flight> opt = flightRepository.findById(id);
+        if (opt.isEmpty()) throw new IllegalArgumentException("No Flight with ID " + id);
+        flightRepository.delete(opt.get());
     }
 
-    // ---------- helpers ----------
-
-    private static void require(String s, String field) {
-        if (s == null || s.isBlank()) throw new IllegalArgumentException(field + " is required");
-    }
-
-    private static IllegalArgumentException notFound(Long id) {
-        return new IllegalArgumentException("Flight " + id + " not found");
+    // --------- mapper ----------
+    private FlightResponseDTO toResponse(Flight f) {
+        return new FlightResponseDTO(
+            f.getFlightId(),
+            f.getCapacity(),
+            f.getSeatsRemaining(),
+            f.getDepartTime(),
+            f.getArrivalTime(),
+            f.getExpectedDepartTime(),
+            f.getDepartLocation(),
+            f.getArrivalLocation(),
+            f.getFlightNumber(),
+            f.getFlightTime(),
+            f.isRecurring(),
+            f.isActive()
+        );
     }
 }
+
+
