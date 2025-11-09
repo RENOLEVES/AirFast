@@ -12,19 +12,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-package ca.mcgill.esce321.flightManagement.service;
 
 import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 import java.util.List;
 
-public interface OwnerService {
-    Owner createOwner(OwnerRequestDTO dto);
-    Owner getOwnerById(Long id);
-    List<Owner> getAllOwners();
-    Owner updateOwner(Long id, OwnerRequestDTO dto);
-    void deleteOwner(Long id);
-}
+// public interface OwnerService {
+//     Owner createOwner(OwnerRequestDTO dto);
+//     Owner getOwnerById(Long id);
+//     List<Owner> getAllOwners();  --- do we need this...
+//     Owner updateOwner(Long id, OwnerRequestDTO dto);
+//     void deleteOwner(Long id);
+// }
 
 @Service
 @Validated

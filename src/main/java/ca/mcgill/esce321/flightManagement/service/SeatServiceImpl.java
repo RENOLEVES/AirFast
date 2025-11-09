@@ -28,19 +28,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
-package ca.mcgill.esce321.flightManagement.service;
 
 import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import java.util.List;
 
-public interface SeatServiceImpl {
-    Seat createSeat(SeatRequestDTO dto);
-    Seat getSeatById(Long id);
-    List<Seat> getAllSeats();
-    Seat updateSeat(Long id, SeatRequestDTO dto);
-    void deleteSeat(Long id);
-}
+//TODO: implement all
+// public interface SeatServiceImpl {
+//     Seat createSeat(SeatRequestDTO dto);
+//     Seat getSeatById(Long id);
+//     List<Seat> getAllSeats();
+//     Seat updateSeat(Long id, SeatRequestDTO dto);
+//     void deleteSeat(Long id);
+// }
 
 
 

@@ -1,4 +1,4 @@
-package ca.mcgill.ecse321.flightManagement.service;
+package ca.mcgill.esce321.flightManagement.service;
 
 // to be implemented:
 // import ca.mcgill.ecse321.flightManagement.dto.FlightCreateDTO;
@@ -22,10 +22,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-package ca.mcgill.ecse321.flightManagement.service;
 
-@Service
-public class FlightServiceImpl implements FlightService { ... }
+
 
 
 
