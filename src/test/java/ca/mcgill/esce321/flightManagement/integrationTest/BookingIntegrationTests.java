@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.integration;
+package ca.mcgill.esce321.flightManagement.integrationTest;
 
 import ca.mcgill.esce321.flightManagement.dto.request.BookingRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;

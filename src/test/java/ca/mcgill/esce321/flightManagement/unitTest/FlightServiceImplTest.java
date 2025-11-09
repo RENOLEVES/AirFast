@@ -1,4 +1,4 @@
-package ca.mcgill.esce321.flightManagement.service;
+package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
