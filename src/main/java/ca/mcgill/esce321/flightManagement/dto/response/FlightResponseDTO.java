@@ -7,33 +7,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlightResponseDTO {
-
+    
     private Long flightId;
     private int capacity;
-    private int seatsRemaining;
-    private int delayHours;
+    private int seatsRemaining;           // derived
+    private int delayInHours;
     private LocalDateTime departTime;
     private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private String flightNumber;
-    private double flightTime;
+    private int flightNumber;
+    private int flightTime;               // minutes
     private boolean isRecurring;
     private boolean isActive;
-
-    private List<Seat> seats = new ArrayList<>();
-
+    private FlightStatus status;          // was missed
 
     public FlightResponseDTO() {}
 
     public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining,
+                             int delayInHours,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
-                             String departLocation, String arrivalLocation, String flightNumber, double flightTime,
-                             boolean isRecurring, boolean isActive) {
+                             String departLocation, String arrivalLocation,
+                             int flightNumber, int flightTime,
+                             boolean isRecurring, boolean isActive,
+                             FlightStatus status) {
         this.flightId = flightId;
         this.capacity = capacity;
         this.seatsRemaining = seatsRemaining;
+        this.delayInHours = delayInHours;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.expectedDepartTime = expectedDepartTime;
@@ -43,6 +45,7 @@ public class FlightResponseDTO {
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
         this.isActive = isActive;
+        this.status = status;
     }
 
     // Getters and Setters
