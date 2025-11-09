@@ -29,6 +29,22 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.model.Seat;
+import java.util.List;
+
+//TODO: implement all
+// public interface SeatServiceImpl {
+//     Seat createSeat(SeatRequestDTO dto);
+//     Seat getSeatById(Long id);
+//     List<Seat> getAllSeats();
+//     Seat updateSeat(Long id, SeatRequestDTO dto);
+//     void deleteSeat(Long id);
+// }
+
+
+
+
 @Service
 @Validated
 public class SeatServiceImpl {
@@ -64,6 +80,12 @@ public class SeatServiceImpl {
             f.getSeatNumber(),
             f.getSeatStatus()             
                 )).collect(Collectors.toList());
+    }
+
+
+    public void deleteSeat(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteSeat'");
     }
 
 

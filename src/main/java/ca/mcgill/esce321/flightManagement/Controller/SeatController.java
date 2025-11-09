@@ -17,6 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/seats")
 @CrossOrigin(origins = "*")
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/seats")
+@CrossOrigin(origins = "*")
 
 import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
