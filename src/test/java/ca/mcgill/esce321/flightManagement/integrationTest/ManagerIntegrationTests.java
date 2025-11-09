@@ -1,4 +1,6 @@
-package ca.mcgill;
+package ca.mcgill.esce321.flightManagement.integrationTest;
+
+
 
 import static org.junit.jupiter.api.Assertions.*;
 

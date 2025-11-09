@@ -346,12 +346,16 @@ public class ManagerServiceImpl {
 
         if(type.equals("FlightAttendant")) {
             FlightAttendant f = new FlightAttendant(email, password, firstName, lastName);
+            Long e_id = System.currentTimeMillis();
+            f.setE_id(e_id);
             personRepository.save(f);
 
             
         }
         else if (type.equals("Pilot")) {
             Pilot p = new Pilot(email, password, firstName, lastName);
+            Long e_id = System.currentTimeMillis();
+            p.setE_id(e_id);
             personRepository.save(p);
 
         }
