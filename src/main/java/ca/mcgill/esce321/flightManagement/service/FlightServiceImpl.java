@@ -22,7 +22,7 @@ public class FlightServiceImpl {
         f.setCapacity(d.getCapacity());
         f.setExpectedDepartTime(d.getExpectedDepartTime());
         f.setDepartTime(d.getExpectedDepartTime());
-        f.setArrivalTime(d.getArrivalTime());       // or compute from flightTime
+        f.setArrivalTime(d.getArrivalTime());      
         f.setDepartLocation(d.getDepartLocation());
         f.setArrivalLocation(d.getArrivalLocation());
         f.setFlightNumber(d.getFlightNumber());
@@ -67,7 +67,6 @@ public class FlightServiceImpl {
             if (d.getCapacity() < active)
                 throw new IllegalArgumentException("Cannot reduce capacity below current active bookings (" + active + ").");
             f.setCapacity(d.getCapacity());
-            // seatsRemaining remains derived from bookings; don’t set from request
         }
 
         if (d.getDepartLocation() != null) f.setDepartLocation(d.getDepartLocation());
