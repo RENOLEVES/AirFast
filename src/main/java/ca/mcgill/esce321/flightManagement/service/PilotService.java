@@ -41,11 +41,11 @@ import ca.mcgill.esce321.flightManagement.model.Pilot;
 import java.util.List;
 
 // public interface PilotService {
-//     Pilot createPilot(PilotRequestDTO dto);
-//     Pilot getPilotById(Long id);
-//     List<Pilot> getAllPilots();
-//     Pilot updatePilot(Long id, PilotRequestDTO dto);
-//     void deletePilot(Long id);
+//     Pilot createPilot(PilotRequestDTO dto); V
+//     Pilot getPilotById(Long id); V
+//     List<Pilot> getAllPilots(); V
+//     Pilot updatePilot(Long id, PilotRequestDTO dto); V
+//     void deletePilot(Long id); V
 // }
 
 @Service
@@ -77,7 +77,7 @@ public class PilotService {
                 );
     }
 
-    public PilotResponseDTO findPilotById(long id) {
+    public PilotResponseDTO getPilotById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
      
@@ -96,7 +96,7 @@ public class PilotService {
         }
     }
 
-     public List<PilotResponseDTO> findAllPilots() {
+     public List<PilotResponseDTO> getAllPilots() {
         List<Person> allPersons = personRepository.findAll();
         List<PilotResponseDTO> allPilots = new ArrayList<>();
         for (Person p : allPersons) {

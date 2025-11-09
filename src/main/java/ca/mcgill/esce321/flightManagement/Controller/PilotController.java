@@ -26,9 +26,9 @@ public class PilotController {
      */
     @PostMapping
     public ResponseEntity<PilotResponseDTO> createPilot(@RequestBody PilotRequestDTO request) {
-        Pilot created = pilotService.createPilot(request);
+        PilotResponseDTO created = pilotService.createPilot(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(new PilotResponseDTO(created));
+                             .body(created);
     }
 
     /**
@@ -36,8 +36,8 @@ public class PilotController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PilotResponseDTO> getPilotById(@PathVariable Long id) {
-        Pilot pilot = pilotService.getPilotById(id);
-        return ResponseEntity.ok(new PilotResponseDTO(pilot));
+        PilotResponseDTO pilot = pilotService.getPilotById(id);
+        return ResponseEntity.ok(pilot);
     }
 
     /**
@@ -45,10 +45,7 @@ public class PilotController {
      */
     @GetMapping
     public ResponseEntity<List<PilotResponseDTO>> getAllPilots() {
-        List<Pilot> pilots = pilotService.getAllPilots();
-        List<PilotResponseDTO> dtos = pilots.stream()
-                                            .map(PilotResponseDTO::new)
-                                            .toList();
+        List<PilotResponseDTO> dtos = pilotService.getAllPilots();
         return ResponseEntity.ok(dtos);
     }
 
@@ -59,8 +56,8 @@ public class PilotController {
     public ResponseEntity<PilotResponseDTO> updatePilot(
             @PathVariable Long id,
             @RequestBody PilotRequestDTO request) {
-        Pilot updated = pilotService.updatePilot(id, request);
-        return ResponseEntity.ok(new PilotResponseDTO(updated));
+        PilotResponseDTO updated = pilotService.updatePilot(id, request);
+        return ResponseEntity.ok(updated);
     }
 
     /**
