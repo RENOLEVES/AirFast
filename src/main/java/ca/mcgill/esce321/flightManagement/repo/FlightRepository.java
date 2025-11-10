@@ -17,19 +17,19 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     Flight findByFlightId(Long flightId);
 
     // Custom search query (used for browsing flights)
-    @Query("""
-        SELECT f FROM Flight f
-        WHERE f.departLocation = :from
-          AND f.arrivalLocation = :to
-          AND DATE(f.departTime) = :date
-          AND f.status <> 'CANCELLED'
-    """)
-    List<Flight> search(
-        @Param("from") String from,
-        @Param("to") String to,
-        @Param("date") LocalDate date
-    );
+    // @Query("""
+    //     SELECT f FROM Flight f
+    //     WHERE f.departLocation = :from
+    //       AND f.arrivalLocation = :to
+    //       AND DATE(f.departTime) = :date
+    //       AND f.status <> 'CANCELLED'
+    // """)
+    // List<Flight> search(
+    //     @Param("from") String from,
+    //     @Param("to") String to,
+    //     @Param("date") LocalDate date
+    // );
 
     // Prevent duplicates (used in create)
-    boolean existsByFlightNumberAndDepartTime(String flightNumber, LocalDateTime departTime);
+    // boolean existsByFlightNumberAndDepartTime(String flightNumber, LocalDateTime departTime);
 }

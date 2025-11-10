@@ -115,6 +115,10 @@ public class BookingServiceImpl {
         return toResponse(b);
     }
 
+    public List<BookingResponseDTO> getAllBookings() {
+        return listAllBookings();
+    }
+
     /**
      * Change seat for a booking within the same flight.
      * Validates: same flight, new seat not taken, one booking per customer per flight still holds.
