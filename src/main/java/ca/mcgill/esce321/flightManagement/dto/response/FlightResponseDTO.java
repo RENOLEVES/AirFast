@@ -1,6 +1,5 @@
 package ca.mcgill.esce321.flightManagement.dto.response;
 
-import ca.mcgill.esce321.flightManagement.model.FlightStatus;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 
 import java.time.LocalDateTime;
@@ -12,34 +11,31 @@ public class FlightResponseDTO {
     private Long flightId;
     private int capacity;
     private int seatsRemaining;           // derived
-    private Integer delayHours;
+    private int delayInHours;
     private LocalDateTime departTime;
     private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-
-    private String flightNumber;
-    private double flightTime;               
-
+    private int flightNumber;
+    private int flightTime;               // minutes
     private boolean isRecurring;
-    private Boolean isActive;
-    private FlightStatus status;          
-    private List<Seat> seats = new ArrayList<>();
+    private boolean isActive;
+    private FlightStatus status;          // was missed
 
-    public FlightResponseDTO() {}
+    public FlightResponseDTO(Long long1, int i, int j, LocalDateTime localDateTime, LocalDateTime localDateTime2, LocalDateTime localDateTime3, String string, String string2, String string3, double d, boolean b, boolean c) {}
 
     public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining,
                              int delayInHours,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
                              String departLocation, String arrivalLocation,
-                             String flightNumber, double flightTime,
-                             boolean isRecurring, Boolean isActive,
+                             int flightNumber, int flightTime,
+                             boolean isRecurring, boolean isActive,
                              FlightStatus status) {
         this.flightId = flightId;
         this.capacity = capacity;
         this.seatsRemaining = seatsRemaining;
-        this.delayHours = delayInHours;
+        this.delayInHours = delayInHours;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
         this.expectedDepartTime = expectedDepartTime;
@@ -149,11 +145,11 @@ public class FlightResponseDTO {
         isRecurring = recurring;
     }
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         isActive = active;
     }
 
@@ -163,13 +159,5 @@ public class FlightResponseDTO {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
-    }
-
-    public void setStatus(FlightStatus status){
-        this.status = status;
-    }
-
-    public FlightStatus getStatus() {
-        return this.status;
     }
 }
