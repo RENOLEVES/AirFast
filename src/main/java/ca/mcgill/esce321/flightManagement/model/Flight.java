@@ -12,7 +12,7 @@ public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long flightId;
+    private Long flightId; 
 
     @ManyToMany
     @JoinTable(
@@ -49,25 +49,37 @@ public class Flight {
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
+<<<<<<< Updated upstream
     private FlightStatus flightStatus;
+=======
+    private FlightStatus status;
+
+>>>>>>> Stashed changes
     @Transient
     private HashMap<String, Integer> bookingFrequencyPerCity;
     @Transient
     private String[] bookedCities;
 
+<<<<<<< Updated upstream
     public Flight() {
     }
 
     public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
                   String flightNumber, int flightTime, boolean isRecurring) {
+=======
+    public Flight() {}   
+    public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
+                  String flightNumber, double flightTime, boolean isRecurring, Boolean isActive, FlightStatus status) {
+>>>>>>> Stashed changes
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
         this.arrivalLocation = arrivalLocation;
-        this.flightNumber = flightNumber;
-        this.flightTime = flightTime;
+        this.flightNumber = flightNumber;   // String
+        this.flightTime = flightTime;       // double
         this.isRecurring = isRecurring;
-        this.isActive = true;
+        this.isActive = true;  
+        this.status = status;
     }
 
     public Long getFlightId() {
