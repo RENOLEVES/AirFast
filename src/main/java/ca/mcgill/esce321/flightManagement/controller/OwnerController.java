@@ -22,12 +22,12 @@ public class OwnerController {
     private OwnerServiceImpl ownerService;
 
     // CREATE
-    @PostMapping("/api/owners/")
+    @PostMapping
     public ResponseEntity<OwnerResponseDTO> create(@RequestBody OwnerRequestDTO request) {
         final OwnerResponseDTO created = ownerService.createOwner(request);
         // Location header is optional but nice to have:
         return ResponseEntity
-                .created(URI.create("/api/managers/" + created.getId()))
+                .created(URI.create("/api/owners/" + created.getId()))
                 .body(created);
     }
 
@@ -54,9 +54,9 @@ public class OwnerController {
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseEntity<Void>> delete(@PathVariable("id") long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         ownerService.deleteOwner(id);
-        return ResponseEntity.ok(ResponseEntity.noContent().build());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/view/salary/{id}")
