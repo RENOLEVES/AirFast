@@ -18,5 +18,5 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
 
    
     // Prevent duplicates (used in create)
-    boolean existsByFlightNumberAndDepartTime(String flightNumber, LocalDateTime departTime);
+    // boolean existsByFlightNumberAndDepartTime(String flightNumber, LocalDateTime departTime);
 }
