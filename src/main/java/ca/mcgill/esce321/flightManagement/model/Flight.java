@@ -12,7 +12,7 @@ public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long flightId;
+    private Long flightId; 
 
     @ManyToMany
     @JoinTable(
@@ -45,29 +45,29 @@ public class Flight {
     private String departLocation;
     private String arrivalLocation;
     private String flightNumber;
-    private int flightTime;
+    private double flightTime;
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
-    private FlightStatus flightStatus;
+    private FlightStatus status;
+
     @Transient
     private HashMap<String, Integer> bookingFrequencyPerCity;
     @Transient
     private String[] bookedCities;
 
-    public Flight() {
-    }
-
+    public Flight() {}   
     public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                  String flightNumber, int flightTime, boolean isRecurring) {
+                  String flightNumber, double flightTime, boolean isRecurring, Boolean isActive, FlightStatus status) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
         this.arrivalLocation = arrivalLocation;
-        this.flightNumber = flightNumber;
-        this.flightTime = flightTime;
+        this.flightNumber = flightNumber;   // String
+        this.flightTime = flightTime;       // double
         this.isRecurring = isRecurring;
-        this.isActive = true;
+        this.isActive = true;  
+        this.status = status;
     }
 
     public Long getFlightId() {
@@ -166,11 +166,11 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 
@@ -223,11 +223,11 @@ public class Flight {
     }
 
     public FlightStatus getFlightStatus() {
-        return flightStatus;
+        return this.status;
     }
 
     public void setFlightStatus(FlightStatus flightStatus) {
-        this.flightStatus = flightStatus;
+        this.status = flightStatus;
     }
 }
 

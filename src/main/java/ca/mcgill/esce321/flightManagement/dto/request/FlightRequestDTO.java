@@ -2,22 +2,23 @@ package ca.mcgill.esce321.flightManagement.dto.request;
 
 import java.time.LocalDateTime;
 
+import ca.mcgill.esce321.flightManagement.model.FlightStatus;
+
 public class FlightRequestDTO {
 
     private int capacity;
-    private int delayHours;
-    private LocalDateTime departTime;     
-    private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
+    private LocalDateTime departTime;     
+    private LocalDateTime arrivalTime;    
     private String departLocation;
     private String arrivalLocation;
-    private String flightNumber;
-    private int flightTime;
-    private int seatsRemaining;
+    private String flightNumber;             
+    private double flightTime;               
     private boolean isRecurring;
-    private boolean isActive;
-
-
+    private Boolean isActive;             
+    private Integer delayHours;
+    private int seatsRemaining; 
+    private FlightStatus status;      
 
     public FlightRequestDTO() {}
 
@@ -26,8 +27,10 @@ public class FlightRequestDTO {
                             String departLocation,
                             String arrivalLocation,
                             String flightNumber,
-                            int flightTime,
-                            boolean isRecurring) {
+                            double flightTime,
+                            boolean isRecurring,
+                            Boolean isActive,
+                            FlightStatus status) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -35,6 +38,7 @@ public class FlightRequestDTO {
         this.flightNumber = flightNumber;
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -54,11 +58,11 @@ public class FlightRequestDTO {
         this.seatsRemaining = seatsRemaining;
     }
 
-    public int getDelayHours() {
+    public Integer getDelayHours() {
         return delayHours;
     }
 
-    public void setDelayHours(int delayHours) {
+    public void setDelayHours(Integer delayHours) {
         this.delayHours = delayHours;
     }
 
@@ -110,11 +114,11 @@ public class FlightRequestDTO {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 
@@ -126,11 +130,19 @@ public class FlightRequestDTO {
         isRecurring = recurring;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public void setStatus(FlightStatus status){
+        this.status = status;
+    }
+
+    public FlightStatus getStatus() {
+        return this.status;
     }
 }

@@ -11,19 +11,21 @@ public class FlightResponseDTO {
     
     private Long flightId;
     private int capacity;
-    private int delayHours;
+    private int seatsRemaining;           // derived
+    private Integer delayHours;
     private LocalDateTime departTime;
     private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
+
     private String flightNumber;
-    private int flightTime;               // minutes
-    private int seatsRemaining;           // derived
+    private double flightTime;               
+
     private boolean isRecurring;
-    private boolean isActive;
-    private FlightStatus status;          // was missed
-    private List<Seat> seats;
+    private Boolean isActive;
+    private FlightStatus status;          
+    private List<Seat> seats = new ArrayList<>();
 
     public FlightResponseDTO() {}
 
@@ -31,8 +33,8 @@ public class FlightResponseDTO {
                              int delayInHours,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
                              String departLocation, String arrivalLocation,
-                             String flightNumber, int flightTime,
-                             boolean isRecurring, boolean isActive,
+                             String flightNumber, double flightTime,
+                             boolean isRecurring, Boolean isActive,
                              FlightStatus status) {
         this.flightId = flightId;
         this.capacity = capacity;
@@ -131,11 +133,11 @@ public class FlightResponseDTO {
         this.flightNumber = flightNumber;
     }
 
-    public int getFlightTime() {
+    public double getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(int flightTime) {
+    public void setFlightTime(double flightTime) {
         this.flightTime = flightTime;
     }
 
@@ -147,11 +149,11 @@ public class FlightResponseDTO {
         isRecurring = recurring;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 
@@ -163,11 +165,11 @@ public class FlightResponseDTO {
         this.seats = seats;
     }
 
-    public FlightStatus getStatus() {
-        return status;
+    public void setStatus(FlightStatus status){
+        this.status = status;
     }
 
-    public void setStatus(FlightStatus status) {
-        this.status = status;
+    public FlightStatus getStatus() {
+        return this.status;
     }
 }
