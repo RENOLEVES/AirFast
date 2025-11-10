@@ -7,10 +7,7 @@ import ca.mcgill.esce321.flightManagement.dto.request.CustomerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Customer;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.Person;
-
-import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -31,18 +28,16 @@ import java.util.Optional;
 public class CustomerServiceImpl {
     //CRUD
     private final PersonRepository personRepository;
-    private final FlightRepository flightRepository;
 
 
-     CustomerServiceImpl(PersonRepository personRepository, FlightRepository flightRepository){
+     CustomerServiceImpl(PersonRepository personRepository){
         this.personRepository = personRepository;
-        this.flightRepository = flightRepository;
     }
 
 
-      public CustomerResponseDTO creatCustomer(CustomerRequestDTO dto) {
+      public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
 
-        Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber(), dto.getPoints(), dto.getTimeInFlight());
+        Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber());
         Customer saved = personRepository.save(customerToCreate);
      
         return new CustomerResponseDTO(
@@ -57,7 +52,7 @@ public class CustomerServiceImpl {
                 );
     }
 
-    public CustomerResponseDTO getCustomerById(long id) {
+    public CustomerResponseDTO findCustomerById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
      
@@ -78,7 +73,7 @@ public class CustomerServiceImpl {
         }
     }
 
-     public List<CustomerResponseDTO> getAllCustomers() {
+     public List<CustomerResponseDTO> findAllCustomers() {
         List<Person> allPersons = personRepository.findAll();
         List<CustomerResponseDTO> allCustomers = new ArrayList<>();
         for (Person p : allPersons) {
@@ -101,7 +96,7 @@ public class CustomerServiceImpl {
         return allCustomers;
     }
 
-    public CustomerResponseDTO updatePilot(long id, CustomerRequestDTO dto) {
+    public CustomerResponseDTO updateCustomer(long id, CustomerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Customer customerToUpdate) {
@@ -139,16 +134,4 @@ public class CustomerServiceImpl {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
 }
-
