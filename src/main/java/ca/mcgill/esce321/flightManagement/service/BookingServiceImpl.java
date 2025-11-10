@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,8 +19,8 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl {
 
     private final BookingRepository bookingRepository;
-    private final PersonRepository personRepository;   // used to load Customer by id
-    private final SeatRepository seatRepository;       // used to load Seat (and thus Flight)
+    private final PersonRepository personRepository;
+    private final SeatRepository seatRepository;
 
     public BookingServiceImpl(BookingRepository bookingRepository,
                               PersonRepository personRepository,
@@ -30,28 +31,19 @@ public class BookingServiceImpl {
     }
 
     // ----------------------- Create -----------------------
-
-    /**
-     * Creates a booking for a given customer and seat.
-     * Rules:
-     *  - customerId must be a Customer
-     *  - seatId must exist
-     *  - seat's flight must not already be booked by this customer (1 booking per flight per customer)
-     *  - if request.bookingStatus/paymentStatus are null, sensible defaults are applied
-     */
     @Transactional
     public BookingResponseDTO createBooking(BookingRequestDTO dto) {
         if (dto.getCustomerId() == null) throw new IllegalArgumentException("customerId is required");
         if (dto.getSeatId() == null)     throw new IllegalArgumentException("seatId is required");
 
-        // Load and validate customer
+        // Load & validate customer
         Person person = personRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new IllegalArgumentException("No person with id " + dto.getCustomerId()));
         if (!(person instanceof Customer customer)) {
             throw new IllegalArgumentException("Person " + dto.getCustomerId() + " is not a Customer");
         }
 
-        // Load and validate seat
+        // Load & validate seat (and flight)
         Seat seat = seatRepository.findById(dto.getSeatId())
                 .orElseThrow(() -> new IllegalArgumentException("No seat with id " + dto.getSeatId()));
         Flight flight = seat.getFlight();
@@ -59,19 +51,29 @@ public class BookingServiceImpl {
             throw new IllegalStateException("Seat " + seat.getSeatId() + " has no associated Flight");
         }
 
-        // Enforce: one booking per (customer, flight)
-        boolean exists = bookingRepository.existsByCustomerAndFlight(customer, flight);
-        if (exists) {
+        // One booking per (customer, flight)
+        boolean alreadyHasBookingForFlight = bookingRepository.findAll().stream().anyMatch(b ->
+                b.getCustomer() != null
+                && b.getCustomer().getId().equals(customer.getId())
+                && b.getSeat() != null
+                && b.getSeat().getFlight() != null
+                && b.getSeat().getFlight().equals(flight)
+        );
+        if (alreadyHasBookingForFlight) {
             throw new IllegalArgumentException("Customer already has a booking for this flight");
         }
 
-        // Optional: ensure seat isn't already taken by a confirmed booking
-        boolean seatTaken = bookingRepository.existsBySeatAndActive(seat);
+        // Is seat already taken by an 'active' booking? (CONFIRMED or WAITLIST)
+        boolean seatTaken = bookingRepository.findAll().stream().anyMatch(b ->
+                b.getSeat() != null
+                && b.getSeat().equals(seat)
+                && isActiveStatus(b.getBookingStatus())
+        );
         if (seatTaken) {
             throw new IllegalArgumentException("Seat is already booked");
         }
 
-        // Build entity
+        // Build & persist
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setSeat(seat);
@@ -79,13 +81,11 @@ public class BookingServiceImpl {
         booking.setPaymentStatus(dto.getPaymentStatus() != null ? dto.getPaymentStatus() : PaymentStatus.NOTPAID);
         booking.setBookingStatus(dto.getBookingStatus() != null ? dto.getBookingStatus() : BookingStatus.CONFIRMED);
 
-        // Persist
         Booking saved = bookingRepository.save(booking);
         return toResponse(saved);
     }
 
     // ----------------------- Read -----------------------
-
     public BookingResponseDTO getBookingById(Long id) {
         Booking b = bookingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + id));
@@ -93,17 +93,19 @@ public class BookingServiceImpl {
     }
 
     public List<BookingResponseDTO> listAllBookings() {
-        return bookingRepository.findAll().stream().map(this::toResponse).collect(Collectors.toList());
-    }
-
-    public List<BookingResponseDTO> listBookingsByCustomer(Long customerId) {
-        return bookingRepository.findByCustomerId(customerId).stream()
+        return bookingRepository.findAll().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    // ----------------------- Update (payment / seat change) -----------------------
+    public List<BookingResponseDTO> listBookingsByCustomer(Long customerId) {
+        return bookingRepository.findAll().stream()
+                .filter(b -> b.getCustomer() != null && b.getCustomer().getId().equals(customerId))
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 
+    // ----------------------- Update -----------------------
     @Transactional
     public BookingResponseDTO updatePaymentStatus(Long bookingId, PaymentStatus newStatus) {
         if (newStatus == null) throw new IllegalArgumentException("newStatus is required");
@@ -122,6 +124,9 @@ public class BookingServiceImpl {
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
         Seat currentSeat = b.getSeat();
+        if (currentSeat == null || currentSeat.getFlight() == null) {
+            throw new IllegalStateException("Current booking has no flight-bound seat");
+        }
         Flight flight = currentSeat.getFlight();
 
         Seat newSeat = seatRepository.findById(newSeatId)
@@ -129,21 +134,19 @@ public class BookingServiceImpl {
         if (newSeat.getFlight() == null || !newSeat.getFlight().equals(flight)) {
             throw new IllegalArgumentException("New seat must belong to the same flight");
         }
-        if (bookingRepository.existsBySeatAndActive(newSeat)) {
-            throw new IllegalArgumentException("New seat is already booked");
-        }
+
+        boolean newSeatTaken = bookingRepository.findAll().stream().anyMatch(x ->
+                x.getSeat() != null
+                && x.getSeat().equals(newSeat)
+                && isActiveStatus(x.getBookingStatus())
+        );
+        if (newSeatTaken) throw new IllegalArgumentException("New seat is already booked");
 
         b.setSeat(newSeat);
         return toResponse(b);
     }
 
-    // ----------------------- Cancel -----------------------
-
-    /**
-     * Customer cancels a booking:
-     *  - bookingStatus -> CANCELLED_BY_CUSTOMER
-     *  - Optionally promote earliest WAITLIST (same flight & seat class) to CONFIRMED
-     */
+    // ----------------------- Cancel & Waitlist Promotion -----------------------
     @Transactional
     public void cancelByCustomer(Long bookingId) {
         Booking b = bookingRepository.findById(bookingId)
@@ -151,28 +154,38 @@ public class BookingServiceImpl {
 
         b.setBookingStatus(BookingStatus.CANCELLED_BY_CUSTOMER);
 
-        // Promote earliest waitlist (FIFO) for same flight & class
         Seat releasedSeat = b.getSeat();
-        if (releasedSeat != null) {
-            Flight flight = releasedSeat.getFlight();
-            SeatClass clazz = releasedSeat.getSeatClass();
+        if (releasedSeat == null || releasedSeat.getFlight() == null) return;
 
-            Optional<Booking> next = bookingRepository.findFirstWaitlistFIFO(flight, clazz);
-            if (next.isPresent()) {
-                Booking nb = next.get();
-                nb.setSeat(releasedSeat); // assign the freed seat
-                nb.setBookingStatus(BookingStatus.CONFIRMED);
-                // payment status stays as-is (your business rule may require re-payment confirmation)
-            }
+        Flight flight = releasedSeat.getFlight();
+        SeatClass clazz = releasedSeat.getSeatClass();
+
+        // Earliest WAITLIST for same flight & class (FIFO by bookingDate)
+        Optional<Booking> next = bookingRepository.findAll().stream()
+                .filter(x ->
+                        x.getBookingStatus() == BookingStatus.WAITLIST
+                        && x.getSeat() != null
+                        && x.getSeat().getFlight() != null
+                        && x.getSeat().getFlight().equals(flight)
+                        && x.getSeat().getSeatClass() == clazz
+                )
+                .min(Comparator.comparing(Booking::getBookingDate));
+
+        if (next.isPresent()) {
+            Booking nb = next.get();
+            nb.setSeat(releasedSeat);
+            nb.setBookingStatus(BookingStatus.CONFIRMED);
         }
     }
 
-    // ----------------------- Mapping -----------------------
+    // ----------------------- Helpers -----------------------
+    private boolean isActiveStatus(BookingStatus s) {
+        return s == BookingStatus.CONFIRMED || s == BookingStatus.WAITLIST;
+    }
 
     private BookingResponseDTO toResponse(Booking b) {
         Long customerId = (b.getCustomer() != null) ? b.getCustomer().getId() : null;
         Long seatId = (b.getSeat() != null) ? b.getSeat().getSeatId() : null;
-
         return new BookingResponseDTO(
                 b.getBookingId(),
                 customerId,
@@ -183,3 +196,4 @@ public class BookingServiceImpl {
         );
     }
 }
+

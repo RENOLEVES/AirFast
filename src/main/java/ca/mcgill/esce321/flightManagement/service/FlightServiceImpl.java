@@ -26,6 +26,7 @@ public class FlightServiceImpl {
     // --------- CREATE ----------
     @Transactional
     public FlightResponseDTO createFlight(FlightRequestDTO dto) {
+        // Use the 7-arg ctor (no status)
         Flight f = new Flight(
                 dto.getCapacity(),
                 dto.getExpectedDepartTime(),
@@ -33,23 +34,31 @@ public class FlightServiceImpl {
                 dto.getArrivalLocation(),
                 dto.getFlightNumber(),
                 dto.getFlightTime(),
-                dto.isRecurring(),
-                dto.getStatus()
+                dto.isRecurring(), null, null
         );
-        f.setDepartTime(dto.getDepartTime());
-        f.setArrivalTime(dto.getArrivalTime());
-        f.setActive(dto.isActive());
-        // seatsRemaining typically starts at capacity (until bookings reduce it)
+
+        if (dto.getDepartTime() != null)  f.setDepartTime(dto.getDepartTime());
+        if (dto.getArrivalTime() != null) f.setArrivalTime(dto.getArrivalTime());
+
+        // Active default: true unless explicitly set
+        f.setActive(dto.isActive() != null ? dto.isActive() : true);
+
+        // Seats remaining default: capacity unless positive value provided
         if (dto.getSeatsRemaining() > 0) {
             f.setSeatsRemaining(dto.getSeatsRemaining());
         } else {
             f.setSeatsRemaining(dto.getCapacity());
         }
+
+        // Delay (nullable in request)
         if (dto.getDelayHours() != null) {
             f.setDelayHours(dto.getDelayHours());
         }
-        f.setStatus(dto.setStatus());
 
+        // Status (nullable in request; set only if provided)
+        if (dto.getStatus() != null) {
+            f.setFlightStatus(dto.getStatus());  
+        }
 
         Flight saved = flightRepository.save(f);
         return toResponse(saved);
@@ -58,23 +67,23 @@ public class FlightServiceImpl {
     // --------- READ ----------
     public FlightResponseDTO getFlightById(long id) {
         Flight f = flightRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
+                .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
         return toResponse(f);
     }
 
     public List<FlightResponseDTO> getAllFlights() {
         return flightRepository.findAll().stream()
-            .map(this::toResponse)
-            .collect(Collectors.toList());
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
     // --------- UPDATE ----------
     @Transactional
     public FlightResponseDTO updateFlight(long id, FlightRequestDTO dto) {
         Flight f = flightRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
+                .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
 
-        // map fields one-by-one to avoid null overwrites
+        // Required-ish fields (overwrite)
         f.setCapacity(dto.getCapacity());
         f.setExpectedDepartTime(dto.getExpectedDepartTime());
         f.setDepartLocation(dto.getDepartLocation());
@@ -82,18 +91,14 @@ public class FlightServiceImpl {
         f.setFlightNumber(dto.getFlightNumber());
         f.setFlightTime(dto.getFlightTime());
         f.setRecurring(dto.isRecurring());
-        f.setActive(dto.isActive());
-        if (dto.getStatus() != null) {
-            f.setStatus(dto.getStatus());
-        }
 
-        if (dto.getDepartTime() != null) f.setDepartTime(dto.getDepartTime());
+        // Optional fields (null-safe)
+        if (dto.isActive() != null) f.setActive(dto.isActive());
+        if (dto.getDepartTime() != null)  f.setDepartTime(dto.getDepartTime());
         if (dto.getArrivalTime() != null) f.setArrivalTime(dto.getArrivalTime());
-        if (dto.getSeatsRemaining() > 0) f.setSeatsRemaining(dto.getSeatsRemaining());
-        if (dto.getDelayHours() != null) {
-            f.setDelayHours(dto.getDelayHours());
-        }
-
+        if (dto.getSeatsRemaining() > 0)  f.setSeatsRemaining(dto.getSeatsRemaining());
+        if (dto.getDelayHours() != null)  f.setDelayHours(dto.getDelayHours());
+        if (dto.getStatus() != null)      f.setFlightStatus(dto.getStatus());
 
         Flight saved = flightRepository.save(f);
         return toResponse(saved);
@@ -107,27 +112,25 @@ public class FlightServiceImpl {
         flightRepository.delete(opt.get());
     }
 
-    // --------- mapper ----------
+    // --------- MAPPER ----------
     private FlightResponseDTO toResponse(Flight f) {
-        Integer delay = (f.getDelayHours() != null) ? f.getDelayHours() : 0; // if entity uses Integer
+        int delay = f.getDelayHours();  // no null check for primitive
 
         return new FlightResponseDTO(
-            f.getFlightId(),
-            f.getCapacity(),
-            f.getSeatsRemaining(),
-            delay,                              // int delayInHours
-            f.getDepartTime(),
-            f.getArrivalTime(),
-            f.getExpectedDepartTime(),
-            f.getDepartLocation(),
-            f.getArrivalLocation(),
-            f.getFlightNumber(),                // String
-            f.getFlightTime(),                  // double
-            f.isRecurring(),                    // boolean
-            f.isActive(),                       // auto-boxes to Boolean
-            f.getStatus()                       // FlightStatus
-            );
+                f.getFlightId(),
+                f.getCapacity(),
+                f.getSeatsRemaining(),
+                delay,
+                f.getDepartTime(),
+                f.getArrivalTime(),
+                f.getExpectedDepartTime(),
+                f.getDepartLocation(),
+                f.getArrivalLocation(),
+                f.getFlightNumber(),
+                f.getFlightTime(),
+                f.isRecurring(),
+                f.isActive(),     // auto-boxes to Boolean
+                f.getFlightStatus()        
+                );
     }
 }
-
-
