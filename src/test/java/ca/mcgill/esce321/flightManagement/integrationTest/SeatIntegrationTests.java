@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.SeatStatus;
