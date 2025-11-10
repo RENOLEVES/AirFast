@@ -1,21 +1,33 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.*;
-import ca.mcgill.esce321.flightManagement.model.*;
-import ca.mcgill.esce321.flightManagement.repo.*;
-import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Flight;
+import ca.mcgill.esce321.flightManagement.model.Seat;
+import ca.mcgill.esce321.flightManagement.model.SeatClass;
+import ca.mcgill.esce321.flightManagement.model.SeatStatus;
+import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
+
+@SpringBootTest
 public class SeatServiceImplTest {
 
     @Mock
@@ -27,10 +39,7 @@ public class SeatServiceImplTest {
     @InjectMocks
     private SeatServiceImpl seatService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  
 
     @Test
     void testCreateSeat() {

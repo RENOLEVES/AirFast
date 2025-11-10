@@ -5,17 +5,19 @@ import java.time.LocalDateTime;
 public class FlightRequestDTO {
 
     private int capacity;
-    private LocalDateTime expectedDepartTime;
+    private int delayHours;
     private LocalDateTime departTime;     
-    private LocalDateTime arrivalTime;    
+    private LocalDateTime arrivalTime;
+    private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private int flightNumber;             
-    private int flightTime;               
+    private String flightNumber;
+    private int flightTime;
+    private int seatsRemaining;
     private boolean isRecurring;
-    private Boolean isActive;             
-    private Integer delayHours;
-    private int seatsRemaining;        
+    private boolean isActive;
+
+
 
     public FlightRequestDTO() {}
 
@@ -23,7 +25,7 @@ public class FlightRequestDTO {
                             LocalDateTime expectedDepartTime,
                             String departLocation,
                             String arrivalLocation,
-                            int flightNumber,
+                            String flightNumber,
                             int flightTime,
                             boolean isRecurring) {
         this.capacity = capacity;
@@ -100,15 +102,15 @@ public class FlightRequestDTO {
         this.arrivalLocation = arrivalLocation;
     }
 
-    public int getFlightNumber() {
+    public String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(int flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
-    public double getFlightTime() {
+    public int getFlightTime() {
         return flightTime;
     }
 

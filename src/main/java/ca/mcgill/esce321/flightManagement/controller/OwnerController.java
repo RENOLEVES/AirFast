@@ -1,83 +1,105 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
 import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Owner;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.service.OwnerServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/owners")
 @CrossOrigin(origins = "*")
+@Validated
 public class OwnerController {
 
     @Autowired
     private OwnerServiceImpl ownerService;
 
-    /**
-     * Create a new Owner
-     */
-    @PostMapping
-    public ResponseEntity<OwnerResponseDTO> createOwner(@RequestBody OwnerRequestDTO request) {
-        Owner created = ownerService.createOwner(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(new OwnerResponseDTO(created));
+    // CREATE
+    @PostMapping("/api/owners/")
+    public ResponseEntity<OwnerResponseDTO> create(@RequestBody OwnerRequestDTO request) {
+        final OwnerResponseDTO created = ownerService.createOwner(request);
+        // Location header is optional but nice to have:
+        return ResponseEntity
+                .created(URI.create("/api/managers/" + created.getId()))
+                .body(created);
     }
 
-    /**
-     * Get an Owner by ID
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<OwnerResponseDTO> getOwnerById(@PathVariable Long id) {
-        Owner owner = ownerService.getOwnerById(id);
-        return ResponseEntity.ok(new OwnerResponseDTO(owner));
-    }
-
-    /**
-     * Get all Owners
-     */
+    // READ all
     @GetMapping
-    public ResponseEntity<List<OwnerResponseDTO>> getAllOwners() {
-        List<Owner> owners = ownerService.getAllOwners();
-        List<OwnerResponseDTO> dtos = owners.stream()
-                                            .map(OwnerResponseDTO::new)
-                                            .toList();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<List<OwnerResponseDTO>> getOwner() {
+        List<OwnerResponseDTO> owners = ownerService.findOwner();
+        return ResponseEntity.ok(owners);
     }
 
-    /**
-     * Update an Owner’s information
-     */
+    // READ one
+    @GetMapping("/{id}")
+    public ResponseEntity<OwnerResponseDTO> getById(@PathVariable("id") long id) {
+
+        return ResponseEntity.ok(ownerService.findOwnerById(id));
+    }
+
+    // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<OwnerResponseDTO> updateOwner(
-            @PathVariable Long id,
-            @RequestBody OwnerRequestDTO request) {
-        Owner updated = ownerService.updateOwner(id, request);
-        return ResponseEntity.ok(new OwnerResponseDTO(updated));
+    public ResponseEntity<OwnerResponseDTO> update(@PathVariable("id") long id,
+                                                   @RequestBody OwnerRequestDTO request) {
+        return ResponseEntity.ok(ownerService.updateOwner(id, request));
     }
 
-    /**
-     * Delete an Owner by ID
-     */
+    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOwner(@PathVariable Long id) {
+    public ResponseEntity<ResponseEntity<Void>> delete(@PathVariable("id") long id) {
         ownerService.deleteOwner(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ResponseEntity.noContent().build());
     }
 
-    /**
-     * Handle invalid or missing data gracefully
-     */
+    @GetMapping("/view/salary/{id}")
+    public ResponseEntity<Double> viewSalary(@PathVariable("id") long id) {
+        return ResponseEntity.ok(ownerService.viewSalary(id));
+    }
+
+    @GetMapping("/view/revenue")
+    public ResponseEntity<Double> viewRevenue() {
+        return ResponseEntity.ok(ownerService.calculateTotalRevenue());
+    }
+
+    @GetMapping("/view/customer")
+    public ResponseEntity<List<CustomerResponseDTO>> viewCustomer() {
+        return ResponseEntity.ok(ownerService.viewAllCustomers());
+    }
+
+    @GetMapping("/view/employee")
+    public ResponseEntity<List<EmployeeResponseDTO>> viewEmployee() {
+        return ResponseEntity.ok(ownerService.viewAllEmployees());
+    }
+
+    @GetMapping("/view/flight")
+    public ResponseEntity<List<FlightResponseDTO>> viewFlight() {
+        return ResponseEntity.ok(ownerService.viewAllFlights());
+    }
+
+    @GetMapping("/view/seat")
+    public ResponseEntity<List<SeatResponseDTO>> viewSeat() {
+        return ResponseEntity.ok(ownerService.viewAllSeats());
+    }
+
+    @GetMapping("/view/booking")
+    public ResponseEntity<List<BookingResponseDTO>> viewBooking() {
+        return ResponseEntity.ok(ownerService.viewAllBookings());
+    }
+
+    // Map your service's IllegalArgumentException to HTTP codes
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        String msg = ex.getMessage() == null ? "Invalid request" : ex.getMessage();
-        HttpStatus status = msg.toLowerCase().contains("not found")
+    public ResponseEntity<String> handleIllegalArg(IllegalArgumentException ex) {
+        // Use 404 if it's “not found”; otherwise 400 is fine.
+        String msg = ex.getMessage() == null ? "Bad request" : ex.getMessage();
+        HttpStatus status = msg != null && msg.toLowerCase().contains("no owner")
                 ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(status).body(msg);
     }

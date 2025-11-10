@@ -1,6 +1,5 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
@@ -8,22 +7,10 @@ import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.model.Owner;
-import java.util.List;
-
-// public interface OwnerService {
-//     Owner createOwner(OwnerRequestDTO dto);
-//     Owner getOwnerById(Long id);
-//     List<Owner> getAllOwners();  --- do we need this...
-//     Owner updateOwner(Long id, OwnerRequestDTO dto);
-//     void deleteOwner(Long id);
-// }
 
 @Service
 @Validated
@@ -141,6 +128,7 @@ public class OwnerServiceImpl{
                         f.getFlightId(),
                         f.getCapacity(),
                         f.getSeatsRemaining(),
+                        f.getDelayHours(),
                         f.getDepartTime(),
                         f.getArrivalTime(),
                         f.getExpectedDepartTime(),
@@ -149,7 +137,8 @@ public class OwnerServiceImpl{
                         f.getFlightNumber(),
                         f.getFlightTime(),
                         f.isRecurring(),
-                        f.isActive()
+                        f.isActive(),
+                        f.getFlightStatus()
                 )).collect(Collectors.toList());
     }
 
@@ -176,8 +165,14 @@ public class OwnerServiceImpl{
                         s.getSeatStatus()
                 )).collect(Collectors.toList());
     }
-    public double viewSalary(Employee employee) {
-        return employee != null ? employee.getSalary() : 0.0;
+    public double viewSalary(long id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Employee employee) {
+            return employee.getSalary();
+        } else {
+            throw new IllegalArgumentException("No employee found with ID " + id);
+        }
     }
 
     public double calculateTotalRevenue() {
@@ -197,5 +192,58 @@ public class OwnerServiceImpl{
                     return 0.0;
                 })
                 .sum();
+    }
+
+    public void deleteOwner(long id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Owner owner) {
+            personRepository.delete(owner);
+        } else {
+            throw new IllegalArgumentException("No Owner found with ID " + id);
+        }
+    }
+
+    public OwnerResponseDTO updateOwner(long id, OwnerRequestDTO dto) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Owner ownerToUpdate) {
+            ownerToUpdate.setEmail(dto.getEmail());
+            ownerToUpdate.setFirstName(dto.getFirstName());
+            ownerToUpdate.setLastName(dto.getLastName());
+            ownerToUpdate.setPassword(dto.getPassword());
+
+            Owner updated = personRepository.save(ownerToUpdate);
+
+            return new OwnerResponseDTO(
+                    updated.getId(),
+                    updated.getEmail(),
+                    updated.getPassword(),
+                    updated.getFirstName(),
+                    updated.getLastName()
+            );
+        } else {
+            throw new IllegalArgumentException("No Owner found with ID " + id);
+        }
+    }
+
+    public List<OwnerResponseDTO> findOwner() {
+        List<Person> allPersons = personRepository.findAll();
+        List<OwnerResponseDTO> owners = new ArrayList<>();
+
+        for (Person p : allPersons) {
+            if (p instanceof Owner owner) {
+
+                owners.add(new OwnerResponseDTO(
+                        owner.getId(),
+                        owner.getEmail(),
+                        owner.getPassword(),
+                        owner.getFirstName(),
+                        owner.getLastName()));
+            }
+        }
+        if(owners.isEmpty()) {
+            throw new IllegalArgumentException("There are no Managers in the database.");
+        }
+        return owners;
     }
 }
