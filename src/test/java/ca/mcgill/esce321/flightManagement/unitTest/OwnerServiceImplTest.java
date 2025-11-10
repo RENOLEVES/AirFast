@@ -274,7 +274,6 @@ public class OwnerServiceImplTest {
         when(seatRepository.findById(1L)).thenReturn(Optional.of(s1));
         when(seatRepository.findById(2L)).thenReturn(Optional.of(s2));
         when(seatRepository.findById(3L)).thenReturn(Optional.of(s3));
-
         // Call the method
         double totalRevenue = ownerService.calculateTotalRevenue();
 
