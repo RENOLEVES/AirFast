@@ -4,6 +4,7 @@ import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
+import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ class FlightServiceImplTest {
                 "LAX",
                 "AC101",
                 5.5,
-                true
+                true, null, null
         );
         baseReq.setActive(true);
     }
@@ -66,9 +67,11 @@ class FlightServiceImplTest {
 
     @Test
     void getFlightById_found() {
-        Flight f = new Flight(100,
+        Flight f = new Flight(
+                100,
                 LocalDateTime.now().plusDays(2),
-                "YUL","YYZ","AC11",3.0,true);
+                "YUL","YYZ","AC11",3.0,true
+        );
         f.setFlightId(10L);
         when(flightRepo.findById(10L)).thenReturn(Optional.of(f));
 
@@ -103,9 +106,11 @@ class FlightServiceImplTest {
 
     @Test
     void updateFlight_mapsFields() {
-        Flight existing = new Flight(90,
+        Flight existing = new Flight(
+                90,
                 LocalDateTime.now().plusDays(5),
-                "YQB","YVR","AC9",4.0,false);
+                "YQB","YVR","AC9",4.0,false
+        );
         existing.setFlightId(9L);
         existing.setSeatsRemaining(90);
 
@@ -119,7 +124,7 @@ class FlightServiceImplTest {
                 "SFO",
                 "AC100",
                 5.0,
-                true
+                true, null, null
         );
         update.setActive(true);
         update.setSeatsRemaining(150);

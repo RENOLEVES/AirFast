@@ -145,6 +145,53 @@ public class BookingServiceImpl {
         b.setSeat(newSeat);
         return toResponse(b);
     }
+    @Transactional
+    public BookingResponseDTO updateBooking(Long bookingId, BookingRequestDTO dto) {
+        Booking b = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
+
+        // Update date / payment / booking status if provided
+        if (dto.getBookingDate() != null)    b.setBookingDate(dto.getBookingDate());
+        if (dto.getPaymentStatus() != null)  b.setPaymentStatus(dto.getPaymentStatus());
+        if (dto.getBookingStatus() != null)  b.setBookingStatus(dto.getBookingStatus());
+
+        // Optional seat change (same flight, and seat must be free)
+        if (dto.getSeatId() != null) {
+            Seat currentSeat = b.getSeat();
+            if (currentSeat == null || currentSeat.getFlight() == null) {
+                throw new IllegalStateException("Current booking has no flight-bound seat");
+            }
+            Flight flight = currentSeat.getFlight();
+
+            Seat newSeat = seatRepository.findById(dto.getSeatId())
+                    .orElseThrow(() -> new IllegalArgumentException("No seat with id " + dto.getSeatId()));
+            if (newSeat.getFlight() == null || !newSeat.getFlight().equals(flight)) {
+                throw new IllegalArgumentException("New seat must belong to the same flight");
+            }
+
+            boolean newSeatTaken = bookingRepository.findAll().stream().anyMatch(x ->
+                    x.getSeat() != null
+                            && x.getSeat().equals(newSeat)
+                            && (x.getBookingStatus() == BookingStatus.CONFIRMED
+                                || x.getBookingStatus() == BookingStatus.WAITLIST)
+            );
+            if (newSeatTaken) throw new IllegalArgumentException("New seat is already booked");
+
+            b.setSeat(newSeat);
+        }
+
+        // JPA will flush on transaction end
+        return toResponse(b);
+    }
+
+    // ----------------------- Delete (used by tests) -----------------------
+    @Transactional
+    public void deleteBooking(Long bookingId) {
+        Booking b = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
+        bookingRepository.delete(b);
+    }
+
 
     // ----------------------- Cancel & Waitlist Promotion -----------------------
     @Transactional
