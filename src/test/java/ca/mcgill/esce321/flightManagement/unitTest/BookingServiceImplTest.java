@@ -6,6 +6,7 @@ import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import ca.mcgill.esce321.flightManagement.service.BookingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +38,12 @@ class BookingServiceImplTest {
     void setup() {
         customer = new Customer("a@b.com","pw","Alice","Smith", 123456);
         customer.setId(1L);
+        flight = new Flight(
+            100,
+            LocalDateTime.now().plusDays(3),
+            "YUL","YYZ","AC11",3.0, true
+        );
 
-        flight = new Flight(100,
-                LocalDateTime.now().plusDays(3),
-                "YUL","YYZ","AC11",3.0,true);
         flight.setFlightId(10L);
 
         seat = new Seat(SeatClass.ECONOMY, 199.0, "12A", SeatStatus.AVAILABLE, flight);
@@ -77,7 +80,8 @@ class BookingServiceImplTest {
     void createBooking_failsWhenCustomerAlreadyBookedSameFlight() {
         when(personRepo.findById(1L)).thenReturn(Optional.of(customer));
         when(seatRepo.findById(20L)).thenReturn(Optional.of(seat));
-        // Existing booking by same customer on a *different seat* in the same flight
+
+        // Existing booking by same customer on a different seat of the same flight
         Booking existing = new Booking();
         existing.setBookingId(77L);
         existing.setCustomer(customer);
@@ -152,7 +156,7 @@ class BookingServiceImplTest {
 
         assertThat(out.getPaymentStatus()).isEqualTo(PaymentStatus.PAID);
         assertThat(out.getBookingDate()).isEqualTo(t);
-        verify(bookingRepo, never()).save(any()); // our impl returns entity directly; save not required for simple mutation
+        verify(bookingRepo, never()).save(any()); // JPA flush via @Transactional
     }
 
     @Test
