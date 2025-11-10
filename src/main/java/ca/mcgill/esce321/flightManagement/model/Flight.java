@@ -12,7 +12,7 @@ public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long flightId;
+    private Long flightId; 
 
     @ManyToMany
     @JoinTable(
@@ -34,7 +34,7 @@ public class Flight {
     )
     private List<Pilot> pilots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private List<Seat> seats = new ArrayList<>();
 
     private int capacity;
@@ -49,14 +49,22 @@ public class Flight {
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
+    private FlightStatus status;
+
     @Transient
     private HashMap<String, Integer> bookingFrequencyPerCity;
     @Transient
     private String[] bookedCities;
 
-    public Flight(){}
-    public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                  String flightNumber, double flightTime, boolean isRecurring) {
+    public Flight() {}   
+    /** Constructor used by services/tests */
+    public Flight(int capacity,
+                LocalDateTime expectedDepartTime,
+                String departLocation,
+                String arrivalLocation,
+                String flightNumber,
+                double flightTime,
+                boolean isRecurring) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -64,7 +72,26 @@ public class Flight {
         this.flightNumber = flightNumber;
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
+
+        // sensible defaults
         this.isActive = true;
+        this.seatsRemaining = capacity;
+        this.delayHours = 0;
+    }
+
+    /** Extended ctor (optional fields provided) */
+    public Flight(int capacity,
+                LocalDateTime expectedDepartTime,
+                String departLocation,
+                String arrivalLocation,
+                String flightNumber,
+                double flightTime,
+                boolean isRecurring,
+                Boolean isActive,
+                FlightStatus status) {
+        this(capacity, expectedDepartTime, departLocation, arrivalLocation, flightNumber, flightTime, isRecurring);
+        if (isActive != null) this.isActive = isActive;
+        this.status = status;
     }
 
     public Long getFlightId() {
@@ -218,4 +245,14 @@ public class Flight {
     public void setBookedCities(String[] bookedCities) {
         this.bookedCities = bookedCities;
     }
+
+    public FlightStatus getFlightStatus() {
+        return this.status;
+    }
+
+    public void setFlightStatus(FlightStatus flightStatus) {
+        this.status = flightStatus;
+    }
 }
+
+

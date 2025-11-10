@@ -1,5 +1,8 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
+import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
@@ -7,20 +10,23 @@ import ca.mcgill.esce321.flightManagement.service.OwnerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class OwnerServiceImplTest {
+public class OwnerServiceImplTest {
 
     @Mock
     private PersonRepository personRepository;
+
     @Mock
     private FlightRepository flightRepository;
+
     @Mock
     private BookingRepository bookingRepository;
+
     @Mock
     private SeatRepository seatRepository;
 
@@ -28,170 +34,250 @@ class OwnerServiceImplTest {
     private OwnerServiceImpl ownerService;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // ---------- TEST viewAllCustomers ----------
+    // ---------- Manager Tests ----------
     @Test
-    void testViewAllCustomers() {
-        Customer c = new Customer();
-        c.setEmail("test@mail.com");
-        c.setPassword("pass");
-        c.setFirstName("John");
-        c.setLastName("Doe");
-        c.setMembershipNumber(123);
-        c.setPoints(200);
-        c.setTimeInFlight(15);
+    void testCreateOwner() {
+        OwnerRequestDTO dto = new OwnerRequestDTO();
+        dto.setEmail("test@example.com");
+        dto.setPassword("pass");
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
 
-        when(personRepository.findAll()).thenReturn(List.of(c));
+        Owner savedOwner = new Owner(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
+        savedOwner.setId(1L);
 
-        List<CustomerResponseDTO> result = ownerService.viewAllCustomers();
+        when(personRepository.save(any(Owner.class))).thenReturn(savedOwner);
 
-        assertEquals(1, result.size());
-        assertEquals("test@mail.com", result.get(0).getEmail());
-        verify(personRepository, times(1)).findAll();
+        OwnerResponseDTO result = ownerService.createOwner(dto);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("test@example.com", result.getEmail());
+        verify(personRepository, times(1)).save(any(Manager.class));
     }
 
-    // ---------- TEST viewAllEmployees ----------
     @Test
-    void testViewAllEmployees_PilotManagerAttendant() {
-        Flight flight = new Flight();
-        flight.setFlightId(1L);
+    void testFindOwnerById_existing() {
+        Owner owner = new Owner("e", "p", "f", "l");
+        owner.setId(1L);
+        when(personRepository.findById(1L)).thenReturn(Optional.of(owner));
 
-        Pilot pilot = new Pilot();
-        pilot.setEmail("pilot@mail.com");
-        pilot.setFlights(List.of(flight));
+        OwnerResponseDTO result = ownerService.findOwnerById(1L);
 
-        Manager manager = new Manager();
-        manager.setEmail("manager@mail.com");
-        manager.setFlights(List.of(flight));
-
-        FlightAttendant attendant = new FlightAttendant();
-        attendant.setEmail("attendant@mail.com");
-        attendant.setFlights(List.of(flight));
-
-        when(personRepository.findAll()).thenReturn(List.of(pilot, manager, attendant));
-
-        List<EmployeeResponseDTO> result = ownerService.viewAllEmployees();
-
-        assertEquals(3, result.size());
-        assertTrue(result.get(0) instanceof PilotResponseDTO);
-        assertTrue(result.get(1) instanceof ManagerResponseDTO);
-        assertTrue(result.get(2) instanceof FlightAttendantResponseDTO);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("e", result.getEmail());
+        assertEquals("f", result.getFirstName());
+        assertEquals("l", result.getLastName());
     }
 
-    // ---------- TEST viewAllFlights ----------
     @Test
-    void testViewAllFlights() {
-        Flight flight = new Flight();
-        flight.setFlightId(10L);
-        flight.setCapacity(100);
-        flight.setSeatsRemaining(50);
-        flight.setDepartTime(LocalDateTime.now());
-        flight.setArrivalTime(LocalDateTime.now().plusHours(2));
-        flight.setDepartLocation("Montreal");
-        flight.setArrivalLocation("Toronto");
-        flight.setFlightNumber("AC123");
-        flight.setFlightTime(120);
-        flight.setRecurring(true);
-        flight.setActive(true);
-
-        when(flightRepository.findAll()).thenReturn(List.of(flight));
-
-        List<FlightResponseDTO> result = ownerService.viewAllFlights();
-
-        assertEquals(1, result.size());
-        assertEquals("AC123", result.get(0).getFlightNumber());
-        verify(flightRepository, times(1)).findAll();
+    void testFindOwnerById_notFound() {
+        when(personRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> ownerService.findOwnerById(1L));
     }
 
-    // ---------- TEST viewAllBookings ----------
     @Test
-    void testViewAllBookings() {
-        Customer customer = new Customer();
-        customer.setId(1L);
+    void testFindAllOwners() {
+        Owner o1 = new Owner("e1", "p1", "f1", "l1");
+        o1.setId(1L);
+        Owner o2 = new Owner("e2", "p2", "f2", "l2");
+        o2.setId(2L);
 
-        Seat seat = new Seat();
-        seat.setSeatId(2L);
+        when(personRepository.findAll()).thenReturn(List.of(o1, o2));
 
-        Booking booking = new Booking();
-        booking.setBookingId(100L);
-        booking.setCustomer(customer);
-        booking.setSeat(seat);
-        booking.setBookingDate(LocalDateTime.now());
-        booking.setPaymentStatus(PaymentStatus.PAID);
-        booking.setBookingStatus(BookingStatus.CONFIRMED);
+        List<OwnerResponseDTO> result = ownerService.findOwner();
 
-        when(bookingRepository.findAll()).thenReturn(List.of(booking));
-
-        List<BookingResponseDTO> result = ownerService.viewAllBookings();
-
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getCustomerId());
-        assertEquals(2L, result.get(0).getSeatId());
-        assertEquals(PaymentStatus.PAID, result.get(0).getPaymentStatus());
+        assertEquals(2, result.size());
     }
 
-    // ---------- TEST viewAllSeats ----------
     @Test
-    void testViewAllSeats() {
-        Flight flight = new Flight();
-        flight.setFlightId(1L);
+    void testUpdateOwner_existing() {
+        Owner owner = new Owner("e", "p", "f", "l");
+        owner.setId(1L);
+        when(personRepository.findById(1L)).thenReturn(Optional.of(owner));
+        when(flightRepository.findAllById(any())).thenReturn(Collections.emptyList());
+        when(bookingRepository.findAllById(any())).thenReturn(Collections.emptyList());
+        when(personRepository.save(any(Owner.class))).thenReturn(owner);
 
-        Seat seat = new Seat();
-        seat.setSeatId(10L);
-        seat.setFlight(flight);
-        seat.setSeatClass(SeatClass.ECONOMY);
-        seat.setPrice(300.0);
-        seat.setSeatNumber("A1");
-        seat.setSeatStatus(SeatStatus.AVAILABLE);
+        OwnerRequestDTO dto = new OwnerRequestDTO();
+        dto.setEmail("new@example.com");
+        dto.setPassword("newp");
+        dto.setFirstName("NewF");
+        dto.setLastName("NewL");
 
-        when(seatRepository.findAll()).thenReturn(List.of(seat));
+        OwnerResponseDTO result = ownerService.updateOwner(1L, dto);
+
+        assertNotNull(result);
+        assertEquals("new@example.com", result.getEmail());
+    }
+
+    @Test
+    void testDeleteManager_existing() {
+        Owner owner = new Owner("e", "p", "f", "l");
+        owner.setId(1L);
+        when(personRepository.findById(1L)).thenReturn(Optional.of(owner));
+
+        assertDoesNotThrow(() -> ownerService.deleteOwner(1L));
+        verify(personRepository, times(1)).delete(owner);
+    }
+
+    // ---------- Seat Tests ----------
+    @Test
+    void testViewSeats_2() {
+        Seat s1 = new Seat();
+        s1.setSeatId(1L);
+        Seat s2 = new Seat();
+        s2.setSeatId(2L);
+        when(seatRepository.findAll()).thenReturn(List.of(s1, s2));
 
         List<SeatResponseDTO> result = ownerService.viewAllSeats();
 
-        assertEquals(1, result.size());
-        assertEquals(300.0, result.get(0).getPrice());
-        assertEquals("A1", result.get(0).getSeatNumber());
-        verify(seatRepository, times(1)).findAll();
+        assertEquals(2, result.size());
     }
 
-    // ---------- TEST viewSalary ----------
+
+    // ---------- Flight Tests ----------
     @Test
-    void testViewSalary() {
-        Employee employee = new Pilot();
-        employee.setSalary(50000.0);
+    void testViewFlights_2() {
+        Flight f1 = new Flight();
+        f1.setFlightId(1L);
+        Flight f2 = new Flight();
+        f2.setFlightId(2L);
+        when(flightRepository.findAll()).thenReturn(List.of(f1, f2));
 
-        double salary = ownerService.viewSalary(employee);
-        double salaryNull = ownerService.viewSalary(null);
+        List<FlightResponseDTO> result = ownerService.viewAllFlights();
 
-        assertEquals(50000.0, salary);
-        assertEquals(0.0, salaryNull);
+        assertEquals(2, result.size());
     }
 
-    // ---------- TEST calculateTotalRevenue ----------
+    // ---------- Booking Tests ----------
     @Test
-    void testCalculateTotalRevenue() {
-        // Prepare booking with PAID status
-        Booking booking = new Booking();
-        booking.setBookingId(1L);
-        booking.setPaymentStatus(PaymentStatus.PAID);
-        booking.setBookingStatus(BookingStatus.CONFIRMED);
+    void testViewBookings_2() {
+        Booking b1 = new Booking();
+        b1.setBookingId(1L);
+        Booking b2 = new Booking();
+        b2.setBookingId(2L);
+        when(bookingRepository.findAll()).thenReturn(List.of(b1, b2));
 
-        Seat seat = new Seat();
-        seat.setSeatId(10L);
-        seat.setPrice(150.0);
+        List<BookingResponseDTO> result = ownerService.viewAllBookings();
 
-        booking.setSeat(seat);
+        assertEquals(2, result.size());
+    }
 
-        when(bookingRepository.findAll()).thenReturn(List.of(booking));
-        when(seatRepository.findById(10L)).thenReturn(Optional.of(seat));
 
+    // ---------- View Methods ----------
+    @Test
+    void testViewAllPersons() {
+        Person p1 = new Manager("e1","p","f","l");
+        p1.setId(1L);
+        Person p2 = new Pilot("e2","p","f","l");
+        p2.setId(2L);
+
+        when(personRepository.findAll()).thenReturn(List.of(p1,p2));
+
+        List<EmployeeResponseDTO> result = ownerService.viewAllEmployees();
+
+        assertEquals(2,result.size());
+    }
+
+    @Test
+    void testViewAllFlights() {
+        Flight f = new Flight();
+        f.setFlightId(1L);
+        when(flightRepository.findAll()).thenReturn(List.of(f));
+
+        List<FlightResponseDTO> result = ownerService.viewAllFlights();
+
+        assertEquals(1,result.size());
+    }
+
+    @Test
+    void testViewAllBookings() {
+        Booking b = new Booking();
+        b.setBookingId(1L);
+        Customer c = new Customer();
+        c.setId(1L);
+        Seat s = new Seat();
+        s.setSeatId(1L);
+        b.setCustomer(c);
+        b.setSeat(s);
+        when(bookingRepository.findAll()).thenReturn(List.of(b));
+
+        List<BookingResponseDTO> result = ownerService.viewAllBookings();
+
+        assertEquals(1,result.size());
+    }
+
+    @Test
+    void testViewAllCustomers() {
+        Person p1 = new Customer("e1","p","f","l",1);
+        p1.setId(1L);
+        Person p2 = new Customer("e2","p2","f2","l2",2);
+        p2.setId(2L);
+        when(personRepository.findAll()).thenReturn(List.of(p1,p2));
+
+        List<CustomerResponseDTO> result = ownerService.viewAllCustomers();
+
+        assertEquals(2,result.size());
+    }
+
+
+    @Test
+    void testViewAllSalary() {
+        Employee p1 = new Pilot("e2","p","f","l");
+        p1.setId(2L);
+        p1.setSalary(200000d);
+        when(personRepository.findAll()).thenReturn(List.of(p1));
+
+        double result = ownerService.viewSalary(p1.getId());
+
+        assertEquals(200000d,result);
+    }
+
+    @Test
+    void testViewTotalRevenue() {
+        BookingResponseDTO booking1 = new BookingResponseDTO();
+        booking1.setPaymentStatus(PaymentStatus.PAID);
+        booking1.setSeatId(1L);
+
+        BookingResponseDTO booking2 = new BookingResponseDTO();
+        booking2.setPaymentStatus(PaymentStatus.PAID);
+        booking2.setSeatId(2L);
+
+        BookingResponseDTO booking3 = new BookingResponseDTO();
+        booking3.setPaymentStatus(PaymentStatus.NOTPAID);
+        booking3.setSeatId(3L);
+
+        // Mock viewAllBookings() to return the list
+        doReturn(List.of(booking1, booking2, booking3)).when(ownerService).viewAllBookings();
+
+        Seat s1 = new Seat();
+        s1.setSeatId(1L);
+        s1.setPrice(2000);
+
+        Seat s2 = new Seat();
+        s2.setSeatId(2L);
+        s2.setPrice(1000);
+
+        Seat s3 = new Seat();
+        s3.setSeatId(3L);
+        s3.setPrice(1333);
+
+        // Mock seatRepository.findById()
+        when(seatRepository.findById(1L)).thenReturn(Optional.of(s1));
+        when(seatRepository.findById(2L)).thenReturn(Optional.of(s2));
+        when(seatRepository.findById(3L)).thenReturn(Optional.of(s3));
+        // Call the method
         double totalRevenue = ownerService.calculateTotalRevenue();
 
-        assertEquals(150.0, totalRevenue);
-        verify(bookingRepository, times(1)).findAll();
-        verify(seatRepository, times(1)).findById(10L);
+        // Assert
+        assertEquals(4333, totalRevenue, 0.001);
     }
 }

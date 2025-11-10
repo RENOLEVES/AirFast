@@ -5,10 +5,10 @@ import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,11 +27,13 @@ public class SeatServiceImplTest {
     @InjectMocks
     private SeatServiceImpl seatService;
 
+    
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks(this); // initializes @Mock and @InjectMocks
     }
 
+    
     @Test
     void testCreateSeat() {
         Flight f = new Flight();
@@ -60,13 +62,31 @@ public class SeatServiceImplTest {
         assertEquals(s.getSeatId(), seat.getSeatId());
 
 
-        verify(seatRepository, times(1)).findAll();
+        verify(seatRepository, times(1)).findById(seatId);
         
     }
 
+     @Test
+    void createSeatFlightDoesNotExist() {
+        // Arrange
+        SeatRequestDTO dto = new SeatRequestDTO();
+        dto.setFlightId(999L); // Non-existent flight ID
+        dto.setSeatClass(SeatClass.ECONOMY);
+        dto.setPrice(100.0);
+        dto.setSeatNumber("1A");
+        dto.setSeatStatus(SeatStatus.AVAILABLE);
 
+        // Mock the repository to return empty
+        when(flightRepository.findById(999L)).thenReturn(Optional.empty());
 
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            seatService.createSeat(dto);
+        });
 
+        // Verify seatRepository.save() is never called
+        verify(seatRepository, never()).save(any());
+    }
 
 
     // ---------- TEST findSeatById ----------
@@ -98,12 +118,12 @@ public class SeatServiceImplTest {
         assertEquals(s.getSeatId(), seat.getSeatId());
 
 
-        verify(seatRepository, times(1)).findAll();
+        verify(seatRepository, times(1)).findById(seatId);
         
     }
 
     @Test
-    void testGetSeatById_NotFound() {
+    void testGetSeatByIdNotFound() {
         // Arrange
         when(seatRepository.findById(999L)).thenReturn(Optional.empty());
 
@@ -147,7 +167,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    void testUpdateSeat_Success() {
+    void testUpdateSeat() {
         // Arrange
         Flight flight = new Flight();
         flight.setFlightId(1L);
@@ -210,13 +230,8 @@ public class SeatServiceImplTest {
     }
 
 
-
-
-
-
-    
     @Test
-    void testDeleteSeat_Success() {
+    void testDeleteSeat() {
         // Arrange
         Seat seat = new Seat();
         seat.setSeatId(1L);
@@ -245,11 +260,6 @@ public class SeatServiceImplTest {
         verify(seatRepository).findById(999L);
         verify(seatRepository, never()).delete(any());
     }
-
-
-
-
-
 
 
 

@@ -3,8 +3,7 @@ package ca.mcgill.esce321.flightManagement.controller;
 
 import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Pilot;
-import ca.mcgill.esce321.flightManagement.service.PilotService;
+import ca.mcgill.esce321.flightManagement.service.PilotServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import java.util.List;
 public class PilotController {
 
     @Autowired
-    private PilotService pilotService;
+    private PilotServiceImpl pilotService;
 
     /**
      * Create a new pilot
