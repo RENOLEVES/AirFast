@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.SeatClass;
