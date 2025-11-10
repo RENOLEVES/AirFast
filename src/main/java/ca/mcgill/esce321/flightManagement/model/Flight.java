@@ -34,7 +34,7 @@ public class Flight {
     )
     private List<Pilot> pilots = new ArrayList<>();
 
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private List<Seat> seats = new ArrayList<>();
 
     private int capacity;
@@ -45,18 +45,21 @@ public class Flight {
     private String departLocation;
     private String arrivalLocation;
     private String flightNumber;
-    private double flightTime;
+    private int flightTime;
     private int seatsRemaining;
     private boolean isRecurring;
     private boolean isActive;
+    private FlightStatus flightStatus;
     @Transient
     private HashMap<String, Integer> bookingFrequencyPerCity;
     @Transient
     private String[] bookedCities;
 
-    public Flight(){}
+    public Flight() {
+    }
+
     public Flight(int capacity, LocalDateTime expectedDepartTime, String departLocation, String arrivalLocation,
-                  String flightNumber, double flightTime, boolean isRecurring) {
+                  String flightNumber, int flightTime, boolean isRecurring) {
         this.capacity = capacity;
         this.expectedDepartTime = expectedDepartTime;
         this.departLocation = departLocation;
@@ -163,11 +166,11 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public double getFlightTime() {
+    public int getFlightTime() {
         return flightTime;
     }
 
-    public void setFlightTime(double flightTime) {
+    public void setFlightTime(int flightTime) {
         this.flightTime = flightTime;
     }
 
@@ -218,4 +221,14 @@ public class Flight {
     public void setBookedCities(String[] bookedCities) {
         this.bookedCities = bookedCities;
     }
+
+    public FlightStatus getFlightStatus() {
+        return flightStatus;
+    }
+
+    public void setFlightStatus(FlightStatus flightStatus) {
+        this.flightStatus = flightStatus;
+    }
 }
+
+

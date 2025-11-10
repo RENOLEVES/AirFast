@@ -11,15 +11,15 @@ public class FlightResponseDTO {
     
     private Long flightId;
     private int capacity;
-    private int seatsRemaining;           // derived
     private int delayHours;
     private LocalDateTime departTime;
     private LocalDateTime arrivalTime;
     private LocalDateTime expectedDepartTime;
     private String departLocation;
     private String arrivalLocation;
-    private int flightNumber;
+    private String flightNumber;
     private int flightTime;               // minutes
+    private int seatsRemaining;           // derived
     private boolean isRecurring;
     private boolean isActive;
     private FlightStatus status;          // was missed
@@ -31,7 +31,7 @@ public class FlightResponseDTO {
                              int delayInHours,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
                              String departLocation, String arrivalLocation,
-                             int flightNumber, int flightTime,
+                             String flightNumber, int flightTime,
                              boolean isRecurring, boolean isActive,
                              FlightStatus status) {
         this.flightId = flightId;
@@ -123,15 +123,15 @@ public class FlightResponseDTO {
         this.arrivalLocation = arrivalLocation;
     }
 
-    public int getFlightNumber() {
+    public String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(int flightNumber) {
+    public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
-    public double getFlightTime() {
+    public int getFlightTime() {
         return flightTime;
     }
 
@@ -161,5 +161,13 @@ public class FlightResponseDTO {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public FlightStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FlightStatus status) {
+        this.status = status;
     }
 }

@@ -251,6 +251,7 @@ public class ManagerServiceImpl {
                     f.getFlightId(),
                     f.getCapacity(),
                     f.getSeatsRemaining(),
+                    f.getDelayHours(),
                     f.getDepartTime(),
                     f.getArrivalTime(),
                     f.getExpectedDepartTime(),
@@ -259,7 +260,8 @@ public class ManagerServiceImpl {
                     f.getFlightNumber(),
                     f.getFlightTime(),
                     f.isRecurring(),
-                    f.isActive()
+                    f.isActive(),
+                    f.getFlightStatus()
                 );
                 
 
@@ -390,6 +392,7 @@ public class ManagerServiceImpl {
                 f.getFlightId(),
                 f.getCapacity(),
                 f.getSeatsRemaining(),
+                f.getDelayHours(),
                 f.getDepartTime(),
                 f.getArrivalTime(),
                 f.getExpectedDepartTime(),
@@ -398,7 +401,8 @@ public class ManagerServiceImpl {
                 f.getFlightNumber(),
                 f.getFlightTime(),
                 f.isRecurring(),
-                f.isActive()
+                f.isActive(),
+                f.getFlightStatus()
         );
     }
 }
