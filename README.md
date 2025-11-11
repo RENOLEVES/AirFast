@@ -10,6 +10,16 @@ The scope is to build a **web-based airline system** that allows:
 
 All stakeholders interact with the system through a web frontend; persistence is handled by PostgreSQL with JPA/Hibernate.
 
+## Deliverables & Links to Their Documentation 
+- [Deliverable 1: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-1:-Project-Report)
+- [Deliverable 1: Technical Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-1:-Technical-Report)
+
+- [Deliverable 2: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Project-Report)
+- [Deliverable 2: Technical Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Technical-Report)
+
+- Deliverable 3 Report (to be linked)
+- Final Presentation Notes (presentation to be linked)
+
 ## Team Members
 
 | Name        | Role                  | Deliverable 1 Effort (hrs) | Deliverable 2 Effort (hrs) | Deliverable 3 Effort (hrs) | Presentation Effort (hrs) | Total (hrs) |
@@ -35,8 +45,5 @@ All stakeholders interact with the system through a web frontend; persistence is
 - Frontend: React + TypeScript  
 - CI/CD: Docker (used in some instances in build compile help & DB)
 
-## Deliverables & Links to Their Documentation 
-- Deliverable 1: Requirements, Domain Model, Persistence + Tests  
-- Deliverable 2: Backend APIs  
-- Deliverable 3: Frontend  
-- Final: Presentation & Demo
+
+
