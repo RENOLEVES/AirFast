@@ -23,8 +23,6 @@ public class FlightController {
     // ---------- CREATE ----------
     @PostMapping
     public ResponseEntity<FlightResponseDTO> create(@RequestBody FlightRequestDTO request) {
-        // If your service returns Flight, this wraps it in a Response DTO.
-        // If your service already returns FlightResponseDTO, you can just return that.
         Flight created = flightService.createFlight(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new FlightResponseDTO(created));
     }

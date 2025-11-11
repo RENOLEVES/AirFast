@@ -32,7 +32,7 @@ class FlightIntegrationTests {
                 "YYZ",
                 "AC101",
                 1.5,
-                false
+                false, null, null
         );
         dto.setActive(true);
 
@@ -77,7 +77,7 @@ class FlightIntegrationTests {
                 "LAX",
                 "AC101X",
                 5.5,
-                true
+                true, null, null
         );
         update.setActive(true);
         update.setSeatsRemaining(150);
