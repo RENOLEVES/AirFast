@@ -10,30 +10,40 @@ The scope is to build a **web-based airline system** that allows:
 
 All stakeholders interact with the system through a web frontend; persistence is handled by PostgreSQL with JPA/Hibernate.
 
-## 👥 Team Members
+## Deliverables & Links to Their Documentation 
+- [Deliverable 1: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-1:-Project-Report)
+- [Deliverable 1: Technical Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-1:-Technical-Report)
+
+- [Deliverable 2: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Project-Report)
+- [Deliverable 2: Technical Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Technical-Report)
+
+- Deliverable 3 Report (to be linked)
+- Final Presentation Notes (presentation to be linked)
+
+## Team Members
 
 | Name        | Role                  | Deliverable 1 Effort (hrs) | Deliverable 2 Effort (hrs) | Deliverable 3 Effort (hrs) | Presentation Effort (hrs) | Total (hrs) |
 |-------------|----------------------|----------------------------|----------------------------|----------------------------|----------------------------|-------------|
-| Toufic | Project Manager and Scrum Master    | 8                          | …                          | …                          | …                          | …           |
-| Eric | Backend & Testing Lead	  | 8                          | …                          | …                          | …                          | …           |
-| Marshall    | UML & Architecture Lead        | 8                          | …                          | …                          | …                          | …           |
-| Vincent    | Requirements & Documentation Lead       | 8                          | …                          | …                          | …                          | …           |
-| Lince    | Database & Integration Lead   | 8                          | …                          | …                          | …                          | …           |
+| Toufic | Project Manager and Scrum Master    | 8                          | 25                          | …                          | …                          | …           |
+| Eric | Backend & Testing Lead	  | 8                          | 25                          | …                          | …                          | …           |
+| Marshall    | UML & Architecture Lead        | 8                          | 18-20                          | …                          | …                          | …           |
+| Vincent    | Requirements & Documentation Lead       | 8                          | 20                          | …                          | …                          | …           |
+| Lince    | Database & Integration Lead   | 8                          | 16-18                          | …                          | …                          | …           |
 
+> Detailed per-meeting minutes and time logs are on the Wiki (see below).
 
-## 📂 Documentation
-- Project Reports: each includes meeting minutes and design decisions per deliverable.
-- Requirements Model
-- Domain Model
+## How We Work
 
-## 🚀 Tech Stack
-- Backend: Java 21, Spring Boot, JPA/Hibernate  
+- **Process:** Lightweight Scrum/Kanban on GitHub Projects  
+- **Branches:** `main` (protected), `develop`, `feature/<scope>`  
+- **Issues:** All work tracked as Issues with labels + milestones; every commit references an Issue ID.  
+- **PRs:** Required for merging to `develop`/`main`; checks must pass.
+
+## Tech Stack
+- Backend: Java 21, Spring Boot, JPA/Hibernate, JoCoCo
 - Database: PostgreSQL (via Docker/Testcontainers)  
 - Frontend: React + TypeScript  
-- CI/CD: GitHub Actions, Docker Compose  
+- CI/CD: Docker (used in some instances in build compile help & DB)
 
-## 📅 Deliverables
-- Deliverable 1: Requirements, Domain Model, Persistence + Tests  
-- Deliverable 2: Backend APIs  
-- Deliverable 3: Frontend  
-- Final: Presentation & Demo
+
+
