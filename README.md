@@ -16,7 +16,7 @@ All stakeholders interact with the system through a web frontend; persistence is
 |-------------|----------------------|----------------------------|----------------------------|----------------------------|----------------------------|-------------|
 | Toufic | Project Manager and Scrum Master    | 8                          | 25                          | …                          | …                          | …           |
 | Eric | Backend & Testing Lead	  | 8                          | 25                          | …                          | …                          | …           |
-| Marshall    | UML & Architecture Lead        | 8                          | …                          | …                          | …                          | …           |
+| Marshall    | UML & Architecture Lead        | 8                          | 18-20                          | …                          | …                          | …           |
 | Vincent    | Requirements & Documentation Lead       | 8                          | 20                          | …                          | …                          | …           |
 | Lince    | Database & Integration Lead   | 8                          | 16-18                          | …                          | …                          | …           |
 
