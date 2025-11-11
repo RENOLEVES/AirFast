@@ -30,11 +30,11 @@ dependencies {
 }
 
 /* ---------------------------
- * Unit + Integration test layout
- * ---------------------------
- * Unit tests live in:           src/test/java
- * Integration tests live in:    src/integrationTest/java
- */
+ 
+Unit + Integration test layout
+---------------------------
+Unit tests live in:           src/test/java
+Integration tests live in:    src/integrationTest/java*/
 sourceSets {
     integrationTest {
         java.srcDir file('src/integrationTest/java')
@@ -50,47 +50,23 @@ configurations {
     integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
-    description = "Runs unit tests."
     testLogging {
-        events "passed", "skipped", "failed"
         exceptionFormat "full"
+        events "passed", "failed"
     }
+    finalizedBy jacocoTestReport
 }
 
-
-sourceSets {
-    integrationTest {
-        java {
-            srcDir 'src/test/java/ca/mcgill/esce321/flightManagement/integrationTest'
+tasks.named('jacocoTestCoverageVerification') {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.6
+            }
         }
-        resources.srcDir 'src/test/resources' // optional if you have test resources
-        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
-        runtimeClasspath += output + compileClasspath
     }
+    dependsOn test // tests are required to run before checking code coverage.
 }
-
-tasks.register('integrationTest', Test) {
-    description = "Runs integration tests."
-    group = "verification"
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    shouldRunAfter tasks.test
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
-}
-
-
-/** Coverage (optional): ./gradlew jacocoTestReport */
-jacocoTestReport {
-    dependsOn tasks.test
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-

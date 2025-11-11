@@ -2,6 +2,7 @@ package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.dto.request.FlightAttendantRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
+import ca.mcgill.esce321.flightManagement.service.FlightAttendantServiceImpl;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
