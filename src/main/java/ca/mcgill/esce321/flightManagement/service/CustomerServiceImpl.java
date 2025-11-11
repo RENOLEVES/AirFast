@@ -37,7 +37,6 @@ public class CustomerServiceImpl {
 
       public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
 
-        Customer customerToCreate = new Customer();
         Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber());
         Customer saved = personRepository.save(customerToCreate);
      
