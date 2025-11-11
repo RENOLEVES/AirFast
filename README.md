@@ -30,20 +30,13 @@ All stakeholders interact with the system through a web frontend; persistence is
 - **PRs:** Required for merging to `develop`/`main`; checks must pass.
 
 ## Tech Stack
-- Backend: Java 21, Spring Boot, JPA/Hibernate  
+- Backend: Java 21, Spring Boot, JPA/Hibernate, JoCoCo
 - Database: PostgreSQL (via Docker/Testcontainers)  
 - Frontend: React + TypeScript  
-- CI/CD: GitHub Actions, Docker Compose  
+- CI/CD: Docker (used in some instances in build compile help & DB)
 
-## Deliverables & Links
+## Deliverables & Links to Their Documentation 
 - Deliverable 1: Requirements, Domain Model, Persistence + Tests  
 - Deliverable 2: Backend APIs  
 - Deliverable 3: Frontend  
 - Final: Presentation & Demo
-
-## Documentation
-- Project Reports: each includes meeting minutes and design decisions per deliverable.
-- Requirements Model
-- Domain Model
-
-
