@@ -59,7 +59,18 @@ tasks.named('test') {
     }
 }
 
-/** Runs ONLY integration tests: ./gradlew integrationTest */
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDir 'src/test/java/ca/mcgill/esce321/flightManagement/integrationTest'
+        }
+        resources.srcDir 'src/test/resources' // optional if you have test resources
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
 tasks.register('integrationTest', Test) {
     description = "Runs integration tests."
     group = "verification"
@@ -73,6 +84,7 @@ tasks.register('integrationTest', Test) {
     }
 }
 
+
 /** Coverage (optional): ./gradlew jacocoTestReport */
 jacocoTestReport {
     dependsOn tasks.test
@@ -81,3 +93,4 @@ jacocoTestReport {
         html.required = true
     }
 }
+

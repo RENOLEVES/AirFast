@@ -26,7 +26,7 @@ public class ManagerController {
     private ManagerServiceImpl managerService;
 
     // CREATE
-    @PostMapping("/api/managers/")
+    @PostMapping
     public ResponseEntity<ManagerResponseDTO> create(@RequestBody ManagerRequestDTO request) {
         final ManagerResponseDTO created = managerService.createManager(request);
         // Location header is optional but nice to have:
@@ -37,9 +37,9 @@ public class ManagerController {
 
     // READ one
     @GetMapping("/{id}")
-    public ManagerResponseDTO getById(@PathVariable("id") long id) {
+    public ResponseEntity<ManagerResponseDTO> getById(@PathVariable("id") long id) {
 
-        return managerService.findManagerById(id);
+        return ResponseEntity.ok(managerService.findManagerById(id));
     }
 
     // READ all
@@ -50,9 +50,9 @@ public class ManagerController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public ManagerResponseDTO update(@PathVariable("id") long id,
+    public ResponseEntity<ManagerResponseDTO> update(@PathVariable("id") long id,
                                      @RequestBody ManagerRequestDTO request) {
-        return managerService.updateManager(id, request);
+        return ResponseEntity.ok(managerService.updateManager(id, request));
     }
 
     // DELETE

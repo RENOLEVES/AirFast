@@ -118,8 +118,6 @@ public class ManagerServiceImpl {
             List<Flight> flights = flightRepository.findAllById(dto.getFlightIds());
             List<Booking> bookings = bookingRepository.findAllById(dto.getBookingIds());
 
-            managerToUpdate.setFlights(flights);
-            managerToUpdate.setBookings(bookings);
 
             Manager updated = personRepository.save(managerToUpdate);
 
