@@ -120,7 +120,6 @@ public class FlightServiceImpl {
                 f.getFlightId(),
                 f.getCapacity(),
                 f.getSeatsRemaining(),
-                delay,
                 f.getDepartTime(),
                 f.getArrivalTime(),
                 f.getExpectedDepartTime(),
@@ -129,8 +128,7 @@ public class FlightServiceImpl {
                 f.getFlightNumber(),
                 f.getFlightTime(),
                 f.isRecurring(),
-                f.isActive(),     // auto-boxes to Boolean
-                f.getFlightStatus()        
+                f.isActive()        
                 );
     }
 }
