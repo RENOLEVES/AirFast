@@ -1,130 +1,153 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
+import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Flight;
-import ca.mcgill.esce321.flightManagement.model.SeatClass;
-import ca.mcgill.esce321.flightManagement.model.SeatStatus;
+import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
+import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional // rollback between tests
 public class SeatIntegrationTests {
 
     @Autowired
-    private TestRestTemplate client;
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private SeatRepository seatRepository;
 
     @Autowired
     private FlightRepository flightRepository;
 
-    private Flight testFlight;
-    private long createdSeatId;
+    private SeatRequestDTO request;
+    Flight f;
+
+    @BeforeEach
+    void setup() {
+        f = new Flight();
+        flightRepository.save(f);
+
+        request = new SeatRequestDTO();
+        request.setFlightId(f.getFlightId());
+        request.setPrice(100);
+        request.setSeatClass(SeatClass.BUSINESS);
+        request.setSeatNumber("a1");
+        request.setSeatStatus(SeatStatus.AVAILABLE);
+    }
 
     @Test
-    @Order(1)
-    public void testCreateSeat() {
-        // Arrange: create a flight
-        testFlight = new Flight();
-        testFlight.setFlightNumber("TEST123");
-        testFlight = flightRepository.save(testFlight);
-
+    @DisplayName("POST /api/seats/ - should create seat and return 201")
+    void testCreateOwner() throws Exception {
+        // Arrange: create request JSON
         SeatRequestDTO request = new SeatRequestDTO();
-        request.setFlightId(testFlight.getFlightId());
-        request.setSeatClass(SeatClass.ECONOMY);
-        request.setPrice(100.0);
-        request.setSeatNumber("1");
+        request.setFlightId(f.getFlightId());
+        request.setPrice(100);
+        request.setSeatClass(SeatClass.BUSINESS);
+        request.setSeatNumber("a1");
         request.setSeatStatus(SeatStatus.AVAILABLE);
 
-        // Act
-        ResponseEntity<SeatResponseDTO> response = client.postForEntity("/api/seats", request, SeatResponseDTO.class);
+        String body = objectMapper.writeValueAsString(request);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        // Act: perform POST
+        String jsonResponse = mockMvc.perform(post("/api/seats")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.price").value("100.0"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        SeatResponseDTO createdSeat = response.getBody();
-        assertNotNull(createdSeat);
-        assertEquals(SeatClass.ECONOMY, createdSeat.getSeatClass());
-        assertEquals(1, createdSeat.getSeatNumber());
-        assertEquals(SeatStatus.AVAILABLE, createdSeat.getSeatStatus());
-        assertEquals(testFlight.getFlightId(), createdSeat.getFlightId());
-        assertNotNull(createdSeat.getSeatId());
+        // Parse response back to DTO
+        SeatResponseDTO createdDto = objectMapper.readValue(jsonResponse, SeatResponseDTO.class);
 
-        this.createdSeatId = createdSeat.getSeatId();
+        // Assert: check repository for saved entity
+        Optional<Seat> fromDb = seatRepository.findById(createdDto.getSeatId())
+                .map(p -> (Seat) p);
+
+        assertThat(fromDb).isPresent();
+        assertThat(fromDb.get().getSeatNumber()).isEqualTo("a1");
     }
 
 
-  
     @Test
-    @Order(2)
-    public void testUpdateSeat() {
+    @DisplayName("GET /api/seats/{id} - should retrieve created seat")
+    void testGetSeatById() throws Exception {
         // Arrange
-        SeatRequestDTO updateRequest = new SeatRequestDTO();
-        updateRequest.setFlightId(testFlight.getFlightId());
-        updateRequest.setSeatClass(SeatClass.BUSINESS);
-        updateRequest.setPrice(200.0);
-        updateRequest.setSeatNumber("5");
-        updateRequest.setSeatStatus(SeatStatus.TOBEDETERMINED);
+        Seat saved = seatRepository.save(new Seat(SeatClass.BUSINESS, 100.0, "a1", SeatStatus.AVAILABLE,f));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<SeatRequestDTO> entity = new HttpEntity<>(updateRequest, headers);
-
-        // Act
-        ResponseEntity<SeatResponseDTO> response = client.exchange(
-                "/api/seats/" + createdSeatId,
-                HttpMethod.PUT,
-                entity,
-                SeatResponseDTO.class
-        );
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        SeatResponseDTO updatedSeat = response.getBody();
-        assertNotNull(updatedSeat);
-        assertEquals(SeatClass.BUSINESS, updatedSeat.getSeatClass());
-        assertEquals(200.0, updatedSeat.getPrice());
-        assertEquals("5", updatedSeat.getSeatNumber());
-        assertEquals(SeatStatus.TOBEDETERMINED, updatedSeat.getSeatStatus());
+        mockMvc.perform(get("/api/seats/{id}", saved.getSeatId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value("100.0"))
+                .andExpect(jsonPath("$.seatNumber").value("a1"));
     }
 
     @Test
-    @Order(3)
-    public void testDeleteSeat() {
-        // Act
-        ResponseEntity<Void> response = client.exchange(
-                "/api/seats/" + createdSeatId,
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
+    @DisplayName("PUT /api/seats/{id} - should update seat")
+    void testUpdateOwner() throws Exception {
+        Seat saved = seatRepository.save(new Seat(SeatClass.BUSINESS, 100.0, "a1", SeatStatus.AVAILABLE,f));
 
-        // Assert
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        SeatRequestDTO update = new SeatRequestDTO();
+        update.setFlightId(f.getFlightId());
+        update.setPrice(200);
+        update.setSeatClass(SeatClass.ECONOMY);
+        update.setSeatNumber("b2");
+        update.setSeatStatus(SeatStatus.AVAILABLE);
 
-        // Verify seat no longer exists
-        ResponseEntity<String> getResponse = client.getForEntity("/api/seats/" + createdSeatId, String.class);
-        assertEquals(HttpStatus.BAD_REQUEST, getResponse.getStatusCode());
+        mockMvc.perform(put("/api/seats/{id}", saved.getSeatId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value("200.0"))
+                .andExpect(jsonPath("$.seatNumber").value("b2"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/seats/{id} - should delete seat")
+    void testDeleteOwner() throws Exception {
+        // Create and save an seat
+        Seat saved = seatRepository.save(new Seat(SeatClass.BUSINESS, 200.0, "b2", SeatStatus.AVAILABLE,f));
+
+        // Perform DELETE request and expect 204 No Content
+        mockMvc.perform(delete("/api/seats/{id}", saved.getSeatId()))
+                .andExpect(status().isNoContent());
+
+        // Verify the seat has been deleted
+        Optional<Seat> deleted = seatRepository.findById(saved.getSeatId())
+                .map(p -> (Seat) p);
+        assertThat(deleted).isEmpty();
+    }
+
+
+    @Test
+    @DisplayName("GET /api/seats - should return list of seats")
+    void testGetAllSeats() throws Exception {
+        seatRepository.save(new Seat(SeatClass.BUSINESS, 200.0, "b2", SeatStatus.AVAILABLE,f));
+        seatRepository.save(new Seat(SeatClass.ECONOMY, 233.0, "c3", SeatStatus.AVAILABLE,f));
+
+        mockMvc.perform(get("/api/seats"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].email").exists());
     }
 
 }
