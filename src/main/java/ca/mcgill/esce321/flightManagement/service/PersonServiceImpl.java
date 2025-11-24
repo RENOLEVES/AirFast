@@ -27,12 +27,6 @@ public class PersonServiceImpl{
         this.personRepository = personRepository;
     }
 
-    @Service
-    public class LoginService {
-
-    @Autowired
-    private PersonRepository personRepository;
-
     public PersonResponseDTO login(PersonRequestDTO request) {
 
     // Correct: this returns Person, not Optional<Person>
@@ -88,7 +82,7 @@ public class PersonServiceImpl{
         // also set customerIds, flightIds, etc.
         return dto;
     }
-}
+
 
 
     
