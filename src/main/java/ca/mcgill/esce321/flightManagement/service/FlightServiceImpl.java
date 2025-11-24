@@ -1,5 +1,6 @@
 package ca.mcgill.esce321.flightManagement.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -130,5 +131,15 @@ public class FlightServiceImpl {
                 f.isRecurring(),
                 f.isActive()        
                 );
+    }
+
+       public List<FlightResponseDTO> searchFlightsBetweenDates(LocalDateTime start, LocalDateTime end) {
+        List<Flight> flights = flightRepository.searchFlightsBetweenDates(start, end);
+
+         return flights.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+
+        
     }
 }
