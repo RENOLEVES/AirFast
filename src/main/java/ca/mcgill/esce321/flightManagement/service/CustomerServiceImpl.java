@@ -55,6 +55,8 @@ public class CustomerServiceImpl {
     public CustomerResponseDTO findCustomerById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
+        
+
      
         if (p.isPresent() && p.get() instanceof Customer customer) {
 
