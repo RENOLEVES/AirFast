@@ -6,8 +6,7 @@
 
 <script setup>
 import { ref, computed, provide } from 'vue'
-import HomePage from './views/HomePage.vue'
-import FlightBooking from './views/FlightBooking.vue'
+import HomePage from './views/FlightBooking.vue'
 import BookedFlights from './views/BookedFlights.vue'
 import UserSignup from './views/UserSignup.vue'
 import UserSignin from './views/UserSignin.vue'
@@ -17,7 +16,6 @@ const currentView = ref('HomePage')
 
 const views = {
   HomePage,
-  FlightBooking,
   BookedFlights,
   UserSignup,
   UserSignin,

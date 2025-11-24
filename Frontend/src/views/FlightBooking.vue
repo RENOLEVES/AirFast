@@ -5,15 +5,28 @@
       <div class="flex justify-between items-center mb-8">
         <div>
           <h1 class="font-extrabold text-[42px] text-[#484848] mb-2">
-            <i class="fas fa-plane text-blue-500 mr-3"></i>Available Flights
+            <i class="fas fa-plane text-blue-500 mr-3"></i>Air Fast
           </h1>
           <p class="text-[#9a9a9a]">Search and book your next journey</p>
         </div>
         <button
-          @click="$emit('navigate', 'HomePage')"
+          @click="$emit('navigate', 'UserSignin')"
+          class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-6 py-2 rounded-lg hover:bg-white/50 pl-[300px]"
+        >
+          <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+        </button>
+        <span class="text-[#9a9a9a]">|</span>
+        <button
+          @click="$emit('navigate', 'UserSignup')"
+          class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-6 py-2 rounded-lg hover:bg-white/50"
+        >
+          <i class="fas fa-user-plus mr-2"></i>Sign Up
+        </button>
+        <button
+          @click="$emit('navigate', 'BookedFlights')"
           class="px-6 py-3 bg-white border border-gray-300 text-[#484848] rounded-lg hover:bg-gray-50 transition font-semibold shadow-sm"
         >
-          <i class="fas fa-home mr-2"></i>Back to Home
+          <i class="fas fa-home mr-2"></i>View Bookings
         </button>
       </div>
 
