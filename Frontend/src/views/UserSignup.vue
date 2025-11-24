@@ -99,20 +99,49 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 const emit = defineEmits(['navigate'])
 
 const signupData = ref({
+  email: '',
+  password: '',
   firstName: '',
   lastName: '',
-  email: '',
-  password: ''
+  membershipNumber:''
 })
 
-const handleSignup = () => {
-  console.log('Signing up...', signupData.value)
-  // Add your signup logic here
-  alert('Account created successfully!')
-  emit('navigate', 'UserSignin')
+const handleSignup = async () => {
+try {
+    const response = await axios.post(
+      'http://localhost:8080/api/persons/signup',
+      {
+        email: signupData.value.email,
+        password: signupData.value.password,
+        firstName: signupData.value.firstName,
+        lastName: signupData.value.lastName,
+        membershipNumber:''
+      }
+    )
+
+    console.log("signup success:", response.data)
+
+    alert("signed up successfully!")
+
+    // redirect to home page
+    emit('navigate', 'HomePage')
+
+  } catch (error) {
+      console.error("Login error:", error)
+
+      if (error.response) {
+        const msg = error.response.data?.message
+                   || error.response.data?.error
+                   || "Invalid credentials"
+        alert("Login failed: " + msg)
+      } else {
+        alert("Cannot reach backend at localhost:8080")
+      }
+    }
 }
 </script>

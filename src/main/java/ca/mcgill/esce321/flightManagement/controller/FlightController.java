@@ -24,7 +24,7 @@ import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
 
 @RestController
 @RequestMapping("/api/flights")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class FlightController {
 
     private final FlightServiceImpl flightService;

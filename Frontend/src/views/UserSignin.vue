@@ -73,6 +73,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 const emit = defineEmits(['navigate'])
 
@@ -81,10 +82,36 @@ const signinData = ref({
   password: ''
 })
 
-const handleSignin = () => {
-  console.log('Signing in...', signinData.value)
-  // Add your signin logic here
-  alert('Signed in successfully!')
-  emit('navigate', 'HomePage')
+const handleSignin = async () => {
+  try {
+    const response = await axios.post(
+      'http://localhost:8080/api/persons/login',
+      {
+        email: signinData.value.email,
+        password: signinData.value.password
+      }
+    )
+
+    console.log("Login success:", response.data)
+
+    alert("Signed in successfully!")
+
+    // redirect to home page
+    emit('navigate', 'HomePage')
+
+  } catch (error) {
+      console.error("Login error:", error)
+
+      if (error.response) {
+        const msg = error.response.data?.message
+                   || error.response.data?.error
+                   || "Invalid credentials"
+        alert("Login failed: " + msg)
+      } else {
+        alert("Cannot reach backend at localhost:8080")
+      }
+    }
+
 }
 </script>
+

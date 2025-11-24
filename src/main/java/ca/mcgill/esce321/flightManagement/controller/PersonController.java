@@ -23,7 +23,7 @@
 
     @RestController
     @RequestMapping("/api/persons")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:5173")
     @Validated
 
     public class PersonController {
