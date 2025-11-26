@@ -31,7 +31,7 @@
           @click="$emit('navigate', 'BookedFlights')"
           class="px-6 py-3 bg-white border border-gray-300 text-[#484848] rounded-lg hover:bg-gray-50 transition font-semibold shadow-sm"
         >
-          <i class="fas fa-home mr-2"></i>View Bookings
+          <i class="fas mr-2"></i>View Bookings
         </button>
 
 
