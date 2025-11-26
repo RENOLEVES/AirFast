@@ -4,11 +4,16 @@
       <!-- Header -->
       <div class="flex justify-between items-center mb-8">
         <div>
+
           <h1 class="font-extrabold text-[42px] text-[#484848] mb-2">
             <i class="fas fa-plane text-blue-500 mr-3"></i>Air Fast
           </h1>
+
           <p class="text-[#9a9a9a]">Search and book your next journey</p>
+
         </div>
+
+        <!-- signin/signup -->
         <button
           @click="$emit('navigate', 'UserSignin')"
           class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-6 py-2 rounded-lg hover:bg-white/50 pl-[300px]"
@@ -28,11 +33,13 @@
         >
           <i class="fas fa-home mr-2"></i>View Bookings
         </button>
+
+
       </div>
 
       <!-- Search Section -->
-      <div class="bg-white rounded-2xl shadow-md p-8 mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+      <div class="bg-white rounded-2xl shadow-md p-10 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label class="block font-semibold text-[14px] text-[#484848] mb-2">
               <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Departure Location
@@ -57,27 +64,8 @@
             />
           </div>
 
-          <div>
-            <label class="block font-semibold text-[14px] text-[#484848] mb-2">
-              <i class="far fa-calendar mr-2 text-blue-500"></i>Departure Date
-            </label>
-            <input
-              v-model="searchParams.departureDate"
-              type="date"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg text-[#484848] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
-            />
-          </div>
-
-          <div>
-            <label class="block font-semibold text-[14px] text-[#484848] mb-2">
-              <i class="far fa-calendar mr-2 text-blue-500"></i>Return Date
-            </label>
-            <input
-              v-model="searchParams.returnDate"
-              type="date"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg text-[#484848] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
-            />
-          </div>
+          <!-- Range Date Picker -->
+          <DatePicker class="wide-calendar"/>
 
           <button
             @click="searchFlights"
@@ -85,6 +73,7 @@
           >
             <i class="fas fa-search mr-2"></i>Search
           </button>
+
         </div>
       </div>
 
@@ -126,6 +115,7 @@
 <script setup>
 import { ref, inject, computed } from 'vue'
 import FlightCard from '../components/FlightCard.vue'
+import DatePicker from '../components/RangeDatePicker.vue'
 
 const emit = defineEmits(['navigate'])
 const navigate = inject('navigate')
@@ -154,104 +144,6 @@ const flights = ref([
     dateRange: '2025-11-22 to 2025-11-30',
     departureDate: '2025-11-22',
     returnDate: '2025-11-30'
-  },
-  {
-    id: 2,
-    route: 'Montreal to Toronto',
-    departureCity: 'Montreal',
-    departureTime: '2:00PM',
-    arrivalCity: 'Toronto',
-    arrivalTime: '3:00PM',
-    remainingSeats: 5,
-    class: 'BUSINESS',
-    price: '$ 2000 CAD',
-    dateRange: '2025-11-22 to 2025-11-30',
-    departureDate: '2025-11-22',
-    returnDate: '2025-11-30'
-  },
-  {
-    id: 3,
-    route: 'Montreal to Vancouver',
-    departureCity: 'Montreal',
-    departureTime: '6:00AM',
-    arrivalCity: 'Vancouver',
-    arrivalTime: '9:30AM',
-    remainingSeats: 15,
-    class: 'ECONOMY',
-    price: '$ 1500 CAD',
-    dateRange: '2025-11-23 to 2025-12-01',
-    departureDate: '2025-11-23',
-    returnDate: '2025-12-01'
-  },
-  {
-    id: 4,
-    route: 'Toronto to Montreal',
-    departureCity: 'Toronto',
-    departureTime: '10:00AM',
-    arrivalCity: 'Montreal',
-    arrivalTime: '11:00AM',
-    remainingSeats: 8,
-    class: 'ECONOMY',
-    price: '$ 950 CAD',
-    dateRange: '2025-11-24 to 2025-12-02',
-    departureDate: '2025-11-24',
-    returnDate: '2025-12-02'
-  },
-  {
-    id: 5,
-    route: 'Toronto to Vancouver',
-    departureCity: 'Toronto',
-    departureTime: '1:00PM',
-    arrivalCity: 'Vancouver',
-    arrivalTime: '4:00PM',
-    remainingSeats: 20,
-    class: 'BUSINESS',
-    price: '$ 2500 CAD',
-    dateRange: '2025-11-25 to 2025-12-03',
-    departureDate: '2025-11-25',
-    returnDate: '2025-12-03'
-  },
-  {
-    id: 6,
-    route: 'Vancouver to Montreal',
-    departureCity: 'Vancouver',
-    departureTime: '7:00AM',
-    arrivalCity: 'Montreal',
-    arrivalTime: '3:00PM',
-    remainingSeats: 12,
-    class: 'ECONOMY',
-    price: '$ 1600 CAD',
-    dateRange: '2025-11-26 to 2025-12-04',
-    departureDate: '2025-11-26',
-    returnDate: '2025-12-04'
-  },
-  {
-    id: 7,
-    route: 'Montreal to Toronto',
-    departureCity: 'Montreal',
-    departureTime: '5:00PM',
-    arrivalCity: 'Toronto',
-    arrivalTime: '6:00PM',
-    remainingSeats: 3,
-    class: 'BUSINESS',
-    price: '$ 2100 CAD',
-    dateRange: '2025-11-27 to 2025-12-05',
-    departureDate: '2025-11-27',
-    returnDate: '2025-12-05'
-  },
-  {
-    id: 8,
-    route: 'Vancouver to Toronto',
-    departureCity: 'Vancouver',
-    departureTime: '9:00AM',
-    arrivalCity: 'Toronto',
-    arrivalTime: '5:00PM',
-    remainingSeats: 18,
-    class: 'ECONOMY',
-    price: '$ 1400 CAD',
-    dateRange: '2025-11-28 to 2025-12-06',
-    departureDate: '2025-11-28',
-    returnDate: '2025-12-06'
   }
 ])
 
