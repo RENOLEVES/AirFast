@@ -22,21 +22,16 @@
       <div class="date-input-box end-date">
         {{ endDateDisplay }}
       </div>
-      <div class="calendar-icon-box">
-        <span role="img" aria-label="calendar-icon">📅</span>
-      </div>
     </div>
 
     <!--    toggle calendar-->
     <div class="calendar-popover" v-if="isCalendarOpen">
       <VDatePicker
-          v-model="range"
-          is-range
+          v-model.range="range"
           borderless
           class="custom-calendar"
           :columns="2"
           title-position="middle"
-          @update:model-value="toggleCalendar"
       />
     </div>
   </div>
@@ -44,9 +39,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-// Since you are using it locally, keep the import
+import {ref, computed, watch} from 'vue';
 import { DatePicker as VDatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
 
 
 // New state variable to control the pop-up visibility
@@ -59,8 +54,18 @@ const toggleCalendar = () => {
 
 // 1. Reactive Data for the Date Range
 const range = ref({
-  start: new Date(2025, 10, 25),
-  end: new Date(2025, 10, 30)
+  start: new Date(),
+  end: new Date()
+});
+
+watch(() => range.value.end, (newEndDate) => {
+  if (newEndDate && isCalendarOpen.value) {
+    setTimeout(() => {
+      isCalendarOpen.value = false;
+    }, 100);
+  }
+}, {
+  deep: true
 });
 
 // 2. Date Formatting for Display (No changes needed here)
@@ -151,18 +156,6 @@ const masks = ref({
   flex-shrink: 0;
 }
 
-/* 6. Popover Positioning */
-.calendar-popover {
-  position: absolute;
-  top: 45px;
-  left: 0;
-  z-index: 9999;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
 /* --- Input Boxes (Start/End) --- */
 .date-input-box {
   padding: 0 5px; /* Adjust padding for height */
@@ -183,8 +176,7 @@ const masks = ref({
 /* --- Popover Positioning (Ensure it's attached to the new wrapper's boundary) --- */
 .calendar-popover {
   position: absolute;
-  /* Top value adjusted to sit directly below the input boxes (approx 40px input height + 5px margin from header) */
-  top: 45px;
+  top: 77px;
   left: 0;
   z-index: 9999;
   background-color: white;
@@ -192,6 +184,11 @@ const masks = ref({
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
+.calendar-popover .vc-weekday-1, .calendar-popover .vc-weekday-7 {
+  color: #6366f1;
+}
+
 .info-icon {
   color: #54c1f3; /* Red color for info icon */
   font-size: 14px;
@@ -244,9 +241,6 @@ const masks = ref({
   font-weight: bold;
 }
 
-/* --- Selection Highlighting (Red for start/end, Lighter for middle) --- */
-
-
 /* Highlight color for the *start* and *end* of the range */
 :deep(.vc-highlight-content-solid) {
   background-color: #0061ef !important; /* Lighter red */
@@ -264,4 +258,6 @@ const masks = ref({
 :deep(.vc-highlight-content-light .vc-day-content) {
   color: white !important;
 }
+
+
 </style>

@@ -39,6 +39,16 @@
 
       <!-- Search Section -->
       <div class="bg-white rounded-2xl shadow-md p-10 mb-12">
+
+        <div class="pb-[10px] flex justify-content-center ">
+          <SelectButton
+            v-model="value"
+            :options="options"
+            aria-labelledby="basic"
+            @change="handleChange"
+        />
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label class="block font-semibold text-[14px] text-[#484848] mb-2">
@@ -100,8 +110,8 @@
           <i class="fas fa-info-circle mr-2"></i>Found {{ filteredFlights.length }} flight{{ filteredFlights.length > 1 ? 's' : '' }}
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <FlightCard 
-            v-for="flight in filteredFlights" 
+          <FlightCard
+            v-for="flight in filteredFlights"
             :key="flight.id"
             :flight="flight"
             @book="handleBook"
@@ -116,6 +126,11 @@
 import { ref, inject, computed } from 'vue'
 import FlightCard from '../components/FlightCard.vue'
 import DatePicker from '../components/RangeDatePicker.vue'
+
+import SelectButton from 'primevue/selectbutton'
+
+const value = ref('One-Way');
+const options = ref(['One-Way','Round-Trip'])
 
 const emit = defineEmits(['navigate'])
 const navigate = inject('navigate')
