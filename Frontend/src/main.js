@@ -3,7 +3,7 @@ import './style.css'
 import App from './App.vue'
 
 import VCalendar from 'v-calendar';
-import 'v-calendar/dist/style.css';
+import 'v-calendar/dist/style.css'; // Don't forget the required CSS!
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 
@@ -14,12 +14,14 @@ app.use(PrimeVue, {
         preset: Aura,
         options: {
             prefix: 'p',
-            darModeSelector: 'system',
-            cssLayer: false,
+            darkModeSelector: 'system',
+            cssLayer: false
         }
     }
-})
+});
 
+// 2. Use the plugin to install it globally
+app.use(VCalendar, {});
 
 app.mount('#app');
 

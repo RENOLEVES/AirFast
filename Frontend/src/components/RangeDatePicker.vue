@@ -16,7 +16,7 @@
         class="date-range-display-wrapper w-full px-4 py-3 border border-gray-300 rounded-lg"
         @click="toggleCalendar"
     >
-      <div class="date-input-box start-date">
+      <div class="date-input-box start-date ">
         {{ startDateDisplay }}
       </div>
       <div class="date-input-box end-date">
@@ -27,11 +27,13 @@
     <!--    toggle calendar-->
     <div class="calendar-popover" v-if="isCalendarOpen">
       <VDatePicker
-          v-model.range="range"
+          v-model="range"
+          is-range
           borderless
           class="custom-calendar"
           :columns="2"
           title-position="middle"
+          @update:model-value="toggleCalendar"
       />
     </div>
   </div>
@@ -39,9 +41,9 @@
 </template>
 
 <script setup>
-import {ref, computed, watch} from 'vue';
+import { ref, computed } from 'vue';
+// Since you are using it locally, keep the import
 import { DatePicker as VDatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
 
 
 // New state variable to control the pop-up visibility
@@ -56,16 +58,6 @@ const toggleCalendar = () => {
 const range = ref({
   start: new Date(),
   end: new Date()
-});
-
-watch(() => range.value.end, (newEndDate) => {
-  if (newEndDate && isCalendarOpen.value) {
-    setTimeout(() => {
-      isCalendarOpen.value = false;
-    }, 100);
-  }
-}, {
-  deep: true
 });
 
 // 2. Date Formatting for Display (No changes needed here)
@@ -122,7 +114,7 @@ const masks = ref({
   /* Important: Remove redundant styles applied by the Tailwind classes */
   padding: 0;
   margin: 0;
-  height: auto; /* Let the py-3 from the class control the height */
+  height: 50px; /* Let the py-3 from the class control the height */
 }
 
 /* 4. Date Text Boxes (Start/End) */
@@ -142,18 +134,16 @@ const masks = ref({
   border-right: 1px solid #e0e0e0;
 }
 
-/* 5. Calendar Icon Box */
-.calendar-icon-box {
-  padding: 0 5px 0 10px; /* Adjusted padding to look better next to the date text */
-  background-color: transparent; /* Remove background color */
-  border-left: 1px solid #e0e0e0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #54c1f3;
-  flex-shrink: 0;
+/* 6. Popover Positioning */
+.calendar-popover {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  z-index: 9999;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Input Boxes (Start/End) --- */
@@ -176,6 +166,7 @@ const masks = ref({
 /* --- Popover Positioning (Ensure it's attached to the new wrapper's boundary) --- */
 .calendar-popover {
   position: absolute;
+  /* Top value adjusted to sit directly below the input boxes (approx 40px input height + 5px margin from header) */
   top: 77px;
   left: 0;
   z-index: 9999;
@@ -184,11 +175,6 @@ const masks = ref({
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-
-.calendar-popover .vc-weekday-1, .calendar-popover .vc-weekday-7 {
-  color: #6366f1;
-}
-
 .info-icon {
   color: #54c1f3; /* Red color for info icon */
   font-size: 14px;
@@ -241,6 +227,9 @@ const masks = ref({
   font-weight: bold;
 }
 
+/* --- Selection Highlighting (Red for start/end, Lighter for middle) --- */
+
+
 /* Highlight color for the *start* and *end* of the range */
 :deep(.vc-highlight-content-solid) {
   background-color: #0061ef !important; /* Lighter red */
@@ -258,6 +247,4 @@ const masks = ref({
 :deep(.vc-highlight-content-light .vc-day-content) {
   color: white !important;
 }
-
-
 </style>

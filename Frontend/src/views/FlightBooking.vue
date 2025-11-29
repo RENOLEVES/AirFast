@@ -14,41 +14,61 @@
         </div>
 
         <!-- signin/signup -->
-        <button
-          @click="$emit('navigate', 'UserSignin')"
-          class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-6 py-2 rounded-lg hover:bg-white/50 pl-[300px]"
-        >
-          <i class="fas fa-sign-in-alt mr-2"></i>Sign In
-        </button>
-        <span class="text-[#9a9a9a]">|</span>
-        <button
-          @click="$emit('navigate', 'UserSignup')"
-          class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-6 py-2 rounded-lg hover:bg-white/50"
-        >
-          <i class="fas fa-user-plus mr-2"></i>Sign Up
-        </button>
-        <button
-          @click="$emit('navigate', 'BookedFlights')"
-          class="px-6 py-3 bg-white border border-gray-300 text-[#484848] rounded-lg hover:bg-gray-50 transition font-semibold shadow-sm"
-        >
-          <i class="fas mr-2"></i>View Bookings
-        </button>
+        <div class="flex justify-end items-center">
+          <button
+              @click="$emit('navigate', 'BookedFlights')"
+              class="px-6 py-3 bg-white border border-gray-300 text-[#484848] rounded-lg hover:bg-gray-50 transition font-semibold shadow-sm mr-4"
+          >
+            View Bookings
+          </button>
 
+          <!-- signed in -->
+          <div v-if="isLoggedIn" class="flex items-center space-x-3">
+            <span class="text-[#484848] font-semibold text-lg">
+              Welcome, **{{ username }}**!
+            </span>
 
+              <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+
+            <button
+                @click="logOutUser"
+                class="text-red-500 hover:text-red-700 transition-colors font-semibold"
+            >
+              (Sign Out)
+            </button>
+          </div>
+
+          <!--          visitor-->
+          <div v-else class="flex items-center">
+            <button
+                @click="$emit('navigate', 'UserSignin')"
+                class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-3 py-2 rounded-lg hover:bg-white/50"
+            >
+              <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+            </button>
+
+            <span class="text-[#9a9a9a] px-2">|</span>
+
+            <button
+                @click="$emit('navigate', 'UserSignup')"
+                class="text-[#484848] font-semibold hover:text-blue-600 transition-colors px-3 py-2 rounded-lg hover:bg-white/50"
+            >
+              <i class="fas fa-user-plus mr-2"></i>Sign Up
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Search Section -->
       <div class="bg-white rounded-2xl shadow-md p-10 mb-12">
-
         <div class="pb-[10px] flex justify-content-center ">
           <SelectButton
-            v-model="value"
-            :options="options"
-            aria-labelledby="basic"
-            @change="handleChange"
-        />
+              v-model="value"
+              :options="options"
+              aria-labelledby="basic"
+              @change="handleChange"
+          />
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label class="block font-semibold text-[14px] text-[#484848] mb-2">
@@ -110,8 +130,8 @@
           <i class="fas fa-info-circle mr-2"></i>Found {{ filteredFlights.length }} flight{{ filteredFlights.length > 1 ? 's' : '' }}
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <FlightCard
-            v-for="flight in filteredFlights"
+          <FlightCard 
+            v-for="flight in filteredFlights" 
             :key="flight.id"
             :flight="flight"
             @book="handleBook"
@@ -127,13 +147,15 @@ import { ref, inject, computed } from 'vue'
 import FlightCard from '../components/FlightCard.vue'
 import DatePicker from '../components/RangeDatePicker.vue'
 
-import SelectButton from 'primevue/selectbutton'
-
-const value = ref('One-Way');
-const options = ref(['One-Way','Round-Trip'])
+// select button
+import SelectButton from 'primevue/selectbutton';
 
 const emit = defineEmits(['navigate'])
 const navigate = inject('navigate')
+
+// select button
+const value = ref('One-Way');
+const options = ref(['One-Way', 'Round-Trip']);
 
 const searchParams = ref({
   departureLocation: '',
@@ -141,6 +163,22 @@ const searchParams = ref({
   departureDate: '',
   returnDate: ''
 })
+
+
+//------------- sign in functionality----------------------
+const isLoggedIn = ref(false);
+// 2. Reactive state for the username
+const username = ref('Traveler'); // Replace with actual user data
+
+// Mock login/logout functions for testing
+const logInUser = () => {
+  isLoggedIn.value = true;
+};
+const logOutUser = () => {
+  isLoggedIn.value = false;
+};
+//--------------------------------------------------------
+
 
 const isSearchActive = ref(false)
 
