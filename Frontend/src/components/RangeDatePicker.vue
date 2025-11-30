@@ -40,11 +40,9 @@
 
 </template>
 
-<script setup>
+`<script setup>
 import { ref, computed } from 'vue';
-// Since you are using it locally, keep the import
 import { DatePicker as VDatePicker } from 'v-calendar';
-
 
 // New state variable to control the pop-up visibility
 const isCalendarOpen = ref(false);
@@ -60,7 +58,7 @@ const range = ref({
   end: new Date()
 });
 
-// 2. Date Formatting for Display (No changes needed here)
+// 2. Date Formatting for Display
 const formatDate = (date) => {
   if (!date) return 'N/A';
   return new Intl.DateTimeFormat('en-CA', {
@@ -78,7 +76,13 @@ const endDateDisplay = computed(() => {
   return formatDate(range.value.end);
 });
 
-// 3. Configure Date Masks (No changes needed here)
+// 3. Search function to send dates to backend
+defineExpose({
+  startDateDisplay,
+  endDateDisplay
+});
+
+// 4. Configure Date Masks
 const masks = ref({
   title: 'YYYY MMMM',
   weekdays: 'WWW',
