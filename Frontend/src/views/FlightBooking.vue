@@ -136,10 +136,17 @@
 </template>
 
 <script setup>
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, onMounted } from 'vue'
 import FlightCard from '../components/FlightCard.vue'
 import DatePicker from '../components/RangeDatePicker.vue'
 import axios from 'axios'
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 // select button
 // import SelectButton from 'primevue/selectbutton';
@@ -155,6 +162,7 @@ const navigate = inject('navigate')
 //   value.value = newValue;
 //   console.log('New value selected:', newValue);
 // };
+
 
 const searchParams = ref({
   departureLocation: '',
@@ -177,23 +185,67 @@ const logOutUser = () => {
 
 const isSearchActive = ref(false)
 
-// All available flights with diverse routes
-const flights = ref([
-  {
-    id: 1,
-    route: 'Montreal to Toronto',
-    departureCity: 'Montreal',
-    departureTime: '8:30AM',
-    arrivalCity: 'Toronto',
-    arrivalTime: '9:30AM',
-    remainingSeats: 10,
-    class: 'ECONOMY',
-    price: '$ 1000 CAD',
-    dateRange: '2025-11-22 to 2025-11-30',
-    departureDate: '2025-11-22',
-    returnDate: '2025-11-30'
+// Changed from hardcoded to empty array
+const flights = ref([])
+const isLoading = ref(false)
+
+// Fetch all flights on component mount
+onMounted(async () => {
+  await fetchAllFlights();
+});
+
+// Function to fetch all flights
+const fetchAllFlights = async () => {
+  isLoading.value = true;
+  try {
+    const response = await api.get('/api/flights');
+
+    console.log(response)
+
+    // Transform backend data to match your FlightCard component
+    flights.value = response.data.map(flight => ({
+      id: flight.flightId,
+      route: `${flight.departLocation} to ${flight.arrivalLocation}`,
+      departureCity: flight.departLocation,
+      departureTime: formatTime(flight.departTime),
+      arrivalCity: flight.arrivalLocation,
+      arrivalTime: formatTime(flight.arrivalTime),
+      remainingSeats: flight.seatsRemaining,
+      class: 'ECONOMY', // You may need to add this to your backend
+      price: `$ ${flight.price || 1000} CAD`, // Add price to backend if needed
+      dateRange: `${formatDate(flight.departTime)} to ${formatDate(flight.arrivalTime)}`,
+      departureDate: formatDate(flight.departTime),
+      returnDate: formatDate(flight.arrivalTime),
+      status: flight.status,
+      flightNumber: flight.flightNumber
+    }));
+    isSearchActive.value = false;
+    console.log('Fetched flights:', flights.value);
+  } catch (error) {
+    console.error('Failed to fetch flights:', error);
+  } finally {
+    isLoading.value = false;
   }
-])
+};
+
+// Helper function to format date (YYYY-MM-DD)
+const formatDate = (dateTime) => {
+  if (!dateTime) return '';
+  const date = new Date(dateTime);
+  return date.toISOString().split('T')[0];
+};
+
+// Helper function to format time (HH:MM AM/PM)
+const formatTime = (dateTime) => {
+  if (!dateTime) return '';
+  const date = new Date(dateTime);
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
 
 const datePickerRef = ref(null);
 
@@ -204,17 +256,35 @@ const searchFlights = async () => {
     const endDate = datePickerRef.value?.endDateDisplay;
 
     const searchData = {
-      departureLocation: searchParams.value.departureLocation,
-      arrivalLocation: searchParams.value.arrivalLocation,
-      startDate: startDate,
-      endDate: endDate,
+      "departureLocation": searchParams.value.departureLocation,
+      "arrivalLocation": searchParams.value.arrivalLocation,
+      "departTimeStr": startDate,
+      "arrivalTimeStr": endDate,
       // tripType: value.value
     };
 
     console.log('Searching with params:', searchData); // ← Check browser console
 
-    const response = await axios.post('http://localhost:8080/api/flights/search', searchData);
-    console.log('Search results:', response.data);
+    const response = await api.post('/api/flights/search', searchData);
+    // Transform backend data to match your FlightCard component
+    flights.value = response.data.map(flight => ({
+      id: flight.flightId,
+      route: `${flight.departLocation} to ${flight.arrivalLocation}`,
+      departureCity: flight.departLocation,
+      departureTime: formatTime(flight.departTime),
+      arrivalCity: flight.arrivalLocation,
+      arrivalTime: formatTime(flight.arrivalTime),
+      remainingSeats: flight.seatsRemaining,
+      class: 'ECONOMY', // You may need to add this to your backend
+      price: `$ ${flight.price || 1000} CAD`, // Add price to backend if needed
+      dateRange: `${formatDate(flight.departTime)} to ${formatDate(flight.arrivalTime)}`,
+      departureDate: formatDate(flight.departTime),
+      returnDate: formatDate(flight.arrivalTime),
+      status: flight.status,
+      flightNumber: flight.flightNumber
+    }));
+    isSearchActive.value = false;
+    console.log('Fetched flights:', flights.value);
 
   } catch (error) {
     console.error('Search failed:', error);

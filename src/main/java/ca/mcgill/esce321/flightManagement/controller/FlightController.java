@@ -75,7 +75,7 @@ public class FlightController {
         return ResponseEntity.status(status).body(msg);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<FlightResponseDTO>> searchFlights(
             @RequestBody FlightRequestDTO request
     ) {

@@ -63,19 +63,19 @@ public class FlightServiceImpl {
         }
 
         Flight saved = flightRepository.save(f);
-        return toResponse(saved);
+        return convertToDTO(saved);
     }
 
     // --------- READ ----------
     public FlightResponseDTO getFlightById(long id) {
         Flight f = flightRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
-        return toResponse(f);
+        return convertToDTO(f);
     }
 
     public List<FlightResponseDTO> getAllFlights() {
         return flightRepository.findAll().stream()
-                .map(this::toResponse)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +103,7 @@ public class FlightServiceImpl {
         if (dto.getStatus() != null)      f.setFlightStatus(dto.getStatus());
 
         Flight saved = flightRepository.save(f);
-        return toResponse(saved);
+        return convertToDTO(saved);
     }
 
     // --------- DELETE ----------
@@ -115,24 +115,6 @@ public class FlightServiceImpl {
     }
 
     // --------- MAPPER ----------
-    private FlightResponseDTO toResponse(Flight f) {
-        int delay = f.getDelayHours();  // no null check for primitive
-
-        return new FlightResponseDTO(
-                f.getFlightId(),
-                f.getCapacity(),
-                f.getSeatsRemaining(),
-                f.getDepartTime(),
-                f.getArrivalTime(),
-                f.getExpectedDepartTime(),
-                f.getDepartLocation(),
-                f.getArrivalLocation(),
-                f.getFlightNumber(),
-                f.getFlightTime(),
-                f.isRecurring(),
-                f.isActive()        
-                );
-    }
 
     public List<FlightResponseDTO> searchFlights(
             LocalDateTime start,
