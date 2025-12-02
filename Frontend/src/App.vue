@@ -19,7 +19,7 @@ const views = {
   BookedFlights,
   UserSignup,
   UserSignin,
-  BookingPayment
+  BookingPayment,
 }
 
 const currentViewComponent = computed(() => views[currentView.value])
