@@ -2,7 +2,9 @@ package ca.mcgill.esce321.flightManagement.model;
 
 import jakarta.persistence.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,7 +20,8 @@ public class Customer extends Person {
     public Customer(){}
     public Customer(String email, String password, String firstName, String lastName, int membershipNumber){
         super(email, password,firstName,lastName);
-        this.membershipNumber = membershipNumber;
+        String shortDate = new SimpleDateFormat("MMddHH").format(new Date());
+        this.membershipNumber = Integer.parseInt(shortDate);
     }
 
     public int getPoints() {

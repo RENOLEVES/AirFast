@@ -28,6 +28,7 @@
 <script>
 import ManagerSidebar from '../components/ManagerSlideBar.vue';
 import AllFlights from './AllFlights.vue'; // The first layout you provided
+import ViewCustomers from './ViewCustomers.vue';
 
 // Placeholder components for other views
 const DummyView = {
@@ -47,7 +48,7 @@ export default {
     ManageEmployees: DummyView,
     ManageSeats: DummyView,
     ManageBookings: DummyView,
-    ViewCustomers: DummyView,
+    ViewCustomers,
     ViewEmployees: DummyView,
     ViewBookings: DummyView,
     ViewSeats: DummyView,
