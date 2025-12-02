@@ -39,6 +39,7 @@ public class FlightRequestDTO {
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
         this.status = status;
+        this.isActive = true;
     }
 
     // Getters and Setters
