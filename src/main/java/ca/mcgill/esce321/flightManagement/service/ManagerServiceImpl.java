@@ -39,7 +39,7 @@ public class ManagerServiceImpl {
 
     
     ManagerServiceImpl(PersonRepository personRepository,
-                       F    ightRepository flightRepository,
+                       FlightRepository flightRepository,
                        BookingRepository bookingRepository, SeatRepository seatRepository){
         this.personRepository = personRepository;
         this.flightRepository = flightRepository;

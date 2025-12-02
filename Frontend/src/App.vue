@@ -11,8 +11,9 @@ import BookedFlights from './views/BookedFlights.vue'
 import UserSignup from './views/UserSignup.vue'
 import UserSignin from './views/UserSignin.vue'
 import BookingPayment from './views/BookingPayment.vue'
+import OwnerHomePage from './views/OwnerHomePage.vue'
 
-const currentView = ref('HomePage')
+const currentView = ref('OwnerHomePage')
 
 const views = {
   HomePage,
@@ -20,6 +21,7 @@ const views = {
   UserSignup,
   UserSignin,
   BookingPayment,
+  OwnerHomePage
 }
 
 const currentViewComponent = computed(() => views[currentView.value])
