@@ -1,23 +1,40 @@
 <template>
-  <div class="owner-dashboard min-h-screen bg-gray-100 flex h-screen">
+  <!--
+    FIXED: Changed overflow-y-scroll to overflow-hidden.
+    The main container now constrains the height to the screen size (h-screen)
+    and prevents external scrolling.
+  -->
+  <div class="owner-dashboard min-h-screen bg-gray-100 flex h-screen w-full overflow-hidden">
 
     <ManagerSidebar @navigate="changeView" />
 
-    <main class="flex-1 p-6 md:p-10">
+    <!--
+      FIXED: Added h-full and flex flex-col to the main element
+      to ensure it manages vertical space correctly and passes down height constraints.
+    -->
+    <main class="flex-1 p-6 md:p-10 flex flex-col h-full">
 
-      <header class="mb-8 p-4 bg-white rounded-lg shadow-md flex justify-between items-center">
+      <header class="mb-8 p-4 bg-white rounded-lg shadow-md flex justify-between items-center flex-shrink-0">
         <h1 class="text-3xl font-extrabold text-zinc-700">Welcome Owner 👋</h1>
         <div class="text-gray-500">
           Page 1 of 5 (Current View: {{ displayViewName }})
         </div>
       </header>
 
-      <section class="p-6 bg-white rounded-lg shadow-xl min-h-[60vh]">
-        <h2 v-if="currentView !== 'AllFlights'" class="text-2xl font-semibold mb-4 capitalize text-indigo-600">
+      <!--
+        FIXED: Changed min-h-[60vh] to h-full and added flex flex-col.
+        This container now fills the remaining height and uses flex to ensure
+        the child component (AllFlights) can correctly take up h-full and handle its internal scrolling.
+      -->
+      <section class="p-6 bg-white rounded-lg shadow-xl h-full flex flex-col overflow-hidden">
+        <h2 v-if="currentView !== 'AllFlights'" class="text-2xl font-semibold mb-4 capitalize text-indigo-600 flex-shrink-0">
           {{ displayViewName }}
         </h2>
 
-        <component :is="currentViewComponent"></component>
+        <!-- The component area must also use flex-grow to take up all remaining space -->
+        <div class="flex-grow h-full overflow-hidden">
+          <component :is="currentViewComponent"></component>
+        </div>
 
       </section>
 
