@@ -16,14 +16,11 @@
         class="date-range-display-wrapper w-full px-4 py-3 border border-gray-300 rounded-lg"
         @click="toggleCalendar"
     >
-      <div class="date-input-box start-date">
+      <div class="date-input-box start-date ">
         {{ startDateDisplay }}
       </div>
       <div class="date-input-box end-date">
         {{ endDateDisplay }}
-      </div>
-      <div class="calendar-icon-box">
-        <span role="img" aria-label="calendar-icon">📅</span>
       </div>
     </div>
 
@@ -43,11 +40,9 @@
 
 </template>
 
-<script setup>
+`<script setup>
 import { ref, computed } from 'vue';
-// Since you are using it locally, keep the import
 import { DatePicker as VDatePicker } from 'v-calendar';
-
 
 // New state variable to control the pop-up visibility
 const isCalendarOpen = ref(false);
@@ -59,11 +54,11 @@ const toggleCalendar = () => {
 
 // 1. Reactive Data for the Date Range
 const range = ref({
-  start: new Date(2025, 10, 25),
-  end: new Date(2025, 10, 30)
+  start: new Date(),
+  end: new Date()
 });
 
-// 2. Date Formatting for Display (No changes needed here)
+// 2. Date Formatting for Display
 const formatDate = (date) => {
   if (!date) return 'N/A';
   return new Intl.DateTimeFormat('en-CA', {
@@ -81,7 +76,13 @@ const endDateDisplay = computed(() => {
   return formatDate(range.value.end);
 });
 
-// 3. Configure Date Masks (No changes needed here)
+// 3. Search function to send dates to backend
+defineExpose({
+  startDateDisplay,
+  endDateDisplay
+});
+
+// 4. Configure Date Masks
 const masks = ref({
   title: 'YYYY MMMM',
   weekdays: 'WWW',
@@ -117,7 +118,7 @@ const masks = ref({
   /* Important: Remove redundant styles applied by the Tailwind classes */
   padding: 0;
   margin: 0;
-  height: auto; /* Let the py-3 from the class control the height */
+  height: 50px; /* Let the py-3 from the class control the height */
 }
 
 /* 4. Date Text Boxes (Start/End) */
@@ -135,20 +136,6 @@ const masks = ref({
 
 .date-input-box:first-child {
   border-right: 1px solid #e0e0e0;
-}
-
-/* 5. Calendar Icon Box */
-.calendar-icon-box {
-  padding: 0 5px 0 10px; /* Adjusted padding to look better next to the date text */
-  background-color: transparent; /* Remove background color */
-  border-left: 1px solid #e0e0e0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #54c1f3;
-  flex-shrink: 0;
 }
 
 /* 6. Popover Positioning */
@@ -184,7 +171,7 @@ const masks = ref({
 .calendar-popover {
   position: absolute;
   /* Top value adjusted to sit directly below the input boxes (approx 40px input height + 5px margin from header) */
-  top: 45px;
+  top: 77px;
   left: 0;
   z-index: 9999;
   background-color: white;
