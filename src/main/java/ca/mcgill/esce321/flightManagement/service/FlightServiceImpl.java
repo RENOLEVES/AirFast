@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import ca.mcgill.esce321.flightManagement.model.FlightStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -62,19 +63,19 @@ public class FlightServiceImpl {
         }
 
         Flight saved = flightRepository.save(f);
-        return toResponse(saved);
+        return convertToDTO(saved);
     }
 
     // --------- READ ----------
     public FlightResponseDTO getFlightById(long id) {
         Flight f = flightRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
-        return toResponse(f);
+        return convertToDTO(f);
     }
 
     public List<FlightResponseDTO> getAllFlights() {
         return flightRepository.findAll().stream()
-                .map(this::toResponse)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -102,7 +103,7 @@ public class FlightServiceImpl {
         if (dto.getStatus() != null)      f.setFlightStatus(dto.getStatus());
 
         Flight saved = flightRepository.save(f);
-        return toResponse(saved);
+        return convertToDTO(saved);
     }
 
     // --------- DELETE ----------
@@ -114,32 +115,64 @@ public class FlightServiceImpl {
     }
 
     // --------- MAPPER ----------
-    private FlightResponseDTO toResponse(Flight f) {
-        int delay = f.getDelayHours();  // no null check for primitive
 
-        return new FlightResponseDTO(
-                f.getFlightId(),
-                f.getCapacity(),
-                f.getSeatsRemaining(),
-                f.getDepartTime(),
-                f.getArrivalTime(),
-                f.getExpectedDepartTime(),
-                f.getDepartLocation(),
-                f.getArrivalLocation(),
-                f.getFlightNumber(),
-                f.getFlightTime(),
-                f.isRecurring(),
-                f.isActive()        
-                );
+    public List<FlightResponseDTO> searchFlights(
+            LocalDateTime start,
+            LocalDateTime end,
+            String departureLocation,
+            String arrivalLocation
+    ) {
+        System.out.println("========== SEARCH DEBUG ==========");
+        System.out.println("Start DateTime: " + start);
+        System.out.println("End DateTime: " + end);
+        System.out.println("Departure Location: '" + departureLocation + "'");
+        System.out.println("Arrival Location: '" + arrivalLocation + "'");
+
+        // Test 1: Get ALL flights first
+        List<Flight> allFlights = flightRepository.findAll();
+        System.out.println("Total flights in database: " + allFlights.size());
+
+        if (!allFlights.isEmpty()) {
+            Flight first = allFlights.get(0);
+            System.out.println("\nFirst flight details:");
+            System.out.println("  Depart Time: " + first.getDepartTime());
+            System.out.println("  Depart Location: '" + first.getDepartLocation() + "'");
+            System.out.println("  Arrival Location: '" + first.getArrivalLocation() + "'");
+        }
+
+        // Test 2: Try date-only search
+        List<Flight> dateOnlyFlights = flightRepository.findByDepartTimeBetween(start, end);
+        System.out.println("\nFlights in date range (no location filter): " + dateOnlyFlights.size());
+
+        // Test 3: Your actual search
+        List<Flight> flights = flightRepository.findFlightsByDateRangeAndLocations(
+                start, end, departureLocation, arrivalLocation
+        );
+        System.out.println("\nFlights found with all filters: " + flights.size());
+        System.out.println("==================================\n");
+
+        return flights.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-       public List<FlightResponseDTO> searchFlightsBetweenDates(LocalDateTime start, LocalDateTime end) {
-        List<Flight> flights = flightRepository.searchFlightsBetweenDates(start, end);
-
-         return flights.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
-
-        
+    // Helper method to convert Flight entity to FlightResponseDTO
+    private FlightResponseDTO convertToDTO(Flight flight) {
+        return new FlightResponseDTO(
+                flight.getFlightId(),
+                flight.getCapacity(),
+                flight.getSeatsRemaining(),
+                flight.getDelayHours(),
+                flight.getDepartTime(),
+                flight.getArrivalTime(),
+                flight.getExpectedDepartTime(),
+                flight.getDepartLocation(),
+                flight.getArrivalLocation(),
+                flight.getFlightNumber(),
+                flight.getFlightTime(),
+                flight.isRecurring(),
+                flight.isActive(),
+                flight.getFlightStatus()
+        );
     }
 }

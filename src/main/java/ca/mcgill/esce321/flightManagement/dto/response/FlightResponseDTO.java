@@ -31,7 +31,7 @@ public class FlightResponseDTO {
                              Integer delayHours,
                              LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
                              String departLocation, String arrivalLocation,
-                             String flightNumber, int flightTime,
+                             String flightNumber, double flightTime,
                              boolean isRecurring, boolean isActive,
                              FlightStatus status) {
         this.flightId = flightId;
@@ -156,7 +156,7 @@ public class FlightResponseDTO {
     }
 
     public List<Seat> getSeats() {
-        return getSeats();
+        return seats;
     }
 
     public void setSeats(List<Seat> seats) {
