@@ -16,7 +16,7 @@ public class ManagerRequestDTO extends EmployeeRequestDTO {
 
     public ManagerRequestDTO(String email, String password, String firstName, String lastName,
                              List<Long> flightIds, List<Long> bookingIds) {
-        super(email, password, firstName, lastName);
+        super(email, password, firstName, lastName, "manager");
         this.setActive(true);
         this.flightIds = flightIds;
         this.bookingIds = bookingIds;

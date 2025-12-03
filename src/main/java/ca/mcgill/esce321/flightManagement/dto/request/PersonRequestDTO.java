@@ -8,6 +8,13 @@ public class PersonRequestDTO {
     private String lastName;
 
     public PersonRequestDTO() {}
+    
+
+    public PersonRequestDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
 
     public PersonRequestDTO(String email, String password, String firstName, String lastName) {
         this.email = email;

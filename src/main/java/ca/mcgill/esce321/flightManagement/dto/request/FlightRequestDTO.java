@@ -1,5 +1,6 @@
 package ca.mcgill.esce321.flightManagement.dto.request;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import ca.mcgill.esce321.flightManagement.model.FlightStatus;
@@ -18,9 +19,22 @@ public class FlightRequestDTO {
     private Boolean isActive;             
     private Integer delayHours;
     private int seatsRemaining; 
-    private FlightStatus status;      
+    private FlightStatus status;      private String departTimeStr;  // For search with date string
+    private String arrivalTimeStr; // For search with date string
+
 
     public FlightRequestDTO() {}
+
+    public FlightRequestDTO(
+                            LocalDateTime departTime,
+                            LocalDateTime arrivalTime,
+                            String departLocation,
+                            String arrivalLocation){
+        this.departLocation = departLocation;
+        this.arrivalLocation = arrivalLocation;
+        this.departTime = departTime;
+        this.arrivalTime = arrivalTime;
+    }
 
     public FlightRequestDTO(int capacity,
                             LocalDateTime expectedDepartTime,
@@ -39,6 +53,7 @@ public class FlightRequestDTO {
         this.flightTime = flightTime;
         this.isRecurring = isRecurring;
         this.status = status;
+        this.isActive = true;
     }
 
     // Getters and Setters
@@ -145,4 +160,38 @@ public class FlightRequestDTO {
     public FlightStatus getStatus() {
         return this.status;
     }
+
+    // Add these getters and setters at the bottom
+    public String getDepartTimeStr() {
+        return departTimeStr;
+    }
+
+    public void setDepartTimeStr(String departTimeStr) {
+        this.departTimeStr = departTimeStr;
+    }
+
+    public String getArrivalTimeStr() {
+        return arrivalTimeStr;
+    }
+
+    public void setArrivalTimeStr(String arrivalTimeStr) {
+        this.arrivalTimeStr = arrivalTimeStr;
+    }
+
+    // Add helper methods to convert strings to LocalDateTime
+    public LocalDateTime getDepartDateTimeFromStr() {
+        if (departTimeStr != null && !departTimeStr.isEmpty()) {
+            return LocalDate.parse(departTimeStr).atStartOfDay();
+        }
+        return departTime; // Fall back to existing field
+    }
+
+    public LocalDateTime getArrivalDateTimeFromStr() {
+        if (arrivalTimeStr != null && !arrivalTimeStr.isEmpty()) {
+            return LocalDate.parse(arrivalTimeStr).atTime(23, 59, 59);
+        }
+        return arrivalTime; // Fall back to existing field
+    }
+
 }
+

@@ -24,7 +24,7 @@ import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
 
 @RestController
 @RequestMapping("/api/flights")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class FlightController {
 
     private final FlightServiceImpl flightService;
@@ -75,13 +75,17 @@ public class FlightController {
         return ResponseEntity.status(status).body(msg);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<FlightResponseDTO>> searchFlights(
-            @RequestParam("start")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam("end")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
+            @RequestBody FlightRequestDTO request
     ) {
-        return ResponseEntity.ok(flightService.searchFlightsBetweenDates(start, end));
+        return ResponseEntity.ok(
+                flightService.searchFlights(
+                        request.getDepartDateTimeFromStr(),
+                        request.getArrivalDateTimeFromStr(),
+                        request.getDepartLocation(),
+                        request.getArrivalLocation()
+                )
+        );
     }
 }

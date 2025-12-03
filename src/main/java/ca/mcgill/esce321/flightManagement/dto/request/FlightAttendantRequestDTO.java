@@ -15,7 +15,7 @@ public class FlightAttendantRequestDTO extends EmployeeRequestDTO {
 
     public FlightAttendantRequestDTO(String email, String password, String firstName, String lastName,
                                      List<Long> flightIds) {
-        super(email,password, firstName, lastName);
+        super(email,password, firstName, lastName, "flight attendant");
         this.setActive(true);
         this.flightIds = flightIds;
     }

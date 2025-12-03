@@ -12,13 +12,13 @@ public class ManagerResponseDTO extends EmployeeResponseDTO {
     public ManagerResponseDTO() {}
 
     public ManagerResponseDTO(Long id, String email, String password, String firstName, String lastName) {
-        super(id, email, password, firstName, lastName);
+        super(id, email, password, firstName, lastName, "Manager");
         this.setActive(true);
     }
 
     public ManagerResponseDTO(Long id, String email, String password, String firstName, String lastName,
                               List<Long> flightIds, List<Long> bookingIds) {
-        super(id, email, password, firstName, lastName);
+        super(id, email, password, firstName, lastName, "Manager");
         this.setActive(true);
         this.flightIds = flightIds;
         this.bookingIds = bookingIds;

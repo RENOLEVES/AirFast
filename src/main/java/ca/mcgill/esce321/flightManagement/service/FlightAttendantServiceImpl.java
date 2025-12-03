@@ -1,12 +1,16 @@
 package ca.mcgill.esce321.flightManagement.service;
 import ca.mcgill.esce321.flightManagement.dto.request.FlightAttendantRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
+import ca.mcgill.esce321.flightManagement.model.Owner;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,8 +50,28 @@ public class FlightAttendantServiceImpl {
     }
 
     // ---------- READ ALL ----------
-    public List<Person> getAllFlightAttendants() {
-        return flightAttendantRepo.findAll();
+    public List<FlightAttendantResponseDTO> getAllFlightAttendants() {
+        List<Person> allPersons = flightAttendantRepo.findAll();
+        List<FlightAttendantResponseDTO> flightAttendants = new ArrayList<>();
+
+        for (Person p : allPersons) {
+            if (p instanceof FlightAttendant flightAttendant) {
+
+                flightAttendants.add(new FlightAttendantResponseDTO(
+                        flightAttendant.getId(),
+                        flightAttendant.getEmail(),
+                        flightAttendant.getPassword(),
+                        flightAttendant.getFirstName(),
+                        flightAttendant.getLastName(),
+                        flightAttendant.getFlights().stream().map(Flight::getFlightId).toList()
+                        ));
+            }
+        }
+        System.out.println(flightAttendants);
+        if(flightAttendants.isEmpty()) {
+            throw new IllegalArgumentException("There are no Flight Attendants in the database.");
+        }
+        return flightAttendants;
     }
 
     // ---------- UPDATE ----------

@@ -39,10 +39,7 @@ import ca.mcgill.esce321.flightManagement.service.SeatServiceImpl;
 @RestController
 @RequestMapping("/api/seats")
 @Validated
-@CrossOrigin(origins = "*")
-
-
-
+@CrossOrigin(origins = "http://localhost:5173")
 public class SeatController {
 
     @Autowired

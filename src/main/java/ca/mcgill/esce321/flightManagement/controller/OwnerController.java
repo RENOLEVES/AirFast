@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/owners")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 @Validated
 public class OwnerController {
 
@@ -38,6 +38,11 @@ public class OwnerController {
         return ResponseEntity.ok(owners);
     }
 
+    @GetMapping("/view/cumulativeRevenue")
+    public ResponseEntity<List<RevenuePointResponseDTO>> getCumulativeRevenue(){
+        return ResponseEntity.ok(ownerService.calculateCumulativeRevenueHistory());
+    }
+
     // READ one
     @GetMapping("/{id}")
     public ResponseEntity<OwnerResponseDTO> getById(@PathVariable("id") long id) {
@@ -57,6 +62,12 @@ public class OwnerController {
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         ownerService.deleteOwner(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/view/totalEmployeeCount")
+    public ResponseEntity<List<Integer>> viewTotalEmployeeCount() {
+
+        return ResponseEntity.ok(ownerService.viewTotalEmployeeCount());
     }
 
     @GetMapping("/view/salary/{id}")

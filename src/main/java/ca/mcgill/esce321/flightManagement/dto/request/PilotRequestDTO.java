@@ -13,7 +13,7 @@ public class PilotRequestDTO extends EmployeeRequestDTO {
     public PilotRequestDTO() {}
 
     public PilotRequestDTO(String email, String password, String firstName, String lastName, List<Long> flightIds) {
-        super(email,password, firstName, lastName);
+        super(email,password, firstName, lastName, "pilot");
         this.setActive(true);
         this.flightIds = flightIds;
     }

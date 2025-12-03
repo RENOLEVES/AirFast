@@ -123,6 +123,7 @@ public class SeatServiceImpl {
     }
     }
 
+
     @Transactional
     public void deleteSeat(long id) {
         Optional<Seat> optionalSeat = seatRepository.findById(id);

@@ -9,11 +9,20 @@ public abstract class Employee extends Person{
     private Long e_id;
     private double salary;
     private boolean isActive;
+    private String title;
 
     public Employee(){}
     public Employee(String email, String password, String firstName, String lastName) {
         super(email,password,firstName,lastName);
         this.isActive = true;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Long getE_id() {

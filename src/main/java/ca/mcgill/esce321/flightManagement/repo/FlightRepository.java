@@ -16,15 +16,20 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
     // Explicit search
     Flight findByFlightId(Long flightId);
 
-       // Search flights between two dates (departure time)
+    // Search flights between two dates (departure time)
     List<Flight> findByDepartTimeBetween(LocalDateTime start, LocalDateTime end);
 
-    // Alternatively, using @Query
-    @Query("SELECT f FROM Flight f WHERE f.departTime BETWEEN :start AND :end")
-    List<Flight> searchFlightsBetweenDates(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-
-
-   
-    // Prevent duplicates (used in create)
-    // boolean existsByFlightNumberAndDepartTime(String flightNumber, LocalDateTime departTime);
+    // Search with date range and locations
+    @Query(value = "SELECT * FROM flight f WHERE " +
+            "DATE(f.depart_time) >= DATE(:start) " +
+            "AND DATE(f.depart_time) <= DATE(:end) " +
+            "AND (:departLocation IS NULL OR :departLocation = '' OR LOWER(f.depart_location) LIKE LOWER(CONCAT('%', :departLocation, '%'))) " +
+            "AND (:arrivalLocation IS NULL OR :arrivalLocation = '' OR LOWER(f.arrival_location) LIKE LOWER(CONCAT('%', :arrivalLocation, '%')))",
+            nativeQuery = true)
+    List<Flight> findFlightsByDateRangeAndLocations(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end,
+            @Param("departLocation") String departureLocation,
+            @Param("arrivalLocation") String arrivalLocation
+    );
 }
