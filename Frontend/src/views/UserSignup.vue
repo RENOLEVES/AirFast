@@ -140,7 +140,7 @@ try {
                    || "Invalid credentials"
         alert("Login failed: " + msg)
       } else {
-        alert("Cannot reach backend at localhost:8080")
+        alert("Cannot reach backend")
       }
     }
 }

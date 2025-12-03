@@ -18,7 +18,7 @@ public class Customer extends Person {
     private int timeInFlight;
 
     public Customer(){}
-    public Customer(String email, String password, String firstName, String lastName, int membershipNumber){
+    public Customer(String email, String password, String firstName, String lastName){
         super(email, password,firstName,lastName);
         String shortDate = new SimpleDateFormat("MMddHH").format(new Date());
         this.membershipNumber = Integer.parseInt(shortDate);

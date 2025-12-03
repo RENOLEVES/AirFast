@@ -16,7 +16,7 @@
     </div>
 
     <!-- Customers List -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 flex-grow overflow-y-auto pr-4 -mr-4">
 
       <!-- Customer Card Loop -->
       <div
@@ -34,6 +34,12 @@
         <div class="space-y-3 border-t pt-3">
           <div class="flex items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-11a2 2 0 01-2-2v-10z" />
+            </svg>
+            <p class="text-md text-gray-700 font-medium">{{ customer.firstName }} {{ customer.lastName }}</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
             <p class="text-md text-gray-700 break-words font-medium">{{ customer.email }}</p>
@@ -42,20 +48,15 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-11a2 2 0 01-2-2v-10z" />
             </svg>
-            <p class="text-md text-gray-700 font-medium">{{ customer.phone }}</p>
+            <p class="text-md text-gray-700 font-medium">{{ customer.membershipNumber}}</p>
           </div>
-        </div>
 
-        <!-- Action Button -->
-        <button class="mt-6 w-full py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-600 transition duration-150 shadow-md">
-          Manage Account
-        </button>
+        </div>
       </div>
     </div>
 
-    <!-- Pagination Placeholder -->
     <div class="text-center py-6 mt-8 text-gray-500 border-t pt-6">
-      Paginations or Load on scroll... (Showing {{ customers.length }} results)
+      Showing {{ customers.length }} results
     </div>
   </div>
 </template>
@@ -73,9 +74,6 @@ export default {
     };
   },
   methods: {
-    /**
-     * Fetches customer data from the local backend API endpoint.
-     */
     async fetchCustomers() {
       this.loading = true;
       this.error = null;
@@ -84,18 +82,15 @@ export default {
         const response = await fetch(this.apiUrl);
 
         if (!response.ok) {
-          // Throw error for non-2xx status codes
           throw new Error(`Server returned status: ${response.status}`);
         }
 
-        // Parse the JSON response
         const data = await response.json();
 
         this.customers = data;
 
       } catch (e) {
         console.error('Fetch error:', e);
-        // Set error message and fallback to demo data
         this.error = e.message || 'The backend service is unavailable.';
         this.customers = this.getDemoCustomers();
       } finally {
@@ -103,7 +98,6 @@ export default {
       }
     },
 
-    // Fallback/Demo data method (simplified structure for readability)
     getDemoCustomers() {
       return [
         {id: 101, name: 'Vincent He (Demo)', email: 'vincenthe@demo.com', phone: '123-123-144', role: 'Customer'},
@@ -112,7 +106,7 @@ export default {
       ];
     }
   },
-  // Fetch data when the component is first loaded
+
   mounted() {
     this.fetchCustomers();
   },
