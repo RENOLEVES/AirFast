@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import FlightCard from '../components/FlightCard.vue';
+import FlightCard from '../components/FlightCardForOwner.vue';
 
 export default {
   name: 'AllFlights',
