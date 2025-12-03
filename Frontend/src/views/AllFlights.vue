@@ -2,9 +2,6 @@
   <!-- Main container now uses flex column layout to manage vertical space -->
   <div class="p-4 sm:p-8 w-full h-full flex flex-col overflow-x-hidden">
 
-    <!-- Header is fixed and does not scroll -->
-    <h1 class="text-zinc-700 text-4xl font-extrabold mb-8 flex-shrink-0">All Flights</h1>
-
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12 flex-grow">
       <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-500 border-t-transparent mx-auto mb-4"></div>

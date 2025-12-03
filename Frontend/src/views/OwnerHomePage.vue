@@ -27,9 +27,6 @@
         the child component (AllFlights) can correctly take up h-full and handle its internal scrolling.
       -->
       <section class="p-6 bg-white rounded-lg shadow-xl h-full flex flex-col overflow-hidden">
-        <h2 v-if="currentView !== 'AllFlights'" class="text-2xl font-semibold mb-4 capitalize text-indigo-600 flex-shrink-0">
-          {{ displayViewName }}
-        </h2>
 
         <!-- The component area must also use flex-grow to take up all remaining space -->
         <div class="flex-grow h-full overflow-hidden">

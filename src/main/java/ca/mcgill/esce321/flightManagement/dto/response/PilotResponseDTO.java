@@ -10,7 +10,7 @@ public class PilotResponseDTO extends EmployeeResponseDTO {
     public PilotResponseDTO() {}
 
     public PilotResponseDTO(Long id, String email, String password, String firstName, String lastName, List<Long> flightIds) {
-        super(id, email,password, firstName, lastName);
+        super(id, email,password, firstName, lastName, "Pilot");
         this.setActive(true);
         this.flightIds = flightIds;
     }

@@ -69,7 +69,7 @@ public class PersonServiceImpl{
     private EmployeeResponseDTO convertEmployee(Employee e) {
         return new EmployeeResponseDTO(
                 e.getId(), e.getEmail(), e.getPassword(),
-                e.getFirstName(), e.getLastName()
+                e.getFirstName(), e.getLastName(), e.getTitle()
         );
     }
 

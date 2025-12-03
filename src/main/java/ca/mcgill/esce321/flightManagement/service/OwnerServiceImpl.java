@@ -116,7 +116,8 @@ public class OwnerServiceImpl{
                                 e.getEmail(),
                                 e.getPassword(),
                                 e.getFirstName(),
-                                e.getLastName()
+                                e.getLastName(),
+                                e.getTitle()
                         );
                     }
                 }).collect(Collectors.toList());
