@@ -30,6 +30,7 @@
 import ManagerSidebar from '../components/ManagerSlideBar.vue';
 import AllFlights from './AllFlights.vue';
 import ViewCustomers from './ViewCustomers.vue';
+import ViewEmployees from './ViewEmployees.vue';
 
 const DummyView = {
   template: `
@@ -49,7 +50,7 @@ export default {
     ManageSeats: DummyView,
     ManageBookings: DummyView,
     ViewCustomers,
-    ViewEmployees: DummyView,
+    ViewEmployees,
     ViewBookings: DummyView,
     ViewSeats: DummyView,
   },

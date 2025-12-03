@@ -37,7 +37,7 @@ public class CustomerServiceImpl {
 
       public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
 
-        Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber());
+        Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
         Customer saved = personRepository.save(customerToCreate);
      
         return new CustomerResponseDTO(
@@ -55,9 +55,6 @@ public class CustomerServiceImpl {
     public CustomerResponseDTO findCustomerById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
-        
-
-     
         if (p.isPresent() && p.get() instanceof Customer customer) {
 
             return new CustomerResponseDTO(

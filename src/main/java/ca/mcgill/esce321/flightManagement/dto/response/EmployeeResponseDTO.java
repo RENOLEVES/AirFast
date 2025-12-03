@@ -29,4 +29,12 @@ public class EmployeeResponseDTO extends PersonResponseDTO {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+     public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

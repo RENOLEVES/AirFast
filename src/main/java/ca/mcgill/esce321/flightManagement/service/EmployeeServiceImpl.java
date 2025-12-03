@@ -23,20 +23,16 @@ public class EmployeeServiceImpl{
     private FlightAttendantServiceImpl flightAttendantService;
 
 
-
     public EmployeeServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 
     public List<EmployeeResponseDTO> findAllEmployees() {
-        // 1. Fetch all Person objects from the repository
         List<Person> allPeople = personRepository.findAll();
 
-        // 2. Filter the list to only include Employee instances
-        // 3. Cast and convert each Employee to an EmployeeResponseDTO
         return allPeople.stream()
                 .filter(person -> person instanceof Employee)
-                .map(person -> (Employee) person) // Safe cast after filtering
+                .map(person -> (Employee) person)
                 .map(this::convertEmployee)
                 .collect(Collectors.toList());
     }
@@ -122,17 +118,15 @@ public class EmployeeServiceImpl{
     }
 
     private EmployeeResponseDTO convertEmployee(Employee e) {
-        // Assuming your Employee model has a getTitle() method
+        String employeeTitle = e.getClass().getSimpleName();
+
         return new EmployeeResponseDTO(
                 e.getId(),
                 e.getEmail(),
                 e.getPassword(),
                 e.getFirstName(),
                 e.getLastName(),
-                e.getTitle() // Include the new 'title' field
+                employeeTitle
         );
     }
-
-
-
 }

@@ -1,10 +1,7 @@
 <template>
-  <!-- Main container now uses flex column layout to manage vertical space -->
   <div class="p-4 sm:p-8 w-full h-full flex flex-col overflow-x-hidden">
 
-    <!-- Flight List Wrapper: This is the new scrollable area -->
     <div class="flex-grow overflow-y-auto pr-4 -mr-4">
-      <!-- We add flex-grow and overflow-y-auto to enable scrolling here -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0">
         <FlightCard
             v-for="(flight, index) in flights"
@@ -14,7 +11,6 @@
       </div>
     </div>
 
-    <!-- Placeholder for pagination/footer is fixed and does not scroll -->
     <div v-if="!loading && !error" class="text-center py-6 mt-8 text-gray-500 border-t pt-6 flex-shrink-0">
       Showing {{ flights.length }} flights.
     </div>

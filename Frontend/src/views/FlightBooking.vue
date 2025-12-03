@@ -154,16 +154,6 @@ const api = axios.create({
 const emit = defineEmits(['navigate'])
 const navigate = inject('navigate')
 
-// // select button
-// const value = ref('One-Way');
-// const options = ref(['One-Way', 'Round-Trip']);
-
-// const handleChange = (newValue) => {
-//   value.value = newValue;
-//   console.log('New value selected:', newValue);
-// };
-
-
 const searchParams = ref({
   departureLocation: '',
   arrivalLocation: '',
