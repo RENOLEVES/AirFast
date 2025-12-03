@@ -1,28 +1,32 @@
 <template>
-  <!--
-    FIXED: Changed overflow-y-scroll to overflow-hidden.
-    The main container now constrains the height to the screen size (h-screen)
-    and prevents external scrolling.
-  -->
-  <div class="owner-dashboard min-h-screen bg-gray-100 flex h-screen w-full overflow-hidden">
-
-    <ManagerSidebar @navigate="changeView" />
-
-    <main class="flex-1 p-6 md:p-10 flex flex-col h-full">
-
-      <header class="mb-8 p-4 bg-white rounded-lg shadow-md flex justify-between items-center flex-shrink-0">
-        <h1 class="text-3xl font-extrabold text-zinc-700">Management System</h1>
-      </header>
-
-      <section class="p-6 bg-white rounded-lg shadow-xl h-full flex flex-col overflow-hidden">
-
-        <div class="flex-grow h-full overflow-hidden">
-          <component :is="currentViewComponent"></component>
+  <div>
+    <div class="fixed top-0 w-full bg-white shadow-md z-50 p-4 mx-auto pl-20">
+      <div class="flex justify-between items-center w-full">
+        <div>
+          <h1 class="font-extrabold text-[20px] text-[#484848]">
+            <i class="fas fa-plane text-blue-500"></i>Air Fast
+          </h1>
+          <p class="text-[#9a9a9a]">Search and book your next journey</p>
         </div>
+      </div>
+    </div>
 
-      </section>
+    <div class="owner-dashboard min-h-screen bg-gray-100 flex h-screen w-full overflow-hidden pt-20">
 
-    </main>
+      <ManagerSidebar @navigate="changeView" />
+
+      <main class="flex-grow p-6 md:p-10 flex flex-col h-full">
+
+        <section class="p-6 bg-white rounded-lg shadow-xl h-full flex flex-col overflow-hidden">
+
+          <div class="flex-grow h-full overflow-hidden">
+            <component :is="currentViewComponent"></component>
+          </div>
+
+        </section>
+
+      </main>
+    </div>
   </div>
 </template>
 
@@ -31,6 +35,8 @@ import ManagerSidebar from '../components/ManagerSlideBar.vue';
 import AllFlights from './AllFlights.vue';
 import ViewCustomers from './ViewCustomers.vue';
 import ViewEmployees from './ViewEmployees.vue';
+import ViewBookings from "./ViewBookings.vue";
+
 
 const DummyView = {
   template: `
@@ -51,7 +57,7 @@ export default {
     ManageBookings: DummyView,
     ViewCustomers,
     ViewEmployees,
-    ViewBookings: DummyView,
+    ViewBookings,
     ViewSeats: DummyView,
   },
   data() {

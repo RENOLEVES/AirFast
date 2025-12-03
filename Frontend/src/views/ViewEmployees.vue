@@ -58,7 +58,7 @@ export default {
       employees: [],
       loading: false,
       error: null,
-      apiUrl: 'http://localhost:8080/api/employees',
+      apiUrl: 'http://localhost:8080/api/owners/view/employee',
     };
   },
   methods: {

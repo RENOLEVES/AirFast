@@ -1,5 +1,5 @@
 <template>
-  <div class="booking-card bg-white shadow-lg rounded-xl p-5 border-t-4 border-indigo-500 max-w-sm mx-auto my-4">
+  <div class="booking-card bg-white shadow-lg rounded-xl p-5 border-t-4 border-indigo-500 max-w-sm mx-auto my-4 w-[300px] h-[300px]">
 
     <div class="flex justify-between items-start mb-4 border-b pb-2">
       <h3 class="text-xl font-bold text-gray-800">Booking #{{ booking.bookingId }}</h3>
@@ -53,12 +53,11 @@
 </template>
 
 <script>
-// Define the required structure for the prop for type checking
 const BookingResponseDTO = {
   bookingId: Number,
   customerId: Number,
   seatId: Number,
-  bookingDate: [String, Date], // Accepts string (from API) or Date object
+  bookingDate: [String, Date],
   paymentStatus: String,
   bookingStatus: String,
 };
@@ -70,24 +69,17 @@ export default {
       type: Object,
       required: true,
       validator: (value) => {
-        // Simple validation to ensure required keys exist
         return ['bookingId', 'customerId', 'seatId', 'paymentStatus', 'bookingStatus'].every(key => key in value);
       }
     }
   },
   computed: {
-    /**
-     * Formats the booking date for display.
-     * @returns {string} Formatted date string.
-     */
     formattedDate() {
       if (!this.booking.bookingDate) return 'N/A';
 
-      // Check if it's a valid date string/object
       const date = new Date(this.booking.bookingDate);
       if (isNaN(date)) return 'Invalid Date';
 
-      // Format example: 12/02/2025, 11:16 PM
       return date.toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'short',
@@ -97,10 +89,6 @@ export default {
       });
     },
 
-    /**
-     * Returns Tailwind CSS classes for the Payment Status badge based on its value.
-     * @returns {string} Tailwind class string.
-     */
     paymentStatusClasses() {
       const status = this.booking.paymentStatus.toUpperCase();
       switch (status) {
@@ -115,27 +103,22 @@ export default {
       }
     },
 
-    /**
-     * Returns Tailwind CSS classes for the Booking Status badge based on its value.
-     * @returns {string} Tailwind class string.
-     */
     bookingStatusClasses() {
       const status = this.booking.bookingStatus.toUpperCase();
       switch (status) {
         case 'CONFIRMED':
-          return 'bg-blue-100 text-blue-800';
-        case 'CHECKED_IN':
           return 'bg-green-100 text-green-800';
-        case 'CANCELLED':
+        case 'WAITLISTED':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'CANCELLED_BY_CUSTOMER':
+          return 'bg-red-100 text-red-800';
+        case 'CANCELLED_BY_AIRLINE':
           return 'bg-red-100 text-red-800';
         default:
           return 'bg-gray-200 text-gray-800';
       }
+
     }
   }
 }
 </script>
-
-<style scoped>
-/* No specific component styles needed if using only Tailwind utility classes */
-</style>

@@ -29,7 +29,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.863 4.253A8.961 8.961 0 0112 3c4.418 0 8 3.582 8 8 0 1.017-.215 1.981-.663 2.853l-2.54 2.54a4.01 4.01 0 01-3.693 1.157A8.961 8.961 0 0112 21c-4.418 0-8-3.582-8-8 0-1.017.215-1.981.663-2.853l2.54-2.54A4.01 4.01 0 019 5.41a8.961 8.961 0 012.863-1.157z" />
             </svg>
-            <p class="text-md text-gray-700 font-medium">{{ customer.membershipNumber}}</p>
+            <p class="text-md text-gray-700 font-medium"><span class="font-semibold text-gray-500 text-sm">Membership Code:</span>   {{ customer.membershipNumber}}</p>
           </div>
 
         </div>
@@ -50,7 +50,7 @@ export default {
       customers: [],
       loading: false,
       error: null,
-      apiUrl: 'http://localhost:8080/api/customers',
+      apiUrl: 'http://localhost:8080/api/owners/view/customer',
     };
   },
   methods: {
