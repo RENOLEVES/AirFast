@@ -237,7 +237,7 @@ public class OwnerServiceImpl{
         int totalManagerCount = 0;
         for (EmployeeResponseDTO e : viewAllEmployees()) {
             switch (e.getTitle()) {
-                case "PILOT" -> totalPilotCount++;
+                case "Pilot" -> totalPilotCount++;
                 case "Flight Attendant" -> totalFlightAttendantCount++;
                 case "Manager" -> totalManagerCount++;
             }

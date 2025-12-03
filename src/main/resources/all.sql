@@ -16,8 +16,8 @@ VALUES
 
 INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)
 VALUES
-    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Attendant',true,100),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Attendant',true,100);
+    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'FlightAttendant',true,100),
+    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'FlightAttendant',true,100);
 
 -- Insert test flights
 INSERT INTO flight (flight_id, capacity, seats_remaining, delay_hours, depart_time, arrival_time, expected_depart_time, depart_location, arrival_location, flight_number, flight_time, is_recurring, is_active, status)

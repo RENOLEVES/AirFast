@@ -90,7 +90,7 @@ public class PilotServiceImpl {
             }
         }
         if(allPilots.isEmpty()) {
-            throw new IllegalArgumentException("There are no Managers in the database.");
+            throw new IllegalArgumentException("There are no Pilots in the database.");
         }
         return allPilots;
     }

@@ -2,6 +2,7 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
 import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
 import ca.mcgill.esce321.flightManagement.service.PilotServiceImpl;
 
@@ -44,8 +45,8 @@ public class PilotController {
      */
     @GetMapping
     public ResponseEntity<List<PilotResponseDTO>> getAllPilots() {
-        List<PilotResponseDTO> dtos = pilotService.getAllPilots();
-        return ResponseEntity.ok(dtos);
+        List<PilotResponseDTO> pilots = pilotService.getAllPilots();
+        return ResponseEntity.ok(pilots);
     }
 
     /**
