@@ -2,10 +2,12 @@
   <div class="booking-card bg-white shadow-lg rounded-xl p-5 border-t-4 border-indigo-500 max-w-sm mx-auto my-4 w-[300px] h-[300px]">
 
     <div class="flex justify-between items-start mb-4 border-b pb-2">
-      <h3 class="text-xl font-bold text-gray-800">Booking #{{ booking.bookingId }}</h3>
-      <span class="text-sm text-gray-500">
+      <h1 class="text-xl font-bold text-gray-800">Booking #{{ booking.bookingId }}
+        <div class="text-sm text-gray-500">
         {{ formattedDate }}
-      </span>
+        </div>
+      </h1>
+
     </div>
 
     <div class="space-y-3">
@@ -84,8 +86,7 @@ export default {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        hour: '2-digit'
       });
     },
 

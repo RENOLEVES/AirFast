@@ -1,50 +1,100 @@
 <template>
-  <!-- Main container now uses flex column layout to manage vertical space -->
-  <div class=" p-4 h-full flex flex-col">
+  <div class="view-all-flights p-4 h-full flex flex-col">
 
-    <!-- Flight List Wrapper: This is the new scrollable area -->
-    <div class="flex-grow overflow-y-auto pr-4 -mr-4">
-      <!-- We add flex-grow and overflow-y-auto to enable scrolling here -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0">
-        <FlightCard
-            v-for="(flight, index) in flights"
-            :key="index"
-            :flight="flight"
-        />
-      </div>
+    <div class="flight-header flex items-center bg-gray-100 p-3 rounded-t-lg shadow-sm border-b border-gray-300 font-semibold text-gray-600 sticky top-0 z-10">
+      <div class="column w-1/12">ID</div>
+      <div class="column w-2/12">Route</div>
+      <div class="column w-2/12">Departure</div>
+      <div class="column w-2/12">Arrival</div>
+      <div class="column w-2/12">Status</div>
+      <div class="column w-2/12">Seats/Price</div>
     </div>
 
-    <!-- Placeholder for pagination/footer is fixed and does not scroll -->
-    <div v-if="!loading && !error" class="text-center py-6 mt-8 text-gray-500 border-t pt-6 flex-shrink-0">
-      Showing {{ flights.length }} flights.
+    <div class="flight-list overflow-y-auto flex-grow rounded-b-lg border-x border-b border-gray-200">
+      <div
+          v-for="flight in flights"
+          :key="flight.id"
+          class="flight-row flex items-center border-t border-gray-200 bg-white hover:bg-indigo-50 transition-colors duration-150 cursor-pointer"
+          @click="viewFlightDetails(flight)"
+      >
+        <div class="column w-1/12 font-bold text-lg text-indigo-700">
+          {{ flight.flightNumber }}
+        </div>
+
+        <div class="column w-2/12 font-medium text-gray-800" :title="flight.route">
+          {{ flight.departureCity }} → {{ flight.arrivalCity }}
+        </div>
+
+        <div class="column w-2/12 text-sm text-gray-700">
+          <span class="font-semibold">{{ flight.departureTime }}</span>
+          <div class="text-xs text-gray-500">{{ flight.departureDate }}</div>
+        </div>
+
+        <div class="column w-2/12 text-sm text-gray-700">
+          <span class="font-semibold">{{ flight.arrivalTime }}</span>
+          <div class="text-xs text-gray-500">{{ flight.returnDate }}</div>
+        </div>
+
+        <div class="column w-2/12">
+          <span :class="getStatusClasses(flight.status)" class="px-3 py-1 text-xs leading-5 font-semibold rounded-full">
+            {{ formatStatus(flight.status) }}
+          </span>
+        </div>
+
+        <div class="column w-2/12 text-sm text-gray-700">
+          <span class="font-semibold text-green-600">{{ flight.price }}</span>
+          <div class="text-xs text-gray-500">{{ flight.remainingSeats }} seats left</div>
+        </div>
+
+      </div>
+
+      <div v-if="loading" class="p-8 text-center text-indigo-600">Loading flights...</div>
+      <div v-if="error" class="p-8 text-center text-red-600">Error fetching data: {{ error }}</div>
+      <div v-if="!loading && !flights.length && !error" class="p-8 text-center text-gray-500">No flights found.</div>
+    </div>
+
+    <div v-if="!loading && !error" class="text-center py-6 mt-4 text-gray-500 border-t pt-6 flex-shrink-0">
+      Showing {{ flights.length }} results.
     </div>
   </div>
 </template>
 
 <script>
-import FlightCard from '../components/FlightCardForOwner.vue';
+// We no longer need to import FlightCard since we are rendering the data directly
+// import FlightCard from '../components/FlightCardForOwner.vue';
 
 export default {
   name: 'AllFlights',
-  components: {
-    FlightCard,
-  },
+  // components: { FlightCard }, // Removed component import
   data() {
+    // ... (same data structure)
     return {
       flights: [],
       loading: false,
       error: null,
-      // NOTE: Using a relative URL '/api/flights' is often better than 'http://localhost:8080/...'
-      // in production environments, but we keep the user-specified URL here.
       apiUrl: 'http://localhost:8080/api/flights',
     };
   },
   methods: {
-    /**
-     * Helper to format a time string (e.g., 'HH:MM').
-     * @param {string | Date} dateTimeString - ISO date string or similar.
-     * @returns {string} Formatted time string.
-     */
+    // New formatting and utility methods
+    formatStatus(status) {
+      if (!status) return 'N/A';
+      const s = status.toLowerCase().replace(/_/g, ' ');
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    },
+    getStatusClasses(status) {
+      const s = (status || '').toUpperCase();
+      if (s === 'SCHEDULED') return 'bg-green-100 text-green-800';
+      if (s === 'DELAYED') return 'bg-yellow-100 text-yellow-800';
+      if (s === 'CANCELED' || s === 'CANCELLED') return 'bg-red-100 text-red-800';
+      return 'bg-gray-200 text-gray-800';
+    },
+    viewFlightDetails(flight) {
+      console.log('Viewing details for flight:', flight.id);
+      // Example routing: this.$router.push({ name: 'FlightDetails', params: { id: flight.id } });
+    },
+
+    // ... (Keep existing formatTime and formatDate methods)
     formatTime(dateTimeString) {
       if (!dateTimeString) return 'N/A';
       try {
@@ -54,12 +104,6 @@ export default {
         return 'Invalid Time';
       }
     },
-
-    /**
-     * Helper to format a date string (e.g., 'YYYY-MM-DD').
-     * @param {string | Date} dateTimeString - ISO date string or similar.
-     * @returns {string} Formatted date string.
-     */
     formatDate(dateTimeString) {
       if (!dateTimeString) return 'N/A';
       try {
@@ -69,32 +113,24 @@ export default {
         return 'Invalid Date';
       }
     },
-
-    /**
-     * Fetches flight data from the API and transforms the response structure.
-     */
+    // ... (Keep existing fetchFlights and getDemoFlights methods)
     async fetchFlights() {
+      // ... (Same fetching and mapping logic)
       this.loading = true;
       this.error = null;
 
       try {
-        // Since we cannot use 'api.get' or Axios directly here, we use fetch().
-        // This simulates the behavior of the API call.
         const response = await fetch(this.apiUrl);
 
         if (!response.ok) {
           throw new Error(`Server returned status: ${response.status}`);
         }
 
-        // The response body is the data property that would be in axios's response.data
         const backendData = await response.json();
-
         console.log('Backend response:', backendData);
 
-        // Transform backend data to match your FlightCard component's expected structure
         this.flights = backendData.map(flight => ({
-          // Map properties from the backend structure to the frontend structure
-          id: flight.flightId || flight.id, // Use flightId or fallback to id
+          id: flight.flightId || flight.id,
           route: `${flight.departLocation} to ${flight.arrivalLocation}`,
           departureCity: flight.departLocation,
           departureTime: this.formatTime(flight.departTime),
@@ -111,19 +147,15 @@ export default {
         }));
 
         console.log('Transformed flights:', this.flights);
-        // Note: isSearchActive.value is irrelevant in this Options API context, so it's omitted.
 
       } catch (e) {
         console.error('Failed to fetch flights:', e);
         this.error = e.message || 'The backend service is unavailable.';
-        // Add fallback to demo data on failure
         this.flights = this.getDemoFlights();
       } finally {
         this.loading = false;
       }
     },
-
-    // Demo data for fallback, now matching the transformed structure better
     getDemoFlights() {
       return [
         { id: 'FL101', route: 'JFK to LAX', departureCity: 'JFK', arrivalCity: 'LAX', departureTime: '08:00 AM', arrivalTime: '11:00 AM', remainingSeats: 50, class: 'ECONOMY', price: '$299.99 CAD', dateRange: 'May 10 to May 10', departureDate: 'May 10', returnDate: 'May 10', status: 'Scheduled', flightNumber: 'B737-101' },
@@ -137,3 +169,24 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.flight-row {
+  /* Mimic SeatRow styles */
+  padding: 12px 16px;
+  min-height: 50px;
+  width: 100%;
+}
+
+.flight-header {
+  padding: 12px 16px; /* Match row padding */
+}
+
+.column {
+  /* Mimic SeatCard column styles */
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

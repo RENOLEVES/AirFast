@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 @Service
 @Validated
@@ -246,8 +250,57 @@ public class OwnerServiceImpl{
         return List.of(totalCount, totalCustomerCount, totalPilotCount, totalFlightAttendantCount, totalManagerCount);
     }
 
+    public List<RevenuePointResponseDTO> calculateCumulativeRevenueHistory() {
+        // 1. Fetch all bookings
+        List<Booking> allBookings = bookingRepository.findAll();
 
-    public List<OwnerResponseDTO> findOwner() {
+        // 2. Filter for PAID bookings and group by LocalDate (the date part of the booking date)
+        // Using a TreeMap ensures the resulting map keys (dates) are sorted chronologically.
+        Map<LocalDate, List<Booking>> dailyPaidBookings = allBookings.stream()
+                .filter(booking -> booking.getPaymentStatus() == PaymentStatus.PAID)
+                .collect(Collectors.groupingBy(
+                        booking -> booking.getBookingDate().toLocalDate(),
+                        TreeMap::new, // Ensure keys (LocalDate) are sorted
+                        Collectors.toList()
+                ));
+
+        // 3. Calculate daily revenue for each date using double
+        Map<LocalDate, Double> dailyRevenue = dailyPaidBookings.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .mapToDouble(booking -> booking.getSeat().getPrice())
+                                // Sum all prices for the day using double
+                                .sum(),
+                        (a, b) -> b, // Merge function (should not be needed due to TreeMap)
+                        TreeMap::new // Preserve chronological order for the daily revenue map
+                ));
+
+        // 4. Calculate cumulative revenue and build the DTO list using double
+        List<RevenuePointResponseDTO> revenueHistory = new ArrayList<>();
+        double cumulativeSum = 0.0;
+
+        // Iterate through the sorted map entries (dates)
+        for (Map.Entry<LocalDate, Double> entry : dailyRevenue.entrySet()) {
+            // Add the current day's revenue to the cumulative total
+            cumulativeSum += entry.getValue();
+
+            // Create and add the DTO for this day
+            // NOTE: This assumes your RevenuePointResponseDTO has been updated to use 'double'
+            revenueHistory.add(new RevenuePointResponseDTO(
+                    entry.getKey(),
+                    // We cast the double to BigDecimal to satisfy the current DTO signature.
+                    // You must change the DTO to use 'double' for this to work correctly
+                    // without the cast.
+                    cumulativeSum
+            ));
+        }
+
+        return revenueHistory;
+    }
+
+
+        public List<OwnerResponseDTO> findOwner() {
         List<Person> allPersons = personRepository.findAll();
         List<OwnerResponseDTO> owners = new ArrayList<>();
 

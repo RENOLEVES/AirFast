@@ -46,8 +46,8 @@ VALUES
     (0, 310.25, '12F', 1,2);
 
 
-INSERT INTO booking (customer_id, seat_id, payment_status, booking_status)
+INSERT INTO booking (customer_id, seat_id,booking_date, payment_status, booking_status)
 VALUES
-    (1, 1 , 1, 2),
-    (2, 2, 1, 2),
-    (3, 3, 1, 1);
+    (3, 1 ,'2025-11-22 08:30:00', 1, 2),
+    (4, 2,'2025-11-23 08:30:00', 1, 2),
+    (3, 3,'2025-11-24 08:30:00', 1, 1);

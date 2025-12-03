@@ -1,50 +1,41 @@
 <template>
-  <div class="view-all-bookings p-4 h-full flex flex-col">
+  <div class="view-all-employees p-4 h-full flex flex-col">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto flex-grow">
+    <div class="employee-header flex items-center bg-gray-100 p-3 rounded-t-lg shadow-sm border-b border-gray-300 font-semibold text-gray-600 sticky top-0 z-10">
+      <div class="column w-1/12">ID</div>
+      <div class="column w-3/12">Name</div>
+      <div class="column w-4/12">Email</div>
+      <div class="column w-2/12">Title</div>
+    </div>
 
+    <div class="employee-list overflow-y-auto flex-grow rounded-b-lg border-x border-b border-gray-200">
       <div
           v-for="employee in employees"
           :key="employee.id"
-          class="customer-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-700 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 h-[200px]"
+          class="employee-row flex items-center border-t border-gray-200 bg-white hover:bg-indigo-50 transition-colors duration-150 cursor-pointer"
+          @click="viewEmployeeDetails(employee)"
       >
-        <h3 class="text-2xl font-bold text-zinc-800 mb-1">{{ employee.firstName }} {{ employee.lastName }}</h3>
+        <div class="column w-1/12 font-bold text-lg text-indigo-700">
+          {{ employee.id }}
+        </div>
 
-        <p class="text-sm font-semibold text-indigo-800 uppercase mb-4 tracking-wider"></p>
+        <div class="column w-3/12 font-medium text-gray-800">
+          {{ employee.firstName }} {{ employee.lastName }}
+        </div>
 
-        <div class="space-y-3 border-t pt-3">
+        <div class="column w-4/12 text-sm text-gray-500 min-w-0 break-words">
+          {{ employee.email }}
+        </div>
 
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            <p class="text-md text-gray-700 font-medium">
-              <span class="font-semibold text-gray-500 text-sm">Employee ID:</span> {{ employee.id }}
-            </p>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <p class="text-md text-gray-700 break-words font-medium min-w-0">{{ employee.email }}</p>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <svg fill="#000000" width="18px" height="18px" viewBox="0 0 24 24" id="medal" data-name="Line Color" xmlns="http://www.w3.org/2000/svg"
-                 class="icon line-color"><polygon id="secondary" points="11.38 13.4 10 13.59 11 14.48 10.76 15.75 12 15.15 13.24 15.75 13 14.48 14 13.59 12.62 13.4 12 12.25 11.38 13.4"
-                 style="fill: none; stroke: rgb(44, 169, 188); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polygon>
-              <polyline id="primary" points="15.57 9.06 18 3 14 3 12.04 7.91" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline>
-              <polyline id="primary-2" data-name="primary" points="11.96 7.91 10 3 6 3 8.43 9.06" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline>
-              <circle id="primary-3" data-name="primary" cx="12" cy="14" r="6" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></circle>
-            </svg>
-            <p class="text-md text-gray-700 font-medium">{{ employee.title }}</p>
-          </div>
+        <div class="column w-2/12">
+          <span :class="getTitleClasses(employee.title)" class="px-3 py-1 text-xs leading-5 font-semibold rounded-full">
+            {{ employee.title }}
+          </span>
         </div>
       </div>
     </div>
 
-    <div class="text-center py-6 mt-8 text-gray-500 border-t pt-6">
+    <div class="text-center py-6 mt-4 text-gray-500 border-t pt-6">
       Showing {{ employees.length }} results.
     </div>
   </div>
@@ -63,6 +54,7 @@ export default {
   },
   methods: {
     async fetchEmployees() {
+      // ... (Same fetching logic as before)
       this.loading = true;
       this.error = null;
 
@@ -75,7 +67,11 @@ export default {
 
         const data = await response.json();
 
-        this.employees = data;
+        // Simulate some titles for badge colors (if your API doesn't provide them)
+        this.employees = data.map(emp => ({
+          ...emp,
+          title: emp.title || (emp.id % 3 === 0 ? 'Manager' : (emp.id % 2 === 0 ? 'Associate' : 'Senior Analyst'))
+        }));
 
       } catch (e) {
         console.error('Fetch error:', e);
@@ -84,9 +80,48 @@ export default {
         this.loading = false;
       }
     },
+
+    getTitleClasses(title) {
+      const t = title ? title.toLowerCase() : '';
+      if (t.includes('manager')) {
+        return 'bg-blue-100 text-blue-800';
+      } else if (t.includes('flight attendant')) {
+        return 'bg-yellow-100 text-yellow-800';
+      } else if (t.includes('pilot')) {
+        return 'bg-red-100 text-red-800';
+      }
+      return 'bg-gray-200 text-gray-800';
+    },
+
+    viewEmployeeDetails(employee) {
+      // Add logic here to navigate to an employee details page or show a modal
+      console.log('Viewing details for:', employee.id);
+      // Example: this.$router.push({ name: 'EmployeeDetails', params: { id: employee.id } });
+    }
   },
   mounted() {
     this.fetchEmployees();
   },
 };
 </script>
+
+<style scoped>
+.employee-row {
+  /* Mimic SeatRow styles */
+  padding: 12px 16px;
+  min-height: 50px;
+  width: 100%;
+}
+
+.employee-header {
+  padding: 12px 16px; /* Match row padding */
+}
+
+.column {
+  /* Mimic SeatCard column styles */
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

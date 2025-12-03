@@ -31,24 +31,22 @@
         </div>
 
         <div class="chart-card bg-white shadow-xl rounded-xl p-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">
-            Total Workforce Composition ({{ totalEmployees.toLocaleString() }})
+          <h2 class="text-base font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            Total Workforce Composition
           </h2>
-          <div class="pie-chart-wrapper **h-64**">
+          <div class="pie-chart-wrapper h-64">
             <EmployeePieChart :employee-data="employeeData" />
           </div>
         </div>
-        </div>
+      </div>
 
       <div class="lg:col-span-2">
         <div class="chart-container bg-white shadow-xl rounded-xl p-6">
-          <div class="lg:col-span-2">
-            <div class="chart-container bg-white shadow-xl rounded-xl p-6">
-              <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                Sales vs. Price Scatter Chart
-              </h2>
-              <SalesScatterChart :scatter-points="salesData" class="h-96"/>
-            </div>
+          <h2 class="text-xl font-semibold text-gray-800 mb-10">
+            Cumulative Revenue Over Time
+          </h2>
+          <div class="scatter-chart-wrapper h-96">
+            <RevenueLineChart :revenue-data="cumulativeRevenueData" />
           </div>
         </div>
       </div>
@@ -59,28 +57,30 @@
 
 <script>
 import EmployeePieChart from "../components/EmployeePieChart.vue";
+import RevenueLineChart  from "../components/RevenueLineChart.vue";
+
 export default {
   name: 'DashboardView',
   components: {
-    EmployeePieChart
+    EmployeePieChart,
+    RevenueLineChart,
   },
   data() {
     return {
       loading: true,
       error: null,
-
-      // Separate API URLs
       revenueApiUrl: 'http://localhost:8080/api/owners/view/revenue',
       metricsApiUrl: 'http://localhost:8080/api/owners/view/totalEmployeeCount',
+      cumulativeRevenueApiUrl: 'http://localhost:8080/api/owners/view/cumulativeRevenue',
 
-      // Data variables
       totalRevenue: 0,
       totalCustomerCount: 0,
       employeeData: {
         pilot: 0,
         flightAttendant: 0,
         manager: 0,
-      }
+      },
+      cumulativeRevenueData: []
     };
   },
   computed: {
@@ -104,7 +104,6 @@ export default {
       this.error = null;
 
       try {
-        // 1. Define the fetch operations as promises
         const revenuePromise = fetch(this.revenueApiUrl).then(res => {
           if (!res.ok) throw new Error(`Revenue fetch failed: ${res.status}`);
           return res.json();
@@ -115,23 +114,20 @@ export default {
           return res.json();
         });
 
-        // 2. Execute both promises concurrently using Promise.all
-        const [revenueData, metricsArray] = await Promise.all([revenuePromise, metricsPromise]);
+        const cumulativeRevenuePromise = fetch(this.cumulativeRevenueApiUrl).then(res => {
+          if (!res.ok) throw new Error(`Cumulative Revenue fetch failed: ${res.status}`);
+          return res.json();
+        });
 
-        // --- Mapping Revenue Data ---
-        // ASSUMPTION: The revenue endpoint returns a simple number, or an object with a 'totalRevenue' key.
+        const [revenueData, metricsArray, cumulativeRevenueData] = await Promise.all([
+          revenuePromise,
+          metricsPromise,
+          cumulativeRevenuePromise
+        ]);
+
         this.totalRevenue = typeof revenueData === 'number' ? revenueData : revenueData.totalRevenue || 0;
 
         // --- Mapping Metrics Array Data ---
-        // List.of(totalCount, totalCustomerCount, totalPilotCount, totalFlightAttendantCount, totalManagerCount);
-
-        // If the array structure has changed, adjust the indices:
-        // Index 0: totalCount (this is often the number of employees, but here we assume totalCustomerCount for better metric pairing)
-        // Index 1: totalCustomerCount
-        // Index 2: totalPilotCount
-        // Index 3: totalFlightAttendantCount
-        // Index 4: totalManagerCount
-
         this.totalCustomerCount = metricsArray[1] || 0;
 
         this.employeeData = {
@@ -139,6 +135,8 @@ export default {
           flightAttendant: metricsArray[3] || 0,
           manager: metricsArray[4] || 0,
         };
+
+        this.cumulativeRevenueData = cumulativeRevenueData;
 
       } catch (e) {
         console.error('Fetch error:', e);

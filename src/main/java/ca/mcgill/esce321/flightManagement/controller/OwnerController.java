@@ -38,6 +38,11 @@ public class OwnerController {
         return ResponseEntity.ok(owners);
     }
 
+    @GetMapping("/view/cumulativeRevenue")
+    public ResponseEntity<List<RevenuePointResponseDTO>> getCumulativeRevenue(){
+        return ResponseEntity.ok(ownerService.calculateCumulativeRevenueHistory());
+    }
+
     // READ one
     @GetMapping("/{id}")
     public ResponseEntity<OwnerResponseDTO> getById(@PathVariable("id") long id) {

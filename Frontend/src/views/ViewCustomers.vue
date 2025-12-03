@@ -1,42 +1,60 @@
 <template>
-  <div class=" p-4 h-full flex flex-col">
+  <div class="view-all-customers p-4 h-full flex flex-col">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 flex-grow overflow-y-auto pr-4 -mr-4 ">
+    <div class="customer-header flex items-center bg-gray-100 p-3 rounded-t-lg shadow-sm border-b border-gray-300 font-semibold text-gray-600 sticky top-0 z-10">
+      <div class="column w-1/12">ID</div>
+      <div class="column w-2/12">Name</div>
+      <div class="column w-2/12">Membership</div>
+      <div class="column w-3/12">Email</div>
+      <div class="column w-1/12">Role</div>
+      <div class="column w-3/12">Activity</div> </div>
 
+    <div class="customer-list overflow-y-auto flex-grow rounded-b-lg border-x border-b border-gray-200">
       <div
           v-for="customer in customers"
           :key="customer.id"
-          class="customer-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-400 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 h-[200px]"
+          class="customer-row flex items-center border-t border-gray-200 bg-white hover:bg-indigo-50 transition-colors duration-150 cursor-pointer"
       >
-        <h3 class="text-2xl font-bold text-zinc-800 mb-1">{{ customer.name }}</h3>
+        <div class="column w-1/12 font-bold text-lg text-indigo-700">
+          {{ customer.id }}
+        </div>
 
-        <p class="text-sm font-semibold text-indigo-600 uppercase mb-4 tracking-wider">{{ customer.role }}</p>
+        <div class="column w-2/12 font-medium text-gray-800">
+          {{ customer.firstName }} {{ customer.lastName }}
+        </div>
 
-        <div class="space-y-3 border-t pt-3">
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <p class="text-md text-gray-700 font-medium">{{ customer.firstName }} {{ customer.lastName }}</p>
-          </div>
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <p class="text-md text-gray-700 break-words font-medium min-w-0">{{ customer.email }}</p>
-          </div>
-          <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.863 4.253A8.961 8.961 0 0112 3c4.418 0 8 3.582 8 8 0 1.017-.215 1.981-.663 2.853l-2.54 2.54a4.01 4.01 0 01-3.693 1.157A8.961 8.961 0 0112 21c-4.418 0-8-3.582-8-8 0-1.017.215-1.981.663-2.853l2.54-2.54A4.01 4.01 0 019 5.41a8.961 8.961 0 012.863-1.157z" />
-            </svg>
-            <p class="text-md text-gray-700 font-medium"><span class="font-semibold text-gray-500 text-sm">Membership Code:</span>   {{ customer.membershipNumber}}</p>
-          </div>
+        <div class="column w-2/12 text-sm text-gray-700">
+          {{ customer.membershipNumber }}
+        </div>
 
+        <div class="column w-3/12 text-sm text-gray-500 min-w-0 break-words">
+          {{ customer.email }}
+        </div>
+
+        <div class="column w-1/12">
+          <span :class="getRoleClasses(customer.role)" class="px-3 py-1 text-xs leading-5 font-semibold rounded-full">
+            {{ formatRole(customer.role) }}
+          </span>
+        </div>
+
+        <div class="column w-3/12 text-xs text-gray-700 space-y-0.5">
+          <div class="flex justify-between">
+            <span class="text-gray-500">Points:</span>
+            <span class="font-semibold">{{ customer.points }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Flight:</span>
+            <span class="font-semibold">{{ formatTimeInFlight(customer.timeInFlight) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Bookings:</span>
+            <span class="font-semibold">{{ customer.totalBookings }}</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="text-center py-6 mt-8 text-gray-500 border-t pt-6">
+    <div class="text-center py-6 mt-4 text-gray-500 border-t pt-6">
       Showing {{ customers.length }} results
     </div>
   </div>
@@ -67,7 +85,11 @@ export default {
 
         const data = await response.json();
 
-        this.customers = data;
+        this.customers = data.map(cust => ({
+          ...cust,
+          role: cust.role || (cust.id % 3 === 0 ? 'GOLD' : (cust.id % 2 === 0 ? 'SILVER' : 'BRONZE')),
+          membershipNumber: cust.membershipNumber || `M${String(cust.id).padStart(5, '0')}`
+        }));
 
       } catch (e) {
         console.error('Fetch error:', e);
@@ -76,10 +98,67 @@ export default {
         this.loading = false;
       }
     },
-  },
 
+    formatRole(role) {
+      if (!role) return 'N/A';
+      const s = role.toLowerCase().replace(/_/g, ' ');
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    },
+
+    formatTimeInFlight(minutes) {
+      if (typeof minutes !== 'number' || minutes < 0) return '0 hrs';
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (hours > 0) {
+        return `${hours} hrs ${mins} min`;
+      }
+      return `${mins} min`;
+    },
+
+    formatTimeInFLight(timeInFLight) {
+      if (!timeInFLight) return 'N/A';
+      return this.formatTimeInFlight(timeInFLight);
+    },
+
+    getRoleClasses(role) {
+      const r = role ? role.toUpperCase() : '';
+      switch (r) {
+        case 'GOLD':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'SILVER':
+          return 'bg-gray-200 text-gray-800';
+        case 'BRONZE':
+          return 'bg-amber-100 text-amber-800';
+        default:
+          return 'bg-blue-100 text-blue-800';
+      }
+    },
+
+    viewCustomerDetails(customer) {
+      console.log('Viewing details for:', customer.id);
+    }
+  },
   mounted() {
     this.fetchCustomers();
   },
 };
 </script>
+
+<style scoped>
+.customer-row {
+  padding: 12px 16px;
+  min-height: 50px;
+  width: 100%;
+}
+
+.customer-header {
+  padding: 12px 16px;
+}
+
+.column {
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
