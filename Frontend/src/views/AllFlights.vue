@@ -1,6 +1,6 @@
 <template>
   <!-- Main container now uses flex column layout to manage vertical space -->
-  <div class="p-4 sm:p-8 w-full h-full flex flex-col overflow-x-hidden">
+  <div class=" p-4 h-full flex flex-col">
 
     <!-- Flight List Wrapper: This is the new scrollable area -->
     <div class="flex-grow overflow-y-auto pr-4 -mr-4">

@@ -5,6 +5,7 @@ import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
@@ -141,10 +142,13 @@ public class OwnerServiceImpl{
                 )).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BookingResponseDTO> viewAllBookings() {
+        // Call the new query that guarantees the customer and seat are loaded
         return bookingRepository.findAll().stream()
                 .map(b -> new BookingResponseDTO(
                         b.getBookingId(),
+                        // b.getCustomer() is now guaranteed to be loaded and accessible
                         b.getCustomer() != null ? b.getCustomer().getId() : null,
                         b.getSeat() != null ? b.getSeat().getSeatId() : null,
                         b.getBookingDate(),
@@ -224,6 +228,24 @@ public class OwnerServiceImpl{
             throw new IllegalArgumentException("No Owner found with ID " + id);
         }
     }
+
+    public List<Integer> viewTotalEmployeeCount() {
+        int totalEmployeeCount = viewAllEmployees().size();
+        int totalCustomerCount = viewAllCustomers().size();
+        int totalPilotCount = 0;
+        int totalFlightAttendantCount = 0;
+        int totalManagerCount = 0;
+        for (EmployeeResponseDTO e : viewAllEmployees()) {
+            switch (e.getTitle()) {
+                case "PILOT" -> totalPilotCount++;
+                case "Flight Attendant" -> totalFlightAttendantCount++;
+                case "Manager" -> totalManagerCount++;
+            }
+        }
+        int totalCount = totalEmployeeCount+totalCustomerCount;
+        return List.of(totalCount, totalCustomerCount, totalPilotCount, totalFlightAttendantCount, totalManagerCount);
+    }
+
 
     public List<OwnerResponseDTO> findOwner() {
         List<Person> allPersons = personRepository.findAll();

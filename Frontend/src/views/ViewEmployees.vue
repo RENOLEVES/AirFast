@@ -1,12 +1,12 @@
 <template>
-  <div class="p-4 sm:p-8">
+  <div class="view-all-bookings p-4 h-full flex flex-col">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto flex-grow">
 
       <div
           v-for="employee in employees"
           :key="employee.id"
-          class="customer-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-700 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1"
+          class="customer-card bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-700 hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 h-[200px]"
       >
         <h3 class="text-2xl font-bold text-zinc-800 mb-1">{{ employee.firstName }} {{ employee.lastName }}</h3>
 

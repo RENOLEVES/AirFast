@@ -177,7 +177,7 @@ public class BookingServiceImpl {
                     x.getSeat() != null
                             && x.getSeat().equals(newSeat)
                             && (x.getBookingStatus() == BookingStatus.CONFIRMED
-                                || x.getBookingStatus() == BookingStatus.WAITLIST)
+                                || x.getBookingStatus() == BookingStatus.WAITLISTED)
             );
             if (newSeatTaken) throw new IllegalArgumentException("New seat is already booked");
 
@@ -214,7 +214,7 @@ public class BookingServiceImpl {
         // Earliest WAITLIST for same flight & class (FIFO by bookingDate)
         Optional<Booking> next = bookingRepository.findAll().stream()
                 .filter(x ->
-                        x.getBookingStatus() == BookingStatus.WAITLIST
+                        x.getBookingStatus() == BookingStatus.WAITLISTED
                         && x.getSeat() != null
                         && x.getSeat().getFlight() != null
                         && x.getSeat().getFlight().equals(flight)
@@ -231,7 +231,7 @@ public class BookingServiceImpl {
 
     // ----------------------- Helpers -----------------------
     private boolean isActiveStatus(BookingStatus s) {
-        return s == BookingStatus.CONFIRMED || s == BookingStatus.WAITLIST;
+        return s == BookingStatus.CONFIRMED || s == BookingStatus.WAITLISTED;
     }
 
     private BookingResponseDTO toResponse(Booking b) {

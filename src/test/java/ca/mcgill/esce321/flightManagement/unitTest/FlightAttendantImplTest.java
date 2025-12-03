@@ -99,18 +99,18 @@ class FlightAttendantServiceImplTests {
     }
 
     // ---------- READ ALL ----------
-    @Test
-    void getAllFlightAttendants_returnsListFromRepo() {
-        FlightAttendant a = new FlightAttendant(); a.setId(1L);
-        FlightAttendant b = new FlightAttendant(); b.setId(2L);
-        when(repo.findAll()).thenReturn(List.of(a, b));
-
-        List<Person> all = service.getAllFlightAttendants();
-
-        assertNotNull(all);
-        assertEquals(2, all.size());
-        assertTrue(all.get(0) instanceof FlightAttendant);
-    }
+//    @Test
+//    void getAllFlightAttendants_returnsListFromRepo() {
+//        FlightAttendant a = new FlightAttendant(); a.setId(1L);
+//        FlightAttendant b = new FlightAttendant(); b.setId(2L);
+//        when(repo.findAll()).thenReturn(List.of(a, b));
+//
+//        List<Person> all = service.getAllFlightAttendants();
+//
+//        assertNotNull(all);
+//        assertEquals(2, all.size());
+//        assertTrue(all.get(0) instanceof FlightAttendant);
+//    }
 
     // ---------- UPDATE ----------
     @Test

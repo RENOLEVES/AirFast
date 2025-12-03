@@ -10,6 +10,10 @@
       />
 
     </div>
+
+    <div v-if="!loading && !error" class="text-center py-6 mt-8 text-gray-500 border-t pt-6 flex-shrink-0">
+      Showing {{ bookings.length }} bookings.
+    </div>
   </div>
 </template>
 

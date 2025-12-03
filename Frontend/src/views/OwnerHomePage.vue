@@ -36,7 +36,8 @@ import AllFlights from './AllFlights.vue';
 import ViewCustomers from './ViewCustomers.vue';
 import ViewEmployees from './ViewEmployees.vue';
 import ViewBookings from "./ViewBookings.vue";
-
+import ViewSeats from "./ViewSeats.vue";
+import DashBoard from "./DashBoard.vue";
 
 const DummyView = {
   template: `
@@ -50,15 +51,12 @@ export default {
   name: 'OwnerHomePage',
   components: {
     ManagerSidebar,
+    ViewSeats,
     AllFlights,
-    Book: DummyView,
-    ManageEmployees: DummyView,
-    ManageSeats: DummyView,
-    ManageBookings: DummyView,
     ViewCustomers,
     ViewEmployees,
     ViewBookings,
-    ViewSeats: DummyView,
+    DashBoard
   },
   data() {
     return {
@@ -68,9 +66,6 @@ export default {
   computed: {
     currentViewComponent() {
       return this.currentView in this.$options.components ? this.currentView : DummyView;
-    },
-    displayViewName() {
-      return this.currentView.replace(/([A-Z])/g, ' $1').trim();
     },
   },
   methods: {
@@ -85,6 +80,8 @@ export default {
         this.currentView = 'ViewBookings';
       } else if (view === 'seats') {
         this.currentView = 'ViewSeats';
+      } else if (view === 'dashboard'){
+        this.currentView = 'DashBoard';
       } else {
         this.currentView = view;
       }

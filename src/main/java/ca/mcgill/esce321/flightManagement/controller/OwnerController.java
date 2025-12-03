@@ -59,6 +59,12 @@ public class OwnerController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/view/totalEmployeeCount")
+    public ResponseEntity<List<Integer>> viewTotalEmployeeCount() {
+
+        return ResponseEntity.ok(ownerService.viewTotalEmployeeCount());
+    }
+
     @GetMapping("/view/salary/{id}")
     public ResponseEntity<Double> viewSalary(@PathVariable("id") long id) {
         return ResponseEntity.ok(ownerService.viewSalary(id));

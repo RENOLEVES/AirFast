@@ -2,6 +2,7 @@ package ca.mcgill.esce321.flightManagement.controller;
 
 import ca.mcgill.esce321.flightManagement.dto.request.FlightAttendantRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.service.FlightAttendantServiceImpl;
@@ -42,13 +43,8 @@ public class FlightAttendantController {
     // ---------- READ ALL ----------
     @GetMapping
     public ResponseEntity<List<FlightAttendantResponseDTO>> getAll() {
-        List<Person> list = flightAttendantService.getAllFlightAttendants();
-        List<FlightAttendantResponseDTO> dtos = list.stream()
-                .filter(FlightAttendant.class::isInstance)
-                .map(FlightAttendant.class::cast)
-                .map(FlightAttendantController::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(dtos);
+        List<FlightAttendantResponseDTO> flightAttendants = flightAttendantService.getAllFlightAttendants();
+        return ResponseEntity.ok(flightAttendants);
     }
 
     // ---------- UPDATE ----------
