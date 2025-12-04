@@ -13,9 +13,6 @@
       <a href="#" @click.prevent="$emit('navigate', 'seats')" class="block p-3 rounded-lg hover:bg-gray-700 transition">
         <i class="fas fa-chair mr-2"></i>Manage Seat Prices
       </a>
-      <a href="#" @click.prevent="$emit('navigate', 'assign')" class="block p-3 rounded-lg hover:bg-gray-700 transition">
-        <i class="fas fa-user-plus mr-2"></i>Assign Staff to Flights
-      </a>
     </div>
   </aside>
 </template>
