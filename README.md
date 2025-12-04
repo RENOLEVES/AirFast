@@ -49,7 +49,32 @@ Each flight card shows:
 
 Dependencies are already installed! The project is ready to run.
 
+### Run the Backend
+
+Ensure your application.properties PostgresSQL password matches that in the local database installation.
+
+To run the backend:
+```bash
+./gradlew bootRun
+```
+
+
 ### Development
+
+Go into the Frontend folder:
+```bash
+cd Frontend
+```
+
+The full path of the project should be 
+
+"group-project-group-8\FlightManagement\Frontend"
+
+Ensure any frontend packages are installed by running:
+
+```bash
+npm install
+```
 
 Start the development server:
 
@@ -58,6 +83,7 @@ npm run dev
 ```
 
 The application will be available at **http://localhost:5173**
+The application talks to backend at base API URL: **http://localhost:8080/api**
 
 ### Build
 
@@ -149,8 +175,8 @@ The current implementation includes the complete UI with mock data. To make it f
 - Backend: Java 21, Spring Boot, JPA/Hibernate, JoCoCo
 - Database: PostgreSQL (via Docker/Testcontainers)  
 - Frontend:
--   Vue.js 3 - Progressive JavaScript framework with Composition API
--   Vite - Next generation frontend tooling
+   -   Vue.js 3 - Progressive JavaScript framework with Composition API
+   -   Vite - Next generation frontend tooling
 -   Tailwind CSS - Utility-first CSS framework (already configured)
 -   Montserrat Font - Google Fonts
 - CI/CD: Docker (used in some instances in build compile help & DB)
