@@ -149,7 +149,7 @@ The current implementation includes the complete UI with mock data. To make it f
 - [Deliverable 2: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Project-Report)
 - [Deliverable 2: Technical Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-2:-Technical-Report)
 
-- Deliverable 3 Report (to be linked)
+- [Deliverable 3 Technical and Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-3:-Technical-and-Project-Report)
 - [Final Presentation Notes (presentation to be linked)](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/blob/main/ECSE%20321%20-%20Project%20Presentation%20G8.pdf)
 
 ## Team Members
