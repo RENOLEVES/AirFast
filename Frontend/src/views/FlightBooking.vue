@@ -378,7 +378,9 @@ const resetSearch = () => {
 const handleBook = (flight) => {
   console.log('Booking flight:', flight)
   if (navigate) {
-    navigate('BookingPayment')
+    // Pass the flight data as props to the BookingPayment page
+    navigate('BookingPayment', { flightDetails: flight, customerId: customerId.value},
+    )
   }
 }
 </script>

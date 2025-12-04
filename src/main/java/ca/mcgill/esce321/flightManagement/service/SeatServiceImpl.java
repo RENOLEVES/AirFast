@@ -72,6 +72,25 @@ public class SeatServiceImpl {
 
     }
 
+    public List<SeatResponseDTO> getSeatsByFlightId(long flightId) {
+        List<Seat> seats = seatRepository.findByFlight_FlightId(flightId);
+
+        if (seats.isEmpty()) {
+            throw new IllegalArgumentException("No seats found for flight ID " + flightId + ".");
+        }
+
+        return seats.stream()
+                .map(seat -> new SeatResponseDTO(
+                        seat.getSeatId(),
+                        seat.getFlight().getFlightId(),
+                        seat.getSeatClass(),
+                        seat.getPrice(),
+                        seat.getSeatNumber(),
+                        seat.getSeatStatus()
+                ))
+                .toList();
+    }
+
    
     public List<SeatResponseDTO> getAllSeats() {
         return seatRepository.findAll().stream()

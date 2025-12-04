@@ -14,6 +14,12 @@ public class BookingResponseDTO {
     private PaymentStatus paymentStatus;
     private BookingStatus bookingStatus;
 
+    private String departLocation;
+    private String arrivalLocation;
+    private String flightNumber;
+    private LocalDateTime departTime;
+    private LocalDateTime arrivalTime;
+
     public BookingResponseDTO() {}
 
     public BookingResponseDTO(Long bookingId, Long customerId, Long seatId,
@@ -72,5 +78,45 @@ public class BookingResponseDTO {
 
     public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    public String getDepartLocation() {
+        return departLocation;
+    }
+
+    public void setDepartLocation(String departLocation) {
+        this.departLocation = departLocation;
+    }
+
+    public String getArrivalLocation() {
+        return arrivalLocation;
+    }
+
+    public void setArrivalLocation(String arrivalLocation) {
+        this.arrivalLocation = arrivalLocation;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public LocalDateTime getDepartTime() {
+        return departTime;
+    }
+
+    public void setDepartTime(LocalDateTime departTime) {
+        this.departTime = departTime;
+    }
+
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 }

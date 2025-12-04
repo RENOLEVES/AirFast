@@ -1,10 +1,12 @@
 package ca.mcgill.esce321.flightManagement.controller;
 
+import ca.mcgill.esce321.flightManagement.dto.request.BookingRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.CustomerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.request.PersonRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.service.CustomerServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +80,6 @@ public class CustomerController {
         List<BookingResponseDTO> dtos = customerService.findBookingsByCustomerId(customerId);
         return ResponseEntity.ok(dtos);
     }
-
 
     /**
      * Handle bad or missing data gracefully

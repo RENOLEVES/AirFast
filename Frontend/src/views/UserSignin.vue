@@ -93,7 +93,7 @@ const signinData = ref({
   password: ''
 })
 
-const performLogin = async (simulateOwnerAttempt) => {
+const performLogin = async () => {
   try {
     const endpoint = 'http://localhost:8080/api/persons/login';
 
@@ -114,10 +114,6 @@ const performLogin = async (simulateOwnerAttempt) => {
       if (titleUpper === 'OWNER') {
         userRole = 'OWNER';
       }
-    }
-
-    if (simulateOwnerAttempt && signinData.value.email.includes('owner')) {
-      userRole = 'OWNER';
     }
 
     const targetPage = userRole === 'OWNER' ? 'OwnerHomePage' : 'FlightBooking';

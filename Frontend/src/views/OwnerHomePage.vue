@@ -9,7 +9,7 @@
           <p class="text-[#9a9a9a]">Search and book your next journey</p>
         </div>
 
-        <div class="relative">
+        <div class="relative pr-[100px]">
           <button
               @click="toggleDropdown"
               class="flex items-center space-x-2 text-[#484848] font-semibold text-lg p-2 rounded-full hover:bg-gray-200 transition"
@@ -109,7 +109,7 @@ export default {
   },
   data() {
     return {
-      currentView: 'AllFlights',
+      currentView: 'DashBoard',
     };
   },
   computed: {
