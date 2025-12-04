@@ -156,7 +156,7 @@ The current implementation includes the complete UI with mock data. To make it f
 
 | Name        | Role                  | Deliverable 1 Effort (hrs) | Deliverable 2 Effort (hrs) | Deliverable 3 Effort (hrs) | Presentation Effort (hrs) | Total (hrs) |
 |-------------|----------------------|----------------------------|----------------------------|----------------------------|----------------------------|-------------|
-| Toufic | Project Manager and Scrum Master    | 8                          | 25                          | 16                          | 7                          | 56           |
+| Toufic | Project Manager and Scrum Master    | 8                          | 25                          | 25                          | 7                          | 65           |
 | Eric | Backend & Testing Lead	  | 8                          | 25                          | 25                          | 7                          | 65           |
 | Marshall    | UML & Architecture Lead        | 8                          | 19                          | 10                          | 3                          | 40           |
 | Vincent    | Requirements & Documentation Lead       | 8                          | 20                          | 20                          | 4                          | 52           |
@@ -173,13 +173,12 @@ The current implementation includes the complete UI with mock data. To make it f
 
 ## Tech Stack
 - Backend: Java 21, Spring Boot, JPA/Hibernate, JoCoCo
-- Database: PostgreSQL (via Docker/Testcontainers)  
+- Database: PostgreSQL
 - Frontend:
    -   Vue.js 3 - Progressive JavaScript framework with Composition API
    -   Vite - Next generation frontend tooling
 -   Tailwind CSS - Utility-first CSS framework (already configured)
 -   Montserrat Font - Google Fonts
-- CI/CD: Docker (used in some instances in build compile help & DB)
 
 ## Design System
 
