@@ -30,7 +30,7 @@ const views = {
   AllFlights
 }
 
-const currentPage = ref('ManagerDashboard')  // Changed back to FlightBooking as default
+const currentPage = ref('FlightBooking')  // Changed back to FlightBooking as default
 const currentPageProps = ref({})
 const currentComponentRef = ref(null)
 

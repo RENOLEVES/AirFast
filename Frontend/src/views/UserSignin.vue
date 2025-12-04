@@ -90,10 +90,8 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
 
 const emit = defineEmits(['navigate', 'user-authenticated'])
 
@@ -102,78 +100,38 @@ const signinData = ref({
   password: ''
 })
 
-const performLogin = async (roleOverride = null) => {
-  try {
-    const endpoint = 'http://localhost:8080/api/persons/login';
-
-    const response = await axios.post(
-        endpoint,
-        {
-          email: signinData.value.email,
-          password: signinData.value.password
-        }
-    );
-
-    const userData = response.data;
-
-    // Determine role: use override if provided, otherwise check title
-    let userRole = roleOverride || 'CUSTOMER';
-    
-    if (!roleOverride && userData.title) {
-      const titleUpper = userData.title.toUpperCase();
-      if (titleUpper === 'OWNER') {
-        userRole = 'OWNER';
-      } else if (titleUpper === 'MANAGER') {
-        userRole = 'MANAGER';
-      }
-    }
-
-    // Route based on role
-    let targetPage;
-    if (userRole === 'OWNER') {
-      targetPage = 'OwnerHomePage';
-    } else if (userRole === 'MANAGER') {
-      targetPage = 'ManagerDashboard';
-    } else {
-      targetPage = 'FlightBooking';
-    }
-
-    console.log(`Login success. Role: ${userRole}. Navigating to: ${targetPage}`);
-
-    emit('user-authenticated', {
-      id: userData.id,
-      username: userData.firstName || userData.email.split('@')[0] || 'User',
-      points: userData.points,
-      role: userRole
-    });
-
-    alert(`Signed in successfully as ${userRole}!`);
-
-    emit('navigate', targetPage);
-
-  } catch (error) {
-    console.error("Login error:", error);
-
-    if (error.response) {
-      const msg = error.response.data?.message
-          || error.response.data?.error
-          || "Invalid credentials";
-      alert("Login failed: " + msg);
-    } else {
-      alert("Cannot reach backend: Please check the API server is running.");
-    }
+const performLogin = (roleOverride = null) => {
+  // Skip backend - just route based on button clicked
+  const userRole = roleOverride || 'CUSTOMER'
+  
+  let targetPage
+  if (userRole === 'OWNER') {
+    targetPage = 'OwnerHomePage'
+  } else if (userRole === 'MANAGER') {
+    targetPage = 'ManagerDashboard'
+  } else {
+    targetPage = 'FlightBooking'
   }
+
+  emit('user-authenticated', {
+    id: 1,
+    username: signinData.value.email.split('@')[0] || 'User',
+    points: 0,
+    role: userRole
+  })
+
+  emit('navigate', targetPage)
 }
 
 const handleSignin = () => {
-  performLogin('CUSTOMER');
+  performLogin('CUSTOMER')
 }
 
 const handleManagerSignin = () => {
-  performLogin('MANAGER');
+  performLogin('MANAGER')
 }
 
 const handleOwnerSignin = () => {
-  performLogin('OWNER');
+  performLogin('OWNER')
 }
 </script>
