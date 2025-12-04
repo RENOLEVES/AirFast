@@ -110,16 +110,16 @@ src/
 │   ├── UserSignup.vue        # User registration
 │   ├── UserSignin.vue        # User login
 │   └── BookingPayment.vue    # Payment page
+|         ...
 ├── components/
 │   └── FlightCard.vue        # Reusable flight card component
+|         ...
 ├── App.vue                    # Main app component with routing
 ├── main.js                    # App entry point
 └── style.css                  # Global styles with Tailwind
 ```
 
-## Features to Implement (Backend Integration)
-
-The current implementation includes the complete UI with mock data. To make it fully functional, you'll need to:
+## Implemented Feature
 
 1. **API Integration**
    - Connect to a flight booking API
@@ -127,20 +127,17 @@ The current implementation includes the complete UI with mock data. To make it f
    - Add authentication endpoints
 
 2. **State Management**
-   - Add Pinia or Vuex for global state
    - Manage user session
    - Store booking information
+   - Update booking, seat, employee infomation
+   - Make/cancel multiple bookings
+   - Search flight by date range & location
 
 3. **Database**
-   - User accounts
-   - Flight bookings
-   - Payment records
-
-4. **Payment Gateway**
-   - Integrate Stripe, PayPal, or other payment processors
-   - Handle secure transactions
-
-
+   - person accounts (Customer, Owner, Manager, Pilot, Flight Attendant)
+   - flight
+   - booking
+   - seat
 
 ## Deliverables & Links to Their Documentation 
 - [Deliverable 1: Project Report](https://github.com/McGill-ECSE321-Fall2025/group-project-group-8/wiki/Deliverable-1:-Project-Report)
@@ -202,15 +199,17 @@ The app uses a simple component-based navigation system. To navigate between vie
 $emit('navigate', 'FlightBooking')
 ```
 
-Available views:
+router:
 - `HomePage`
 - `FlightBooking`
 - `BookedFlights`
 - `UserSignup`
 - `UserSignin`
 - `BookingPayment`
+- `OwnerHomePage`     <- owner home page
+- `ManagerDashboard`  <- manager home page
 
-## Sample Data
+## Sample Data (/resources/all.sql)
 
 The application includes sample flight data:
 - Routes between Montreal and Toronto
