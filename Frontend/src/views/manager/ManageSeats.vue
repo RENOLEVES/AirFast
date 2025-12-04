@@ -98,8 +98,6 @@
 </template>
 
 <script>
-import { managerAPI, ownerAPI } from '@/api/service'
-
 export default {
   name: 'ManageSeats',
   data() {
@@ -111,7 +109,8 @@ export default {
       selectedSeat: null,
       newPrice: 0,
       successMessage: '',
-      errorMessage: ''
+      errorMessage: '',
+      apiUrl: 'http://localhost:8080/api/owners/view/booking',
     }
   },
   computed: {
@@ -129,12 +128,21 @@ export default {
   },
   methods: {
     async fetchSeats() {
-      this.loading = true;
+      this.isLoading = true;
       this.error = null;
       try {
-        this.seats = await ownerAPI.getAllSeats();
+        const response = await fetch(this.apiUrl);
+
+        if (!response.ok) {
+          throw new Error(`Server returned status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        this.seats = data;
+
       } catch (e) {
-        this.error = e.response?.data?.message || e.message || 'Failed to load seats';
+        console.error('Fetch error:', e);
+        this.error = e.message || 'The backend service is unavailable.';
       } finally {
         this.loading = false;
       }

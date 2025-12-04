@@ -7,7 +7,6 @@
       </button>
     </div>
 
-    <!-- Loading/Error States -->
     <div v-if="loading" class="flex-grow flex items-center justify-center text-indigo-600">
       Loading flights...
     </div>
@@ -19,17 +18,13 @@
       </button>
     </div>
 
-    <!-- Flights Grid -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto flex-grow">
-      <div v-for="flight in flights" :key="flight.flightId" class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition">
+      <div v-for="flight in flights" :key="flight.id" class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition">
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-xl font-bold text-gray-800">{{ flight.flightNumber }}</h3>
             <p class="text-sm text-gray-500">{{ formatDate(flight.departTime) }}</p>
           </div>
-          <span :class="getStatusBadge(flight.status)" class="px-3 py-1 text-xs rounded-full font-semibold">
-            {{ formatStatus(flight.status) }}
-          </span>
         </div>
 
         <div class="space-y-2 mb-4 text-sm">
@@ -58,18 +53,17 @@
           <button @click="openAssignModal(flight)" class="flex-1 px-3 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition">
             <i class="fas fa-user-plus mr-1"></i>Assign
           </button>
-          <button @click="deleteFlight(flight.flightId)" class="px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">
+          <button @click="deleteFlight(flight.id)" class="px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">
             <i class="fas fa-trash"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Create/Edit Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="closeModal">
       <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-6">{{ isEditing ? 'Edit Flight' : 'Create Flight' }}</h2>
-        
+
         <form @submit.prevent="saveFlight" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -130,11 +124,10 @@
       </div>
     </div>
 
-    <!-- Assign Employees Modal -->
     <div v-if="showAssignModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="closeAssignModal">
       <div class="bg-white rounded-xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-6">Assign Employees to Flight {{ selectedFlight?.flightNumber }}</h2>
-        
+
         <div class="mb-4">
           <input v-model="employeeSearch" type="text" placeholder="Search employees..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
         </div>
@@ -163,7 +156,6 @@
       </div>
     </div>
 
-    <!-- Success/Error Messages -->
     <div v-if="successMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
       {{ successMessage }}
     </div>
@@ -174,8 +166,6 @@
 </template>
 
 <script>
-import { managerAPI } from '@/api/service'
-
 export default {
   name: 'ManageFlights',
   data() {
@@ -201,18 +191,19 @@ export default {
         flightTime: 60,
         isRecurring: false,
         status: 0
-      }
+      },
+      apiUrl: 'http://localhost:8080/api/flights',
     }
   },
   computed: {
     filteredEmployees() {
       if (!this.employeeSearch) return this.employees;
       const search = this.employeeSearch.toLowerCase();
-      return this.employees.filter(emp => 
-        emp.firstName.toLowerCase().includes(search) ||
-        emp.lastName.toLowerCase().includes(search) ||
-        emp.email.toLowerCase().includes(search) ||
-        emp.title.toLowerCase().includes(search)
+      return this.employees.filter(emp =>
+          emp.firstName.toLowerCase().includes(search) ||
+          emp.lastName.toLowerCase().includes(search) ||
+          emp.email.toLowerCase().includes(search) ||
+          emp.title.toLowerCase().includes(search)
       );
     }
   },
@@ -225,9 +216,31 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        this.flights = await managerAPI.getAllFlights();
+        const response = await fetch(this.apiUrl);
+
+        if (!response.ok) {
+          throw new Error(`Server returned status: ${response.status}`);
+        }
+
+        const backendData = await response.json();
+
+        this.flights = backendData.map(flight => ({
+          id: flight.flightId || flight.id,
+          flightNumber: flight.flightNumber,
+          departLocation: flight.departLocation,
+          arrivalLocation: flight.arrivalLocation,
+          departTime: flight.departTime,
+          arrivalTime: flight.arrivalTime,
+          capacity: flight.capacity,
+          seatsRemaining: flight.seatsRemaining,
+          status: flight.status,
+          flightTime: flight.flightTime,
+          isRecurring: flight.isRecurring
+        }));
+
       } catch (e) {
-        this.error = e.response?.data?.message || e.message || 'Failed to load flights';
+        console.error('Failed to fetch flights:', e);
+        this.error = e.message || 'The backend service is unavailable.';
       } finally {
         this.loading = false;
       }
@@ -267,7 +280,7 @@ export default {
         departTime: this.formatDateForInput(flight.departTime),
         flightTime: flight.flightTime,
         isRecurring: flight.isRecurring,
-        status: flight.status || 0
+        status: flight.status
       };
       this.showModal = true;
     },
@@ -275,34 +288,6 @@ export default {
     closeModal() {
       this.showModal = false;
       this.selectedFlight = null;
-    },
-
-    async saveFlight() {
-      try {
-        if (this.isEditing) {
-          await managerAPI.updateFlight(this.selectedFlight.flightId, this.formData);
-          this.showSuccess('Flight updated successfully');
-        } else {
-          await managerAPI.createFlight(this.formData);
-          this.showSuccess('Flight created successfully');
-        }
-        this.closeModal();
-        this.fetchFlights();
-      } catch (e) {
-        this.showError(e.response?.data?.message || 'Failed to save flight');
-      }
-    },
-
-    async deleteFlight(flightId) {
-      if (!confirm('Are you sure you want to delete this flight?')) return;
-      
-      try {
-        await managerAPI.deleteFlight(flightId);
-        this.showSuccess('Flight deleted successfully');
-        this.fetchFlights();
-      } catch (e) {
-        this.showError(e.response?.data?.message || 'Failed to delete flight');
-      }
     },
 
     openAssignModal(flight) {
@@ -318,6 +303,98 @@ export default {
       this.selectedEmployeeIds = [];
     },
 
+    async saveFlight() {
+      try {
+        const payload = {
+          // Include ID if editing, necessary for PUT request path and body validation
+          ...(this.isEditing && { flightId: this.selectedFlight.id }),
+          ...this.formData,
+          capacity: Number(this.formData.capacity),
+          flightTime: Number(this.formData.flightTime),
+        };
+
+        let url = this.apiUrl;
+        let method = 'POST';
+
+        if (this.isEditing) {
+          // If editing, use the flight ID in the URL and set method to PUT
+          url = `${this.apiUrl}/${this.selectedFlight.id}`;
+          method = 'PUT';
+        } else {
+          // If creating, we don't need the isRecurring flag in the payload for creation
+          delete payload.isRecurring;
+        }
+
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          let errorMessage = `Failed to ${this.isEditing ? 'update' : 'create'} flight. Status: ${response.status}.`;
+
+          try {
+            const backendData = await response.text();
+            try {
+              const jsonBody = JSON.parse(backendData);
+              errorMessage = jsonBody.message || jsonBody.error || errorMessage;
+            } catch {
+              errorMessage = backendData || errorMessage;
+            }
+          } catch (e) {
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        this.showSuccess(`Flight ${this.isEditing ? 'updated' : 'created'} successfully, it may show at the bottom.`);
+        this.closeModal();
+        await this.fetchFlights();
+      } catch (e) {
+        console.error("Save Flight Error:", e);
+        this.showError(e.message || 'Failed to save flight. Check server connection.');
+      }
+    },
+
+    async deleteFlight(flightId) {
+      if (!confirm('Are you sure you want to delete this flight? This action cannot be undone.')) return;
+
+      try {
+        const response = await fetch(`${this.apiUrl}/${flightId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          let errorMessage = `Failed to delete flight. Status: ${response.status}.`;
+
+          try {
+            const backendData = await response.text();
+            try {
+              const jsonBody = JSON.parse(backendData);
+              errorMessage = jsonBody.message || jsonBody.error || errorMessage;
+            } catch {
+              errorMessage = backendData || errorMessage;
+            }
+          } catch (e) {
+          }
+          throw new Error(errorMessage);
+        }
+
+        this.showSuccess('Flight deleted successfully');
+        await this.fetchFlights();
+
+      } catch (e) {
+        console.error('Failed to delete flight:', e);
+        this.showError(e.message || 'Failed to delete flight due to an unexpected error.');
+      }
+    },
+
     async assignEmployees() {
       if (this.selectedEmployeeIds.length === 0) {
         this.showError('Please select at least one employee');
@@ -325,7 +402,7 @@ export default {
       }
 
       try {
-        await managerAPI.assignFlight(this.selectedFlight.flightId, this.selectedEmployeeIds);
+        await managerAPI.assignFlight(this.selectedFlight.id, this.selectedEmployeeIds);
         this.showSuccess(`Assigned ${this.selectedEmployeeIds.length} employee(s) to flight`);
         this.closeAssignModal();
       } catch (e) {
@@ -348,7 +425,8 @@ export default {
     formatDateForInput(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
-      return date.toISOString().slice(0, 16);
+      const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+      return localDate;
     },
 
     formatStatus(status) {

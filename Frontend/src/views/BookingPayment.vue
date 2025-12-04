@@ -279,7 +279,7 @@ const handlePayment = async () => {
 
     if (error.response) {
       const backendMessage = error.response.data || error.response.statusText;
-      bookingError.value = "You already have a booking for this flight.";
+      bookingError.value = "Please login or you already have a booking for this flight.";
       console.error("Backend message:", backendMessage);
     } else if (error.request) {
       bookingError.value = "Cannot reach the booking service. Please ensure the backend is running.";

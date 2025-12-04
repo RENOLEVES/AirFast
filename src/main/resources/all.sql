@@ -94,11 +94,6 @@ INSERT INTO seat (seat_class, price, seat_number, seat_status, flight_id) VALUES
 
 -- Bookings (mix of confirmed, pending, cancelled)
 INSERT INTO booking (customer_id, seat_id, booking_date, payment_status, booking_status) VALUES
-    (1, 5, '2025-12-01 10:30:00', 1, 2),  -- Alice, confirmed
-    (1, 10, '2025-12-02 14:20:00', 1, 2), -- Alice, confirmed
-    (2, 8, '2025-12-01 11:45:00', 1, 2),  -- Bob, confirmed
-    (5, 6, '2025-12-02 09:15:00', 1, 2),  -- Emma, confirmed
-    (8, 15, '2025-12-03 16:30:00', 1, 2), -- Henry, confirmed
-    (3, 7, '2025-12-04 08:00:00', 0, 0),  -- Carol, pending payment
-    (4, 20, '2025-12-04 12:00:00', 1, 1), -- David, cancelled
-    (6, 14, '2025-12-03 13:45:00', 1, 2); -- Frank, confirmed
+    (3, 5, '2025-12-01 10:30:00', 1, 0),  -- Alice, confirmed
+    (5, 10, '2025-12-02 14:20:00', 1, 0), -- Alice, confirmed
+    (2, 8, '2025-12-01 11:45:00', 1, 0);  -- Bob, confirmed

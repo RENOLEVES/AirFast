@@ -16,8 +16,8 @@
 
     <!-- Bookings Grid -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto flex-grow">
-      <div v-for="booking in bookings" :key="booking.bookingId" class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition">
-        <div class="flex justify-between items-start mb-4">
+      <div v-for="booking in bookings" :key="booking.bookingId" class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition h-[240px]">
+        <div class="flex justify-between items-start mb-4 ">
           <div>
             <h3 class="text-xl font-bold text-gray-800">Booking #{{ booking.bookingId }}</h3>
             <p class="text-sm text-gray-500">{{ formatDate(booking.bookingDate) }}</p>
@@ -30,7 +30,7 @@
         <div class="space-y-2 mb-4 text-sm">
           <div class="flex justify-between">
             <span class="text-gray-600">Customer ID:</span>
-            <span class="font-medium">{{ booking.customerId }}</span>
+            <span class="font-medium">{{ booking.customerId || 'N/A' }}</span>
           </div>
           <div class="flex justify-between">
             <span class="text-gray-600">Seat ID:</span>
@@ -61,8 +61,6 @@
 </template>
 
 <script>
-import { managerAPI } from '@/api/service'
-
 export default {
   name: 'ManageBookings',
   data() {
@@ -71,7 +69,8 @@ export default {
       loading: true,
       error: null,
       successMessage: '',
-      errorMessage: ''
+      errorMessage: '',
+      apiUrl: 'http://localhost:8080/api/bookings',
     }
   },
   mounted() {
@@ -79,26 +78,60 @@ export default {
   },
   methods: {
     async fetchBookings() {
-      this.loading = true;
+      this.isLoading = true;
       this.error = null;
       try {
-        this.bookings = await managerAPI.getAllBookings();
+        const response = await fetch(this.apiUrl);
+
+        if (!response.ok) {
+          throw new Error(`Server returned status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        this.bookings = data;
+
       } catch (e) {
-        this.error = e.response?.data?.message || e.message || 'Failed to load bookings';
+        console.error('Fetch error:', e);
+        this.error = e.message || 'The backend service is unavailable.';
       } finally {
         this.loading = false;
       }
     },
 
     async deleteBooking(bookingId) {
-      if (!confirm('Are you sure you want to delete this booking?')) return;
-      
+      if (!confirm(`Are you sure you want to delete booking #${bookingId}?`)) return;
+      const deleteUrl = `http://localhost:8080/api/bookings/${bookingId}`;
+
       try {
-        await managerAPI.deleteBooking(bookingId);
-        this.showSuccess('Booking deleted successfully');
+        const response = await fetch(deleteUrl, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          let errorMessage = `Failed to delete booking. Status: ${response.status}.`;
+
+          try {
+            const backendData = await response.text();
+            try {
+              const jsonBody = JSON.parse(backendData);
+              errorMessage = jsonBody.message || jsonBody.error || errorMessage;
+            } catch {
+              errorMessage = backendData || errorMessage;
+            }
+          } catch (e) {
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        this.showSuccess(`Booking #${bookingId} deleted successfully`);
         this.fetchBookings();
+
       } catch (e) {
-        this.showError(e.response?.data?.message || 'Failed to delete booking');
+        console.error('Delete error:', e);
+        this.showError(e.message || 'Failed to delete booking.');
       }
     },
 
@@ -109,27 +142,31 @@ export default {
     },
 
     formatStatus(status) {
-      const statuses = ['Confirmed', 'Waitlisted', 'Cancelled by Customer', 'Cancelled by Airline'];
-      return statuses[status] || 'Unknown';
+      return status || 'Unknown';
     },
 
     formatPaymentStatus(status) {
-      const statuses = ['Not Paid', 'Paid'];
-      return statuses[status] || 'Unknown';
+      const statusMap = {
+        'NOT_PAID': 'Not Paid',
+        'PAID': 'Paid'
+      };
+      return statusMap[status] || status || 'Unknown';
     },
 
     getStatusBadge(status) {
+      const statusUpper = status?.toUpperCase();
       const badges = {
-        0: 'bg-green-100 text-green-800',
-        1: 'bg-yellow-100 text-yellow-800',
-        2: 'bg-red-100 text-red-800',
-        3: 'bg-red-100 text-red-800'
+        'CONFIRMED': 'bg-green-100 text-green-800',
+        'WAITLISTED': 'bg-yellow-100 text-yellow-800',
+        'CANCELLED_BY_CUSTOMER': 'bg-red-100 text-red-800',
+        'CANCELLED_BY_AIRLINE': 'bg-red-100 text-red-800'
       };
-      return badges[status] || 'bg-gray-100 text-gray-800';
+      return badges[statusUpper] || 'bg-gray-100 text-gray-800';
     },
 
     getPaymentStatusClass(status) {
-      return status === 1 ? 'text-green-600' : 'text-red-600';
+      const statusUpper = status?.toUpperCase();
+      return statusUpper === 'PAID' ? 'text-green-600' : 'text-red-600';
     },
 
     showSuccess(message) {

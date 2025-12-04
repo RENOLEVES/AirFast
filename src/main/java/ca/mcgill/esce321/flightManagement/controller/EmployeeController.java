@@ -47,15 +47,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.updateEmployee(id, request));
     }
 
-//    // DELETE
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
-//        managerService.deleteManager(id);
-//        return ResponseEntity.noContent().build();
-//    }
-
-
-
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
+    }
 
     // Map your service's IllegalArgumentException to HTTP codes
     @ExceptionHandler(IllegalArgumentException.class)

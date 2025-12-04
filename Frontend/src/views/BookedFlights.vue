@@ -5,9 +5,8 @@
       <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
         <div>
           <h1 class="font-extrabold text-5xl text-gray-800 mb-2 tracking-tight">
-            <i class="fas fa-ticket-alt text-indigo-500 mr-4"></i>My Reservations
+            <i class="fas fa-ticket-alt text-indigo-500 mr-4"></i>My Bookings
           </h1>
-          <p class="text-gray-500 text-lg">Manage your flight bookings (Customer ID: **{{ id }}**)</p>
         </div>
         <button
             @click="$emit('navigate', 'FlightBooking')"
@@ -19,7 +18,7 @@
 
       <div v-if="isLoading" class="text-center py-20 bg-white rounded-3xl shadow-xl border border-indigo-100">
         <i class="fas fa-plane-departure fa-spin text-7xl text-indigo-500 mb-6"></i>
-        <p class="text-3xl font-extrabold text-gray-800">Fetching Reservations...</p>
+        <p class="text-3xl font-extrabold text-gray-800">Fetching Bookings...</p>
         <p class="text-gray-500 mt-2">Connecting to the booking system. Please wait.</p>
       </div>
 
@@ -49,7 +48,7 @@
             <div v-if="confirmingId === booking.id" class="absolute inset-0 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-8 z-10 rounded-3xl">
               <i class="fas fa-exclamation-circle text-7xl text-amber-500 mb-4 animate-pulse"></i>
               <p class="text-2xl font-bold text-gray-800 mb-3">Confirm Cancellation</p>
-              <p class="text-base text-center text-gray-500 mb-8">Are you sure you want to cancel reservation **#{{ booking.id }}**? This action cannot be reversed.</p>
+              <p class="text-base text-center text-gray-500 mb-8">Are you sure you want to cancel Booking **#{{ booking.id }}**? This action cannot be reversed.</p>
               <div class="flex space-x-4 w-full">
                 <button @click="confirmingId = null" class="flex-1 px-4 py-3 text-gray-700 bg-gray-200 rounded-xl hover:bg-gray-300 font-semibold transition">
                   No, Keep It
@@ -119,7 +118,7 @@
                     :disabled="confirmingId !== null"
                     class="w-full bg-red-500 text-white font-bold text-lg px-8 py-4 rounded-xl hover:bg-red-600 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-wait"
                 >
-                  <i class="fas fa-times-circle mr-2"></i>Cancel Reservation
+                  <i class="fas fa-times-circle mr-2"></i>Cancel Booking
                 </button>
                 <button
                     v-else

@@ -40,21 +40,15 @@ public class EmployeeServiceImpl{
 
     public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
 
-        // 1. Validation (Highly Recommended)
-        // Check if a person with the email already exists before proceeding
         if (personRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("A person with this email already exists.");
         }
 
-        // 2. Determine the concrete subclass based on the title
         Employee eToCreate;
 
-        // Normalize the title input for comparison
         String normalizedTitle = dto.getTitle().toLowerCase().trim();
 
-        // Instantiate the correct concrete class
         if ("manager".equals(normalizedTitle)) {
-            // Assuming Manager constructor accepts the same arguments as Employee
             eToCreate = new Manager(dto.getEmail(), dto.getPassword(),
                     dto.getFirstName(), dto.getLastName());
         } else if ("pilot".equals(normalizedTitle)) {
@@ -64,15 +58,12 @@ public class EmployeeServiceImpl{
             eToCreate = new FlightAttendant(dto.getEmail(), dto.getPassword(),
                     dto.getFirstName(), dto.getLastName());
         } else {
-            // If the title doesn't match any known subclass
             throw new IllegalArgumentException("Invalid employee title: " + dto.getTitle() +
                     ". Must be Manager, Pilot, or Flight Attendant.");
         }
 
-        // 3. Save the entity
         Employee saved = personRepository.save(eToCreate);
 
-        // 4. Return the Response DTO (unchanged)
         return new EmployeeResponseDTO(
                 saved.getId(),
                 saved.getEmail(),
@@ -84,37 +75,46 @@ public class EmployeeServiceImpl{
     }
 
     public EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Request body (dto) must not be null");
+        }
 
-        // 1. Fetch the existing Person entity by ID
         Person existingPerson = personRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found with ID: " + id));
 
-        // 2. Validate and Cast to Employee
         if (!(existingPerson instanceof Employee employeeToUpdate)) {
             throw new IllegalArgumentException("The ID " + id + " belongs to a non-employee type.");
         }
 
-        String existingRole = employeeToUpdate.getTitle().toLowerCase().trim();
-        String newRole = dto.getTitle().toLowerCase().trim();
-
-        // If the title is provided in the DTO, it must match the existing entity's role
-        if (dto.getTitle() != null && !newRole.equals(existingRole)) {
-            throw new IllegalArgumentException("Cannot change employee type (e.g., Pilot to Manager) using this update method. The existing role is " + existingRole + ".");
-        }
-
-        EmployeeResponseDTO updatedEmployee;
         if (dto instanceof ManagerRequestDTO manager) {
-            updatedEmployee = managerService.updateManager(id, manager);
+            return managerService.updateManager(id, manager);
         } else if (dto instanceof PilotRequestDTO pilot) {
-            updatedEmployee = pilotService.updatePilot(id, pilot);
-        } else if (dto instanceof FlightAttendantRequestDTO flightAttendant) {
-            updatedEmployee = flightAttendantService.updateFlightAttendant(id, flightAttendant);
+            return pilotService.updatePilot(id, pilot);
+        } else if (dto instanceof FlightAttendantRequestDTO fa) {
+            return flightAttendantService.updateFlightAttendant(id, fa);
         } else {
-            throw new IllegalStateException("Unknown employee subtype encountered for ID: " + id);
+            if (dto.getEmail() != null) employeeToUpdate.setEmail(dto.getEmail());
+            if (dto.getFirstName() != null) employeeToUpdate.setFirstName(dto.getFirstName());
+            if (dto.getLastName() != null) employeeToUpdate.setLastName(dto.getLastName());
+            if (dto.getTitle() != null && !dto.getTitle().isBlank()) employeeToUpdate.setTitle(dto.getTitle());
+            Employee saved = personRepository.save(employeeToUpdate);
+            return convertToResponseDto(saved);
         }
+    }
 
-        // 4. Convert and return the Response DTO
-        return updatedEmployee;
+    // example helper - adjust to your DTO fields
+    private EmployeeResponseDTO convertToResponseDto(Employee e) {
+        return new EmployeeResponseDTO(e.getId(), e.getEmail(),e.getPassword(),e.getFirstName(), e.getLastName(), e.getTitle());
+    }
+
+
+    public void deleteEmployee(Long id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isPresent() && optionalPerson.get() instanceof Employee employee) {
+            personRepository.delete(employee);
+        } else {
+            throw new IllegalArgumentException("No Owner found with ID " + id);
+        }
     }
 
     private EmployeeResponseDTO convertEmployee(Employee e) {
