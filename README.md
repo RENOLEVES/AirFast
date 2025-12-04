@@ -156,11 +156,11 @@ The current implementation includes the complete UI with mock data. To make it f
 
 | Name        | Role                  | Deliverable 1 Effort (hrs) | Deliverable 2 Effort (hrs) | Deliverable 3 Effort (hrs) | Presentation Effort (hrs) | Total (hrs) |
 |-------------|----------------------|----------------------------|----------------------------|----------------------------|----------------------------|-------------|
-| Toufic | Project Manager and Scrum Master    | 8                          | 25                          | …                          | …                          | …           |
-| Eric | Backend & Testing Lead	  | 8                          | 25                          | …                          | …                          | …           |
-| Marshall    | UML & Architecture Lead        | 8                          | 18-20                          | …                          | …                          | …           |
-| Vincent    | Requirements & Documentation Lead       | 8                          | 20                          | …                          | …                          | …           |
-| Lince    | Database & Integration Lead   | 8                          | 16-18                          | …                          | …                          | …           |
+| Toufic | Project Manager and Scrum Master    | 8                          | 25                          | 16                          | 7                          | 56           |
+| Eric | Backend & Testing Lead	  | 8                          | 25                          | 25                          | 7                          | 65           |
+| Marshall    | UML & Architecture Lead        | 8                          | 19                          | 10                          | 3                          | 40           |
+| Vincent    | Requirements & Documentation Lead       | 8                          | 20                          | 20                          | 4                          | 52           |
+| Lince    | Database & Integration Lead   | 8                          | 17                          | 8                          | 3                          | 36           |
 
 > Detailed per-meeting minutes and time logs are on the Wiki (see below).
 
