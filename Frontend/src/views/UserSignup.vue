@@ -87,7 +87,7 @@
         </p>
         
         <button
-          @click="$emit('navigate', 'HomePage')"
+          @click="$emit('navigate', 'FlightBooking')"
           class="mt-6 w-full text-[14px] text-[#9a9a9a] hover:text-[#484848] font-semibold transition"
         >
           <i class="fas fa-arrow-left mr-2"></i>Back to Home

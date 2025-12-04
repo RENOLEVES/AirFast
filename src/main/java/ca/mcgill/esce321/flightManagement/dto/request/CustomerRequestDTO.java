@@ -7,6 +7,10 @@ public class CustomerRequestDTO extends PersonRequestDTO{
 
     public CustomerRequestDTO() {}
 
+    public CustomerRequestDTO(String email,String password) {
+        super(email,password);
+    }
+
     public CustomerRequestDTO(String email,String password, String firstName, String lastName,
                               int membershipNumber, int points, int timeInFlight) {
         super(email,password,firstName,lastName);

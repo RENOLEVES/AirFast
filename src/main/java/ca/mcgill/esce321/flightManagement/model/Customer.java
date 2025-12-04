@@ -19,7 +19,7 @@ public class Customer extends Person {
 
     public Customer(){}
     public Customer(String email, String password, String firstName, String lastName){
-        super(email, password,firstName,lastName);
+        super(email, password,firstName,lastName, "Customer");
         String shortDate = new SimpleDateFormat("MMddHH").format(new Date());
         this.membershipNumber = Integer.parseInt(shortDate);
     }

@@ -32,7 +32,7 @@ public class Owner extends Person{
 
     public Owner(){}
     public Owner(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+        super(email,password,firstName,lastName,"Owner");
     }
 
     public double getTotalRevenue() {

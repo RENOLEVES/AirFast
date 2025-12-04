@@ -122,7 +122,7 @@ public class OwnerServiceImpl{
                                 e.getPassword(),
                                 e.getFirstName(),
                                 e.getLastName(),
-                                e.getTitle()
+                                "Employee"
                         );
                     }
                 }).collect(Collectors.toList());
@@ -239,11 +239,14 @@ public class OwnerServiceImpl{
         int totalPilotCount = 0;
         int totalFlightAttendantCount = 0;
         int totalManagerCount = 0;
+        System.out.println(viewAllEmployees());
         for (EmployeeResponseDTO e : viewAllEmployees()) {
-            switch (e.getTitle()) {
-                case "Pilot" -> totalPilotCount++;
-                case "Flight Attendant" -> totalFlightAttendantCount++;
-                case "Manager" -> totalManagerCount++;
+            if (e instanceof PilotResponseDTO ) {
+                totalPilotCount++;
+            } else if (e instanceof FlightAttendantResponseDTO ) {
+                totalFlightAttendantCount++;
+            } else if (e instanceof ManagerResponseDTO ) {
+                totalManagerCount++;
             }
         }
         int totalCount = totalEmployeeCount+totalCustomerCount;

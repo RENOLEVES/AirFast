@@ -70,7 +70,7 @@ export default {
         // Simulate some titles for badge colors (if your API doesn't provide them)
         this.employees = data.map(emp => ({
           ...emp,
-          title: emp.title || (emp.id % 3 === 0 ? 'Manager' : (emp.id % 2 === 0 ? 'Associate' : 'Senior Analyst'))
+          title: emp.title || (emp.id % 3 === 0 ? 'Manager' : (emp.id % 2 === 0 ? 'flight attendant' : 'pilot'))
         }));
 
       } catch (e) {

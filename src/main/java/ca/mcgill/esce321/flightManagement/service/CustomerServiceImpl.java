@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.esce321.flightManagement.dto.request.CustomerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.request.PersonRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Customer;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.model.*;
+import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.model.Person;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // public interface CustomerService {
 //     Customer createCustomer(CustomerRequestDTO dto); V
@@ -29,9 +35,12 @@ public class CustomerServiceImpl {
     //CRUD
     private final PersonRepository personRepository;
 
+    private final BookingRepository bookingRepository;
 
-     CustomerServiceImpl(PersonRepository personRepository){
+
+     CustomerServiceImpl(PersonRepository personRepository, BookingRepository bookingRepository){
         this.personRepository = personRepository;
+        this.bookingRepository = bookingRepository;
     }
 
 
@@ -132,6 +141,26 @@ public class CustomerServiceImpl {
         } else {
             throw new IllegalArgumentException("No Customer found with ID " + id);
         }
+    }
+
+
+    public List<BookingResponseDTO> findBookingsByCustomerId(Long customerId) {
+        List<Booking> bookings = bookingRepository.findAllByCustomer_Id(customerId);
+
+        return bookings.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private BookingResponseDTO convertToDto(Booking booking) {
+        return new BookingResponseDTO(
+                booking.getBookingId(),
+                booking.getCustomer().getId(),
+                booking.getSeat().getSeatId(),
+                booking.getBookingDate(),
+                booking.getPaymentStatus(),
+                booking.getBookingStatus()
+        );
     }
 
 }

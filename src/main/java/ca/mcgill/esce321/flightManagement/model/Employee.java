@@ -12,8 +12,8 @@ public abstract class Employee extends Person{
     private String title;
 
     public Employee(){}
-    public Employee(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+    public Employee(String email, String password, String firstName, String lastName, String title) {
+        super(email,password,firstName,lastName,title);
         this.isActive = true;
     }
 

@@ -6,10 +6,27 @@
       <div class="column w-2/12">Name</div>
       <div class="column w-2/12">Membership</div>
       <div class="column w-3/12">Email</div>
-      <div class="column w-1/12">Role</div>
       <div class="column w-3/12">Activity</div> </div>
 
     <div class="customer-list overflow-y-auto flex-grow rounded-b-lg border-x border-b border-gray-200">
+      <div
+          v-if="loading"
+          class="p-4 text-center text-gray-500"
+      >
+        <i class="fas fa-spinner fa-spin mr-2"></i> Loading customer data...
+      </div>
+      <div
+          v-else-if="error"
+          class="p-4 text-center text-red-600 bg-red-50 rounded-b-lg"
+      >
+        <i class="fas fa-exclamation-triangle mr-2"></i> Error: {{ error }}
+      </div>
+      <div
+          v-else-if="customers.length === 0"
+          class="p-4 text-center text-gray-500"
+      >
+        <i class="fas fa-users-slash mr-2"></i> No customers found.
+      </div>
       <div
           v-for="customer in customers"
           :key="customer.id"
@@ -29,12 +46,6 @@
 
         <div class="column w-3/12 text-sm text-gray-500 min-w-0 break-words">
           {{ customer.email }}
-        </div>
-
-        <div class="column w-1/12">
-          <span :class="getRoleClasses(customer.role)" class="px-3 py-1 text-xs leading-5 font-semibold rounded-full">
-            {{ formatRole(customer.role) }}
-          </span>
         </div>
 
         <div class="column w-3/12 text-xs text-gray-700 space-y-0.5">
@@ -60,88 +71,53 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ViewCustomers',
-  data() {
-    return {
-      customers: [],
-      loading: false,
-      error: null,
-      apiUrl: 'http://localhost:8080/api/owners/view/customer',
-    };
-  },
-  methods: {
-    async fetchCustomers() {
-      this.loading = true;
-      this.error = null;
+<script setup>
+  import { ref, onMounted } from 'vue';
 
-      try {
-        const response = await fetch(this.apiUrl);
+  const customers = ref([]);
+  const loading = ref(false);
+  const error = ref(null);
+  const apiUrl = 'http://localhost:8080/api/owners/view/customer';
 
-        if (!response.ok) {
-          throw new Error(`Server returned status: ${response.status}`);
-        }
+  const fetchCustomers = async () => {
+    loading.value = true;
+    error.value = null;
 
-        const data = await response.json();
+    try {
+      const response = await fetch(apiUrl);
 
-        this.customers = data.map(cust => ({
-          ...cust,
-          role: cust.role || (cust.id % 3 === 0 ? 'GOLD' : (cust.id % 2 === 0 ? 'SILVER' : 'BRONZE')),
-          membershipNumber: cust.membershipNumber || `M${String(cust.id).padStart(5, '0')}`
-        }));
-
-      } catch (e) {
-        console.error('Fetch error:', e);
-        this.error = e.message || 'The backend service is unavailable.';
-      } finally {
-        this.loading = false;
+      if (!response.ok) {
+        throw new Error(`Server returned status: ${response.status}`);
       }
-    },
 
-    formatRole(role) {
-      if (!role) return 'N/A';
-      const s = role.toLowerCase().replace(/_/g, ' ');
-      return s.charAt(0).toUpperCase() + s.slice(1);
-    },
+      const data = await response.json();
+      customers.value = data;
 
-    formatTimeInFlight(minutes) {
-      if (typeof minutes !== 'number' || minutes < 0) return '0 hrs';
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      if (hours > 0) {
-        return `${hours} hrs ${mins} min`;
-      }
-      return `${mins} min`;
-    },
+      console.log('Customers fetched successfully:', customers.value);
 
-    formatTimeInFLight(timeInFLight) {
-      if (!timeInFLight) return 'N/A';
-      return this.formatTimeInFlight(timeInFLight);
-    },
-
-    getRoleClasses(role) {
-      const r = role ? role.toUpperCase() : '';
-      switch (r) {
-        case 'GOLD':
-          return 'bg-yellow-100 text-yellow-800';
-        case 'SILVER':
-          return 'bg-gray-200 text-gray-800';
-        case 'BRONZE':
-          return 'bg-amber-100 text-amber-800';
-        default:
-          return 'bg-blue-100 text-blue-800';
-      }
-    },
-
-    viewCustomerDetails(customer) {
-      console.log('Viewing details for:', customer.id);
+    } catch (e) {
+      console.error('Fetch error:', e);
+      error.value = e.message || 'The backend service is unavailable.';
+      customers.value = [];
+    } finally {
+      loading.value = false;
     }
-  },
-  mounted() {
-    this.fetchCustomers();
-  },
-};
+  };
+
+  const formatTimeInFlight = (minutes) => {
+    if (typeof minutes !== 'number' || minutes < 0) return '0 min';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    if (hours > 0) {
+      return `${hours} hrs ${mins} min`;
+    }
+    return `${mins} min`;
+  };
+
+  onMounted(() => {
+    fetchCustomers();
+});
 </script>
 
 <style scoped>

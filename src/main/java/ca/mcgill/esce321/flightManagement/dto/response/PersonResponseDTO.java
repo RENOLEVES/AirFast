@@ -7,16 +7,18 @@ public class PersonResponseDTO {
     private String password;
     private String firstName;
     private String lastName;
+    private String title;
 
     public PersonResponseDTO() {}
 
 
-    public PersonResponseDTO(Long id, String email, String password, String firstName, String lastName) {
+    public PersonResponseDTO(Long id, String email, String password, String firstName, String lastName, String title) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.title = title;
     }
 
     public Long getId() {
@@ -57,6 +59,14 @@ public class PersonResponseDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
 

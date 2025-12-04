@@ -235,7 +235,8 @@ public class ManagerServiceImpl {
                     p.getEmail(),
                     p.getPassword(),
                     p.getFirstName(),
-                    p.getLastName()
+                    p.getLastName(),
+                    p.getTitle()
             ))
             .collect(Collectors.toList());
         return dtoList;
