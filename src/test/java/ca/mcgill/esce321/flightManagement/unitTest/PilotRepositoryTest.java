@@ -53,7 +53,7 @@ each object. Test data must be removed from the database after each test method.
     @Test
     void testReadPilot() {
         //read
-        Pilot p1 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
+        Pilot p1 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com").orElse(null);
 
         assertThat(p1).isNotNull();
         assertThat(p1.getFirstName()).isEqualTo("Toufic");
@@ -63,7 +63,7 @@ each object. Test data must be removed from the database after each test method.
     @Test
     void testUpdatePilot(){
         //read
-        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
+        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com").orElse(null);
 
         //update
         p2.setEmail("joe.lee@gmail.com");
@@ -71,7 +71,7 @@ each object. Test data must be removed from the database after each test method.
         p2.setLastName("Lee");
         personRepository.save(p1);
 
-        Pilot p3 = (Pilot) personRepository.findByEmail("joe.lee@gmail.com");
+        Pilot p3 = (Pilot) personRepository.findByEmail("joe.lee@gmail.com").orElse(null);
 
         assertThat(p3).isNotNull();
         assertThat(p3.getFirstName()).isEqualTo("Joe");
@@ -80,7 +80,7 @@ each object. Test data must be removed from the database after each test method.
 
     @Test
     void testOwnerAndPilot(){
-        Pilot m2 = (Pilot) personRepository.findByEmail(p1.getEmail());
+        Pilot m2 = (Pilot) personRepository.findByEmail(p1.getEmail()).orElse(null);
 
         assertThat(m2).isNotNull();
     }
@@ -89,7 +89,7 @@ each object. Test data must be removed from the database after each test method.
     void testDeletePilot(){
         personRepository.delete(p1);
 
-        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com");
+        Pilot p2 = (Pilot) personRepository.findByEmail("toufic.jrab@gmail.com").orElse(null);
         assertThat(p2).isNull();
     }
 

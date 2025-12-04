@@ -46,7 +46,7 @@ public class FlightAttendantRepositoryTest {
     @Test
     void testReadFlightAttendant() {
         //read
-        FlightAttendant c1 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com");
+        FlightAttendant c1 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com").orElse(null);
 
         assertThat(c1).isNotNull();
         assertThat(c1.getFirstName()).isEqualTo("Eric");
@@ -56,16 +56,16 @@ public class FlightAttendantRepositoryTest {
     @Test
     void testUpdateFlightAttendant(){
         //read
-        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com");
+        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com").orElse(null);
 
         //update
         fa2.setEmail("joe.lee@gmail.com");
         fa2.setFirstName("Joe");
         fa2.setLastName("Lee");
         
-        personRepository.save(fa1);
+        personRepository.save(fa2);
 
-        FlightAttendant c3 = (FlightAttendant) personRepository.findByEmail("joe.lee@gmail.com");
+        FlightAttendant c3 = (FlightAttendant) personRepository.findByEmail("joe.lee@gmail.com").orElse(null);
 
         assertThat(c3).isNotNull();
         assertThat(c3.getFirstName()).isEqualTo("Joe");
@@ -74,7 +74,7 @@ public class FlightAttendantRepositoryTest {
 
     @Test
     void testOwnerAndFlightAttendant(){
-        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail(fa1.getEmail());
+        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail(fa1.getEmail()).orElse(null);
 
         assertThat(fa2).isNotNull();
     }
@@ -83,7 +83,7 @@ public class FlightAttendantRepositoryTest {
     void testDeleteFlightAttendant(){
         personRepository.delete(fa1);
 
-        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com");
+        FlightAttendant fa2 = (FlightAttendant) personRepository.findByEmail("eric.zhao@gmail.com").orElse(null);
         assertThat(fa2).isNull();
     }
         

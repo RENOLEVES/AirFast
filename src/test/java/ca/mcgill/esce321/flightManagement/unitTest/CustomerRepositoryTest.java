@@ -28,7 +28,7 @@ class CustomerRepositoryTest {
         Owner owner = new Owner("owner@gmail.com", "123456", "o1","o2");
         o1 = personRepository.save(owner);
 
-        Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao",123456);
+        Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao",123456, 0, 0);
         customer.setPoints(500);
         c1 = personRepository.save(customer);
     }
@@ -41,7 +41,7 @@ class CustomerRepositoryTest {
     @Test
     void testSaveCustomer() {
         //create entity
-        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456);
+        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456, 0, 0);
         customer.setPoints(200);
 
         //save entity
@@ -53,7 +53,7 @@ class CustomerRepositoryTest {
     @Test
     void testReadCustomer() {
         //read
-        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com");
+        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com").orElseThrow();
 
         assertThat(c2).isNotNull();
         assertThat(c2.getFirstName()).isEqualTo("Eric");
@@ -65,7 +65,7 @@ class CustomerRepositoryTest {
     @Test
     void testUpdateCustomer(){
         //read
-        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com");
+        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com").orElseThrow();
 
         //update
         c2.setEmail("joe.lee@gmail.com");
@@ -74,7 +74,7 @@ class CustomerRepositoryTest {
         c2.setPoints(100);
         personRepository.save(c2);
 
-        Customer c3 = (Customer) personRepository.findByEmail("joe.lee@gmail.com");
+        Customer c3 = (Customer) personRepository.findByEmail("joe.lee@gmail.com").orElseThrow();
 
         assertThat(c3).isNotNull();
         assertThat(c3.getFirstName()).isEqualTo("Joe");
@@ -93,7 +93,7 @@ class CustomerRepositoryTest {
     void testDeleteCustomer(){
         personRepository.delete(c1);
 
-        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com");
+        Customer c2 = (Customer) personRepository.findByEmail("eric.zhao@gmail.com").orElse(null);
         assertThat(c2).isNull();
     }
 

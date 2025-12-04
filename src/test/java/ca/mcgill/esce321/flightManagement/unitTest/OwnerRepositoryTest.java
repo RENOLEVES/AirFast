@@ -2,6 +2,7 @@ package ca.mcgill.esce321.flightManagement.unitTest;
 
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,29 +37,30 @@ public class OwnerRepositoryTest {
 
         assertThat(s1.getId()).isNotNull();
     }
-
     @Test
     void testReadOwner() {
         //read
-        Owner o1 = (Owner) personRepository.findByEmail("owner@gmail.com");
+        Optional<Person> optPerson = personRepository.findByEmail("owner@gmail.com");
+        Owner o1 = (Owner) optPerson.orElse(null);
 
         assertThat(o1).isNotNull();
         assertThat(o1.getFirstName()).isEqualTo("Lili");
         assertThat(o1.getLastName()).isEqualTo("Wei");
     }
-
     @Test
     void testUpdateOwner(){
         //read
-        Owner o2 = (Owner) personRepository.findByEmail("owner@gmail.com");
+        Optional<Person> optO2 = personRepository.findByEmail("owner@gmail.com");
+        Owner o2 = (Owner) optO2.orElse(null);
 
         //update
         o2.setEmail("joe.lee@gmail.com");
         o2.setFirstName("Joe");
         o2.setLastName("Lee");
-        personRepository.save(o1);
+        personRepository.save(o2);
 
-        Owner o3 = (Owner) personRepository.findByEmail("joe.lee@gmail.com");
+        Optional<Person> optO3 = personRepository.findByEmail("joe.lee@gmail.com");
+        Owner o3 = (Owner) optO3.orElse(null);
 
         assertThat(o3).isNotNull();
         assertThat(o3.getFirstName()).isEqualTo("Joe");
@@ -69,7 +71,8 @@ public class OwnerRepositoryTest {
     void testDeleteOwner(){
         personRepository.delete(o1);
 
-        Owner o2 = (Owner) personRepository.findByEmail("owner@gmail.com");
+        Optional<Person> optO2 = personRepository.findByEmail("owner@gmail.com");
+        Owner o2 = (Owner) optO2.orElse(null);
         assertThat(o2).isNull();
     }
 
