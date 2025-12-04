@@ -8,6 +8,34 @@
           </h1>
           <p class="text-[#9a9a9a]">Search and book your next journey</p>
         </div>
+
+        <div class="relative">
+          <button
+              @click="toggleDropdown"
+              class="flex items-center space-x-2 text-[#484848] font-semibold text-lg p-2 rounded-full hover:bg-gray-200 transition"
+          >
+            <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+            <span class="hidden sm:inline">{{ username }}</span>
+            <i class="fas" :class="isDropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
+
+          <div
+              v-if="isDropdownOpen"
+              class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden"
+          >
+            <div class="px-4 py-3 border-b border-gray-100">
+              <p class="text-sm text-gray-700">Welcome, {{ username }}</p>
+            </div>
+
+            <button
+                @click="$emit('navigate', 'FlightBooking')"
+                class="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition block font-medium border-t border-gray-100"
+            >
+              <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
 
@@ -27,7 +55,6 @@
 
       </main>
     </div>
-  </div>
 </template>
 
 <script>
@@ -38,6 +65,9 @@ import ViewEmployees from './ViewEmployees.vue';
 import ViewBookings from "./ViewBookings.vue";
 import ViewSeats from "./ViewSeats.vue";
 import DashBoard from "./DashBoard.vue";
+import {ref} from "vue";
+
+
 
 const DummyView = {
   template: `
@@ -57,6 +87,25 @@ export default {
     ViewEmployees,
     ViewBookings,
     DashBoard
+  },
+  setup() {
+    // Define reactive variables
+    const username = ref('Owner');
+    const userPoints = ref(0);
+    const isDropdownOpen = ref(false);
+
+    // Define method
+    const toggleDropdown = () => {
+      isDropdownOpen.value = !isDropdownOpen.value;
+    };
+
+    // Return them to be accessible in the template and Options API methods
+    return {
+      username,
+      userPoints,
+      isDropdownOpen,
+      toggleDropdown,
+    };
   },
   data() {
     return {

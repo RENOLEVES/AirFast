@@ -6,12 +6,17 @@ VALUES
 INSERT INTO person (email, password, first_name, last_name, dtype, membership_number, points, time_in_flight)
 VALUES
     ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Customer',1,0,0),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Customer',2,5000,155);
+    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Customer',2,5000,155),
+    ('aaa@gmail.com', '123456', 'aaa', 'aaa', 'Customer',123,99999,9999);
 
 INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)
 VALUES
     ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Pilot',true,100),
     ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Pilot',true,100);
+
+INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, total_revenue)
+VALUES
+    ('owner@gmail.com', '123456', 'owner', 'owner', 'Owner',true, 0);
 
 
 INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)

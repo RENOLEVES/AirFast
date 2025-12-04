@@ -14,13 +14,13 @@ public class OwnerResponseDTO extends PersonResponseDTO{
     public OwnerResponseDTO() {}
 
     public OwnerResponseDTO(Long id, String email,String password, String firstName, String lastName) {
-        super(id, email,password,firstName,lastName);
+        super(id, email,password,firstName,lastName,"Owner");
     }
 
     public OwnerResponseDTO(Long id, String email, String password, String firstName, String lastName,
                             double totalRevenue, List<Long> customerIds, List<Long> employeeIds,
                             List<Long> flightIds, List<Long> bookingIds, List<Long> seatIds) {
-        super(id, email, password, firstName, lastName);
+        super(id, email, password, firstName, lastName,"Owner");
         this.totalRevenue = totalRevenue;
         this.customerIds = customerIds;
         this.employeeIds = employeeIds;

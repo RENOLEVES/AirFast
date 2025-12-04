@@ -17,7 +17,7 @@ public class Manager extends Employee{
 
     public Manager(){}
     public Manager(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+        super(email,password,firstName,lastName, "Manager");
     }
 
     public List<Flight> getFlights() {

@@ -11,7 +11,7 @@ public class Pilot extends Employee{
 
     public Pilot(){}
     public Pilot(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+        super(email,password,firstName,lastName, "Pilot");
     }
 
     public List<Flight> getFlights() {

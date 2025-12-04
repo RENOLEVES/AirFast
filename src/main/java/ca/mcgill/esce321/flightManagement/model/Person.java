@@ -14,14 +14,16 @@ public abstract class Person {
     private String password;
     private String firstName;
     private String lastName;
+    private String title;
     // add creation date
 
     public Person(){}
-    public Person(String email, String password, String firstName, String lastName) {
+    public Person(String email, String password, String firstName, String lastName, String title) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.title = title;
     }
 
     public Long getId() {
@@ -62,5 +64,13 @@ public abstract class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

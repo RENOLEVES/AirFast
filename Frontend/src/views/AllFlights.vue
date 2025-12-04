@@ -60,14 +60,10 @@
 </template>
 
 <script>
-// We no longer need to import FlightCard since we are rendering the data directly
-// import FlightCard from '../components/FlightCardForOwner.vue';
 
 export default {
   name: 'AllFlights',
-  // components: { FlightCard }, // Removed component import
   data() {
-    // ... (same data structure)
     return {
       flights: [],
       loading: false,
@@ -91,10 +87,8 @@ export default {
     },
     viewFlightDetails(flight) {
       console.log('Viewing details for flight:', flight.id);
-      // Example routing: this.$router.push({ name: 'FlightDetails', params: { id: flight.id } });
     },
 
-    // ... (Keep existing formatTime and formatDate methods)
     formatTime(dateTimeString) {
       if (!dateTimeString) return 'N/A';
       try {
@@ -113,9 +107,7 @@ export default {
         return 'Invalid Date';
       }
     },
-    // ... (Keep existing fetchFlights and getDemoFlights methods)
     async fetchFlights() {
-      // ... (Same fetching and mapping logic)
       this.loading = true;
       this.error = null;
 
@@ -172,18 +164,16 @@ export default {
 
 <style scoped>
 .flight-row {
-  /* Mimic SeatRow styles */
   padding: 12px 16px;
   min-height: 50px;
   width: 100%;
 }
 
 .flight-header {
-  padding: 12px 16px; /* Match row padding */
+  padding: 12px 16px;
 }
 
 .column {
-  /* Mimic SeatCard column styles */
   padding: 0 8px;
   white-space: nowrap;
   overflow: hidden;

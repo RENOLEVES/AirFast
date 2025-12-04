@@ -1,7 +1,6 @@
-<template>
+<<template>
   <div class="bg-gray-50 min-h-screen p-8">
     <div class="max-w-7xl mx-auto">
-      <!-- Header -->
       <div class="flex justify-between items-center mb-8">
         <div>
           <h1 class="font-extrabold text-[42px] text-[#484848] mb-2">
@@ -10,30 +9,47 @@
           <p class="text-[#9a9a9a]">Search and book your next journey</p>
         </div>
 
-        <!-- signin/signup -->
         <div class="flex justify-end items-center">
-          <button
-              @click="$emit('navigate', 'BookedFlights')"
-              class="px-6 py-3 bg-white border border-gray-300 text-[#484848] rounded-lg hover:bg-gray-50 transition font-semibold shadow-sm mr-4"
-          >
-            View Bookings
-          </button>
-
-          <!-- signed in -->
-          <div v-if="isLoggedIn" class="flex items-center space-x-3">
-            <span class="text-[#484848] font-semibold text-lg">
-              Welcome, **{{ username }}**!
-            </span>
-            <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+          <div v-if="isLoggedIn" class="relative">
             <button
-                @click="logOutUser"
-                class="text-red-500 hover:text-red-700 transition-colors font-semibold"
+                @click="toggleDropdown"
+                class="flex items-center space-x-2 text-[#484848] font-semibold text-lg p-2 rounded-full hover:bg-gray-200 transition"
             >
-              (Sign Out)
+              <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+              <span class="hidden sm:inline">{{ username }}</span>
+              <i class="fas" :class="isDropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
             </button>
+
+            <div
+                v-if="isDropdownOpen"
+                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden"
+            >
+              <div class="px-4 py-3 border-b border-gray-100">
+                <p class="text-sm text-gray-700">Welcome, {{ username }}</p>
+                <p class="text-xs font-medium text-blue-600">Points: {{ userPoints }}</p>
+              </div>
+
+              <button
+                  @click="handleProfileClick"
+                  class="w-full text-left px-4 py-3 text-[#484848] hover:bg-gray-50 transition block font-medium"
+              >
+                <i class="fas fa-id-badge mr-2 text-blue-500"></i>My Profile
+              </button>
+
+              <button
+                  @click="handleViewBookingsClick" class="w-full text-left px-4 py-3 text-[#484848] hover:bg-gray-50 transition block font-medium">
+                <i class="fas fa-id-badge mr-2 text-blue-500"></i>View Bookings
+              </button>
+
+              <button
+                  @click="logOutUser"
+                  class="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition block font-medium border-t border-gray-100"
+              >
+                <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+              </button>
+            </div>
           </div>
 
-          <!--          visitor-->
           <div v-else class="flex items-center">
             <button
                 @click="$emit('navigate', 'UserSignin')"
@@ -148,8 +164,6 @@ const api = axios.create({
   }
 });
 
-// select button
-// import SelectButton from 'primevue/selectbutton';
 
 const emit = defineEmits(['navigate'])
 const navigate = inject('navigate')
@@ -163,28 +177,76 @@ const searchParams = ref({
 
 //------------- sign in functionality----------------------
 const isLoggedIn = ref(false);
+const customerId = ref(null);
 const username = ref('Traveler');
+const userPoints = ref(0); // New: Tracks user points
+const isDropdownOpen = ref(false); // New: State for dropdown
 
-const logInUser = () => {
+const logInUser = (userData) => {
   isLoggedIn.value = true;
+  customerId.value = userData.id;
+  username.value = userData.username;
+  userPoints.value = userData.points || 0;
+  localStorage.setItem('flightUserSession', JSON.stringify({
+    id: userData.id,
+    username: userData.username,
+    points: userData.points
+  }));
+
+  console.log(`User ${username.value} logged in. Customer ID: ${customerId.value}`);
 };
+
 const logOutUser = () => {
   isLoggedIn.value = false;
-};
-//--------------------------------------------------------
+  customerId.value = null;
+  isDropdownOpen.value = false;
+  username.value = 'Customer';
+  userPoints.value = 0;
 
+  localStorage.removeItem('flightUserSession');
+};
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const handleProfileClick = () => {
+  isDropdownOpen.value = false;
+  alert('Navigating to My Profile (Feature not yet implemented)');
+};
+
+const handleViewBookingsClick = () => {
+  isDropdownOpen.value = false;
+  if (customerId.value) {
+    emit('navigate', 'BookedFlights', { id: customerId.value });
+  } else {
+    console.error('Customer ID is missing. Cannot view bookings.');
+
+    alert('Please sign in to view your bookings.');
+  }
+};
+
+defineExpose({
+  logInUser,
+  logOutUser
+});
+
+//--------------------------------------------------------
 const isSearchActive = ref(false)
 
-// Changed from hardcoded to empty array
 const flights = ref([])
 const isLoading = ref(false)
 
-// Fetch all flights on component mount
 onMounted(async () => {
+  const sessionData = localStorage.getItem('flightUserSession');
+  if (sessionData) {
+    const userData = JSON.parse(sessionData);
+    logInUser(userData); // Re-uses the logInUser method to restore state
+  }
+
   await fetchAllFlights();
 });
 
-// Function to fetch all flights
 const fetchAllFlights = async () => {
   isLoading.value = true;
   try {
@@ -192,7 +254,6 @@ const fetchAllFlights = async () => {
 
     console.log(response)
 
-    // Transform backend data to match your FlightCard component
     flights.value = response.data.map(flight => ({
       id: flight.flightId,
       route: `${flight.departLocation} to ${flight.arrivalLocation}`,
@@ -265,8 +326,8 @@ const searchFlights = async () => {
       arrivalCity: flight.arrivalLocation,
       arrivalTime: formatTime(flight.arrivalTime),
       remainingSeats: flight.seatsRemaining,
-      class: 'ECONOMY', // You may need to add this to your backend
-      price: `$ ${flight.price || 1000} CAD`, // Add price to backend if needed
+      class: 'ECONOMY',
+      price: `$ ${flight.price || 1000} CAD`,
       dateRange: `${formatDate(flight.departTime)} to ${formatDate(flight.arrivalTime)}`,
       departureDate: formatDate(flight.departTime),
       returnDate: formatDate(flight.arrivalTime),

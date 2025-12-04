@@ -22,8 +22,6 @@ public class PersonServiceImpl{
 
     private final PersonRepository personRepository;
 
-    
-
 
     public PersonServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;

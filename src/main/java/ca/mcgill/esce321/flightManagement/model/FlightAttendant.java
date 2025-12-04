@@ -12,7 +12,7 @@ public class FlightAttendant extends Employee{
 
     public FlightAttendant(){}
     public FlightAttendant(String email, String password, String firstName, String lastName) {
-        super(email,password,firstName,lastName);
+        super(email,password,firstName,lastName, "Flight Attendant");
     }
 
     public List<Flight> getFlights() {
