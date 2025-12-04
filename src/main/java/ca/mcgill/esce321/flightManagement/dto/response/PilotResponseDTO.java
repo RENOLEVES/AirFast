@@ -8,7 +8,10 @@ public class PilotResponseDTO extends EmployeeResponseDTO {
     private List<Long> flightIds = new ArrayList<>();
 
     public PilotResponseDTO() {}
-
+    public PilotResponseDTO(Long id, String email, String password, String firstName, String lastName) {
+        super(id, email,password, firstName, lastName, "Pilot");
+        this.setActive(true);
+    }
     public PilotResponseDTO(Long id, String email, String password, String firstName, String lastName, List<Long> flightIds) {
         super(id, email,password, firstName, lastName, "Pilot");
         this.setActive(true);

@@ -10,7 +10,6 @@ public class ManagerResponseDTO extends EmployeeResponseDTO {
     private List<Long> bookingIds = new ArrayList<>();
 
     public ManagerResponseDTO() {}
-
     public ManagerResponseDTO(Long id, String email, String password, String firstName, String lastName) {
         super(id, email, password, firstName, lastName, "Manager");
         this.setActive(true);

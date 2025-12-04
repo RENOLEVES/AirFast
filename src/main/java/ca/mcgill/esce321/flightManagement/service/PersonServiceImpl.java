@@ -1,14 +1,8 @@
 package ca.mcgill.esce321.flightManagement.service;
 import ca.mcgill.esce321.flightManagement.dto.request.PersonRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.EmployeeResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.*;
+import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
-import ca.mcgill.esce321.flightManagement.model.Person;
-import ca.mcgill.esce321.flightManagement.model.Customer;
-import ca.mcgill.esce321.flightManagement.model.Owner;
-import ca.mcgill.esce321.flightManagement.model.Employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,10 +34,14 @@ public class PersonServiceImpl{
     // Detect subtype
     if (person instanceof Customer customer) {
         return convertCustomer(customer);
-    } 
-    else if (person instanceof Employee employee) {
-        return convertEmployee(employee);
-    } 
+    }
+    else if (person instanceof Manager manager) {
+        return convertManager(manager);
+    } else if (person instanceof Pilot pilot) {
+        return convertPilot(pilot);
+    } else if (person instanceof FlightAttendant flightAttendant) {
+        return convertFlightAttendant(flightAttendant);
+    }
     else if (person instanceof Owner owner) {
         return convertOwner(owner);
     }
@@ -64,10 +62,24 @@ public class PersonServiceImpl{
         return dto;
     }
 
-    private EmployeeResponseDTO convertEmployee(Employee e) {
-        return new EmployeeResponseDTO(
-                e.getId(), e.getEmail(), e.getPassword(),
-                e.getFirstName(), e.getLastName(), e.getTitle()
+    private PersonResponseDTO convertManager(Manager m) {
+        return new ManagerResponseDTO(
+                m.getId(), m.getEmail(), m.getPassword(),
+                m.getFirstName(), m.getLastName()
+        );
+    }
+
+    private PersonResponseDTO convertPilot(Pilot p) {
+        return new PilotResponseDTO(
+                p.getId(), p.getEmail(), p.getPassword(),
+                p.getFirstName(), p.getLastName()
+        );
+    }
+
+    private PersonResponseDTO convertFlightAttendant(FlightAttendant f) {
+        return new FlightAttendantResponseDTO(
+                f.getId(), f.getEmail(), f.getPassword(),
+                f.getFirstName(), f.getLastName()
         );
     }
 
@@ -76,10 +88,6 @@ public class PersonServiceImpl{
                 o.getId(), o.getEmail(), o.getPassword(),
                 o.getFirstName(), o.getLastName()
         );
-
-        
-        // dto.setTotalRevenue(o.calculateTotalRevenue());
-        // also set customerIds, flightIds, etc.
         return dto;
     }
 

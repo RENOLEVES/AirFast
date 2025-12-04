@@ -8,6 +8,9 @@ public class FlightAttendantResponseDTO extends EmployeeResponseDTO {
     private List<Long> flightIds = new ArrayList<>();
 
     public FlightAttendantResponseDTO() {}
+    public FlightAttendantResponseDTO(Long id, String email,String password, String firstName, String lastName) {
+        super(id, email,password,firstName,lastName,"Flight Attendant");
+    }
 
     public FlightAttendantResponseDTO(Long id, String email, String password, String firstName, String lastName,
                                       List<Long> flightIds) {

@@ -42,30 +42,12 @@
             />
           </div>
 
-          <!-- Customer Sign In Button -->
+          <!-- Default Customer Sign In Button -->
           <button
               type="submit"
               class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            <i class="fas fa-user mr-2"></i>Sign In as Customer
-          </button>
-
-          <!-- Manager Sign In Button -->
-          <button
-              @click.prevent="handleManagerSignin"
-              type="button"
-              class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            <i class="fas fa-user-cog mr-2"></i>Sign In as Manager
-          </button>
-
-          <!-- Owner Sign In Button -->
-          <button
-              @click.prevent="handleOwnerSignin"
-              type="button"
-              class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            <i class="fas fa-crown mr-2"></i>Sign In as Owner
+            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
           </button>
 
         </form>
@@ -90,8 +72,10 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 const emit = defineEmits(['navigate', 'user-authenticated'])
 
@@ -100,38 +84,64 @@ const signinData = ref({
   password: ''
 })
 
-const performLogin = (roleOverride = null) => {
-  // Skip backend - just route based on button clicked
-  const userRole = roleOverride || 'CUSTOMER'
-  
-  let targetPage
-  if (userRole === 'OWNER') {
-    targetPage = 'OwnerHomePage'
-  } else if (userRole === 'MANAGER') {
-    targetPage = 'ManagerDashboard'
-  } else {
-    targetPage = 'FlightBooking'
+const handleSignin = async () => {
+  try {
+    const endpoint = 'http://localhost:8080/api/persons/login';
+
+    const response = await axios.post(
+        endpoint,
+        {
+          email: signinData.value.email,
+          password: signinData.value.password
+        }
+    );
+
+    const userData = response.data;
+
+    let userRole = 'CUSTOMER';
+
+    if (userData.title) {
+      const titleUpper = userData.title.toUpperCase();
+      if (titleUpper === 'OWNER') {
+        userRole = 'OWNER';
+      }
+      if (titleUpper === 'MANAGER') {
+        userRole = 'MANAGER';
+      }
+    }
+    let targetPage;
+
+    if (userRole === 'OWNER') {
+      targetPage = 'OwnerHomePage';
+    } else if (userRole === 'MANAGER') {
+      targetPage = 'ManagerDashboard';
+    } else {
+      targetPage = 'FlightBooking';
+    }
+
+    console.log(`Login success. Role determined by title/simulation: ${userRole}. Navigating to: ${targetPage}`);
+
+    emit('user-authenticated', {
+      id: userData.id,
+      username: userData.firstName || userData.email.split('@')[0] || 'User',
+      points: userData.points
+    });
+
+    alert(`Signed in successfully as ${userRole}!`)
+
+    emit('navigate', targetPage)
+
+  } catch (error) {
+    console.error("Login error:", error)
+
+    if (error.response) {
+      const msg = error.response.data?.message
+          || error.response.data?.error
+          || "Invalid credentials"
+      alert("Login failed: this username and password combination is incorrect.");
+    } else {
+      alert("Cannot reach backend: Please check the API server is running.")
+    }
   }
-
-  emit('user-authenticated', {
-    id: 1,
-    username: signinData.value.email.split('@')[0] || 'User',
-    points: 0,
-    role: userRole
-  })
-
-  emit('navigate', targetPage)
-}
-
-const handleSignin = () => {
-  performLogin('CUSTOMER')
-}
-
-const handleManagerSignin = () => {
-  performLogin('MANAGER')
-}
-
-const handleOwnerSignin = () => {
-  performLogin('OWNER')
 }
 </script>

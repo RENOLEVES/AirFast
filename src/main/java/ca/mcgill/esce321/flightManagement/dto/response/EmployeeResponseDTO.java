@@ -5,13 +5,11 @@ import ca.mcgill.esce321.flightManagement.model.Owner;
 public class EmployeeResponseDTO extends PersonResponseDTO {
     private Long e_id;
     private boolean isActive;
-    private String title;
 
     public EmployeeResponseDTO(){}
     public EmployeeResponseDTO(Long id, String email, String password, String firstName, String lastName, String title) {
         super(id, email,password,firstName,lastName, title);
         this.isActive = true;
-        ;
     }
 
     public Long getE_id() {
@@ -28,13 +26,5 @@ public class EmployeeResponseDTO extends PersonResponseDTO {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-     public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }

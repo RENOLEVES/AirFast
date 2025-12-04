@@ -229,15 +229,11 @@ onMounted(() => {
   fetchAvailableSeats();
 });
 
-// -----------------------------
-
-
-// Prefilled data for demonstration purposes
 const paymentData = ref({
-  cardNumber: '4500 1234 5678 9012', // Prefilled card number
-  expiryDate: '12/26', // Prefilled expiry date
-  cvv: '123', // Prefilled CVV
-  cardholderName: 'John Doe', // Prefilled cardholder name
+  cardNumber: '4500 1234 5678 9012',
+  expiryDate: '12/26',
+  cvv: '123',
+  cardholderName: 'John Doe',
 })
 
 const handlePayment = async () => {
@@ -246,7 +242,6 @@ const handlePayment = async () => {
   isProcessing.value = true;
   bookingError.value = null;
 
-  // SEAT VALIDATION
   if (!selectedSeatId.value) {
     bookingError.value = "Please select a seat before proceeding with payment.";
     isProcessing.value = false;
@@ -254,11 +249,10 @@ const handlePayment = async () => {
   }
 
   try {
-    // Prepare Booking Payload for backend
     const bookingPayload = {
       customerId: Number(props.customerId),
       seatId: Number(selectedSeatId.value),
-      bookingDate: new Date().toISOString().slice(0, 19), // LocalDateTime format compatible
+      bookingDate: new Date(),
       paymentStatus: "PAID",
       bookingStatus: "WAITLISTED"
     };
@@ -272,13 +266,11 @@ const handlePayment = async () => {
 
     console.log("Booking created:", response.data);
 
-    // Show success UI
     isSuccessMessageVisible.value = true;
 
     setTimeout(() => {
       isSuccessMessageVisible.value = false;
 
-      // Navigate to booked flights with the user's ID
       emit("navigate", "FlightBooking", { id: props.customerId });
     }, 1000);
 
@@ -286,16 +278,8 @@ const handlePayment = async () => {
     console.error("Booking error:", error);
 
     if (error.response) {
-      // Server responded with an error
       const backendMessage = error.response.data || error.response.statusText;
-
-      // Custom handling for "Customer already has a booking"
-      if (typeof backendMessage === 'string' && backendMessage.includes('already has a booking')) {
-        bookingError.value = "You already have a booking for this flight.";
-      } else {
-        bookingError.value = backendMessage?.message || backendMessage || `Server error: ${error.response.status}`;
-      }
-
+      bookingError.value = "You already have a booking for this flight.";
       console.error("Backend message:", backendMessage);
     } else if (error.request) {
       bookingError.value = "Cannot reach the booking service. Please ensure the backend is running.";
