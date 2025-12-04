@@ -18,26 +18,21 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl{
 
     private final PersonRepository personRepository;
-    private ManagerServiceImpl managerService;
-    private PilotServiceImpl pilotService;
-    private FlightAttendantServiceImpl flightAttendantService;
+    private final ManagerServiceImpl managerService;
+    private final PilotServiceImpl pilotService;
+    private final FlightAttendantServiceImpl flightAttendantService;
 
-
-    public EmployeeServiceImpl(PersonRepository personRepository) {
+    public EmployeeServiceImpl(PersonRepository personRepository,
+                               ManagerServiceImpl managerService,
+                               PilotServiceImpl pilotService,
+                               FlightAttendantServiceImpl flightAttendantService) {
         this.personRepository = personRepository;
+        this.managerService = managerService;
+        this.pilotService = pilotService;
+        this.flightAttendantService = flightAttendantService;
     }
 
-    public List<EmployeeResponseDTO> findAllEmployees() {
-        List<Person> allPeople = personRepository.findAll();
-
-        return allPeople.stream()
-                .filter(person -> person instanceof Employee)
-                .map(person -> (Employee) person)
-                .map(this::convertEmployee)
-                .collect(Collectors.toList());
-    }
-
-
+    // ---------- CREATE ----------
     public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
 
         if (personRepository.findByEmail(dto.getEmail()).isPresent()) {
@@ -74,6 +69,18 @@ public class EmployeeServiceImpl{
         );
     }
 
+    // ---------- READ ALL ----------
+    public List<EmployeeResponseDTO> findAllEmployees() {
+        List<Person> allPeople = personRepository.findAll();
+
+        return allPeople.stream()
+                .filter(person -> person instanceof Employee)
+                .map(person -> (Employee) person)
+                .map(this::convertEmployee)
+                .collect(Collectors.toList());
+    }
+
+    // ---------- UPDATE ----------
     public EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Request body (dto) must not be null");
@@ -102,12 +109,7 @@ public class EmployeeServiceImpl{
         }
     }
 
-    // example helper - adjust to your DTO fields
-    private EmployeeResponseDTO convertToResponseDto(Employee e) {
-        return new EmployeeResponseDTO(e.getId(), e.getEmail(),e.getPassword(),e.getFirstName(), e.getLastName(), e.getTitle());
-    }
-
-
+    // ---------- DELETE ----------
     public void deleteEmployee(Long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Employee employee) {
@@ -115,6 +117,11 @@ public class EmployeeServiceImpl{
         } else {
             throw new IllegalArgumentException("No Owner found with ID " + id);
         }
+    }
+
+    // ---------- helpers ----------
+    private EmployeeResponseDTO convertToResponseDto(Employee e) {
+        return new EmployeeResponseDTO(e.getId(), e.getEmail(),e.getPassword(),e.getFirstName(), e.getLastName(), e.getTitle());
     }
 
     private EmployeeResponseDTO convertEmployee(Employee e) {

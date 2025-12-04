@@ -36,8 +36,6 @@ public class FlightAttendantServiceImpl {
         fa.setLastName(d.getLastName());
         fa.setPassword(d.getPassword());
 
-        // Add any extra fields from your DTO if present
-        // e.g. fa.setLanguages(d.languages());
 
         FlightAttendant saved = (FlightAttendant) flightAttendantRepo.save(fa);
         return toResponseDTO(saved);

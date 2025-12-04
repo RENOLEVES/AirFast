@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     Seat findBySeatId(Long seatId);
+
     List<Seat> findByFlight_FlightId(long flightId);
 }

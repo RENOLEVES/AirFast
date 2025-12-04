@@ -21,34 +21,24 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// public interface CustomerService {
-//     Customer createCustomer(CustomerRequestDTO dto); V
-//     Customer getCustomerById(Long id); V
-//     List<Customer> getAllCustomers(); V
-//     Customer updateCustomer(Long id, CustomerRequestDTO dto); V
-//     void deleteCustomer(Long id); V
-// }
-
 @Service
 @Validated
 public class CustomerServiceImpl {
-    //CRUD
     private final PersonRepository personRepository;
-
     private final BookingRepository bookingRepository;
 
 
-     CustomerServiceImpl(PersonRepository personRepository, BookingRepository bookingRepository){
+    CustomerServiceImpl(PersonRepository personRepository, BookingRepository bookingRepository){
         this.personRepository = personRepository;
         this.bookingRepository = bookingRepository;
     }
 
-
-      public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
+    // ---------- CREATE ----------
+    public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
 
         Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber(), 0, 0);
         Customer saved = personRepository.save(customerToCreate);
-     
+
         return new CustomerResponseDTO(
                 saved.getId(),
                 saved.getEmail(),
@@ -61,6 +51,7 @@ public class CustomerServiceImpl {
                 );
     }
 
+    // ---------- READ ONE ----------
     public CustomerResponseDTO findCustomerById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
@@ -81,6 +72,7 @@ public class CustomerServiceImpl {
         }
     }
 
+    // ---------- READ ALL ----------
      public List<CustomerResponseDTO> findAllCustomers() {
         List<Person> allPersons = personRepository.findAll();
          System.out.println(allPersons);
@@ -105,6 +97,15 @@ public class CustomerServiceImpl {
         return allCustomers;
     }
 
+    public List<BookingResponseDTO> findBookingsByCustomerId(Long customerId) {
+        List<Booking> bookings = bookingRepository.findAllByCustomer_Id(customerId);
+
+        return bookings.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    // ---------- UPDATE ----------
     public CustomerResponseDTO updateCustomer(long id, CustomerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
@@ -134,6 +135,7 @@ public class CustomerServiceImpl {
         }
     }
 
+    // ---------- DELETE ----------
     public void deleteCustomer(long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Customer customer) {
@@ -143,15 +145,7 @@ public class CustomerServiceImpl {
         }
     }
 
-
-    public List<BookingResponseDTO> findBookingsByCustomerId(Long customerId) {
-        List<Booking> bookings = bookingRepository.findAllByCustomer_Id(customerId);
-
-        return bookings.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
+    // ---------- helpers ----------
     private BookingResponseDTO convertToDto(Booking booking) {
         return new BookingResponseDTO(
                 booking.getBookingId(),

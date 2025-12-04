@@ -47,6 +47,8 @@ public class ManagerServiceImpl {
         this.seatRepository = seatRepository;
     }
 
+
+    // ---------- CREATE ----------
     @Transactional
     public ManagerResponseDTO createManager(ManagerRequestDTO dto) {        
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
@@ -61,7 +63,7 @@ public class ManagerServiceImpl {
                 );
     }
 
-
+    // ---------- READ ONE ----------
     public ManagerResponseDTO findManagerById(long id) {
         Optional<Person> p = personRepository.findById(id);
         if (p.isPresent() && p.get() instanceof Manager manager) {
@@ -80,6 +82,7 @@ public class ManagerServiceImpl {
         }
     }
 
+    // ---------- READ ALL ----------
     public List<ManagerResponseDTO> findAllManagers() {
         List<Person> allPersons = personRepository.findAll();
         List<ManagerResponseDTO> allManagers = new ArrayList<>();
@@ -103,7 +106,7 @@ public class ManagerServiceImpl {
         return allManagers;
     }
 
-
+    // ---------- UPDATE ----------
     @Transactional
     public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
@@ -136,6 +139,7 @@ public class ManagerServiceImpl {
     }
 
 
+    // ---------- DELETE ----------
     @Transactional
     public void deleteManager(long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
@@ -146,9 +150,7 @@ public class ManagerServiceImpl {
         }
     }
 
-    // functionalities
 
-    
 
    @Transactional
     public boolean setSeatPrice(long id, double newPrice) {
@@ -328,7 +330,6 @@ public class ManagerServiceImpl {
             
         }
 
-
         flight.setManager(manager);
         flight.setPilots(pilots);
         flight.setAttendants(attendants);
@@ -360,20 +361,6 @@ public class ManagerServiceImpl {
         }
       
         return true;
-    }   
-
-
-    @Transactional
-    public boolean makeFlightRecurring(Long id) {
-        Optional<Flight> optionalFlight = flightRepository.findById(id);
-        if (optionalFlight.isEmpty()) {
-            return false;
-        }
-
-        Flight flight = optionalFlight.get();
-        flight.setRecurring(true);
-        flightRepository.save(flight);
-        return true;
     }
 
 
@@ -382,7 +369,6 @@ public class ManagerServiceImpl {
         if (optionalFlight.isEmpty()) {
             return null;
         }
-
         Flight f = optionalFlight.get();
 
         return new FlightResponseDTO(

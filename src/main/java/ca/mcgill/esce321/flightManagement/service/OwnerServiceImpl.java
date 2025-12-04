@@ -172,6 +172,7 @@ public class OwnerServiceImpl{
                         s.getSeatStatus()
                 )).collect(Collectors.toList());
     }
+
     public double viewSalary(long id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
