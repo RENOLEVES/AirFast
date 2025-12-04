@@ -298,10 +298,10 @@ public class ManagerServiceImpl {
     }
 
     @Transactional
-    public boolean assignFlight(Long flightId, List<Long> employeeIds) {
+    public FlightResponseDTO assignFlight(Long flightId, List<Long> employeeIds) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
-            return false; // flight not found
+            return null; // flight not found
         }
 
         Flight flight = optionalFlight.get();
@@ -334,9 +334,20 @@ public class ManagerServiceImpl {
         flight.setPilots(pilots);
         flight.setAttendants(attendants);
 
-        flightRepository.save(flight);
+        Flight f = flightRepository.save(flight);
 
-        return true;
+        return new FlightResponseDTO(
+                f.getFlightId(),
+                f.getCapacity(),
+                f.getDepartTime(),
+                f.getArrivalTime(),
+                f.getDepartLocation(),
+                f.getArrivalLocation(),
+                f.getFlightNumber(),
+                f.getFlightTime(),
+                f.getPilots().stream().map(Pilot::getId).toList(),
+                f.getAttendants().stream().map(FlightAttendant::getId).toList()
+        );
     }
 
     // when we createEmployee, how do we specify what kind of employee it is. Pilot, FlightAttendant

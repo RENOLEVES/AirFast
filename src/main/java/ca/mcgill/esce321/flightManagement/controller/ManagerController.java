@@ -93,11 +93,11 @@ public class ManagerController {
     }
 
     @PutMapping("/flights/{flightId}/assign")
-    public ResponseEntity<Boolean> assignFlight(
+    public ResponseEntity<FlightResponseDTO> assignFlight(
             @PathVariable long flightId,
             @RequestBody List<Long> employeeIds
     ) {
-        boolean success = managerService.assignFlight(flightId, employeeIds);
+        FlightResponseDTO success = managerService.assignFlight(flightId, employeeIds);
         return ResponseEntity.ok(success);
     }
 
@@ -159,8 +159,6 @@ public class ManagerController {
         boolean success = managerService.createEmployee(email, password, firstName, lastName, type);
         return ResponseEntity.ok(success);
     }
-
-
 
     // Map your service's IllegalArgumentException to HTTP codes
     @ExceptionHandler(IllegalArgumentException.class)

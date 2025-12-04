@@ -2,6 +2,7 @@ package ca.mcgill.esce321.flightManagement.dto.response;
 
 import ca.mcgill.esce321.flightManagement.model.FlightStatus;
 import ca.mcgill.esce321.flightManagement.model.Seat;
+import jakarta.persistence.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class FlightResponseDTO {
     private boolean isActive;
     private FlightStatus status;          // was missed
     private List<Seat> seats;
+    private List<Long> pilots;
+    private List<Long> flightattendants;
 
     public FlightResponseDTO(Long long1, int i, int j, LocalDateTime localDateTime, LocalDateTime localDateTime2, LocalDateTime localDateTime3, String string, String string2, String string3, double d, boolean b, boolean c) {}
 
@@ -48,6 +51,23 @@ public class FlightResponseDTO {
         this.isRecurring = isRecurring;
         this.isActive = isActive;
         this.status = status;
+    }
+
+    public FlightResponseDTO(Long flightId, int capacity,
+                             LocalDateTime departTime, LocalDateTime arrivalTime,
+                             String departLocation, String arrivalLocation,
+                             String flightNumber, double flightTime,
+                             List<Long> pilots, List<Long> flightattendants) {
+        this.flightId = flightId;
+        this.capacity = capacity;
+        this.departTime = departTime;
+        this.arrivalTime = arrivalTime;
+        this.departLocation = departLocation;
+        this.arrivalLocation = arrivalLocation;
+        this.flightNumber = flightNumber;
+        this.flightTime = flightTime;
+        this.pilots = pilots;
+        this.flightattendants = flightattendants;
     }
 
     // Getters and Setters
@@ -161,5 +181,29 @@ public class FlightResponseDTO {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public FlightStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FlightStatus status) {
+        this.status = status;
+    }
+
+    public List<Long> getPilots() {
+        return pilots;
+    }
+
+    public void setPilots(List<Long> pilots) {
+        this.pilots = pilots;
+    }
+
+    public List<Long> getFlightattendants() {
+        return flightattendants;
+    }
+
+    public void setFlightattendants(List<Long> flightattendants) {
+        this.flightattendants = flightattendants;
     }
 }

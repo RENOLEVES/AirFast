@@ -42,7 +42,7 @@ class BookingIntegrationTests {
         personRepo.deleteAll();
 
         // Customer
-        Customer c = new Customer("alice@example.com", "pw", "Alice", "Smith", 123456);
+        Customer c = new Customer("alice@example.com", "pw", "Alice", "Smith", 123456,100,0);
         c.setPoints(0);
         customerId = personRepo.save(c).getId();
 

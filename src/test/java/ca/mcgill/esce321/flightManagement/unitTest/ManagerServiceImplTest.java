@@ -466,9 +466,9 @@ class ManagerServiceImplTest {
         when(personRepository.findById(102L)).thenReturn(Optional.of(attendant));
         when(personRepository.findById(103L)).thenReturn(Optional.of(manager));
 
-        boolean result = managerService.assignFlight(1L, List.of(101L, 102L, 103L));
-
-        assertTrue(result);
+        FlightResponseDTO result = managerService.assignFlight(1L, List.of(101L, 102L, 103L));
+        boolean resultt = result.getFlightattendants().size() + result.getPilots().size() == 3;
+        assertTrue(resultt);
         assertEquals(manager, flight.getManager());
         assertEquals(1, flight.getPilots().size());
         assertEquals(1, flight.getAttendants().size());
