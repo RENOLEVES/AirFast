@@ -43,6 +43,12 @@
       >
         View Seats
       </a>
+      <a href="#"
+          class="block p-3 rounded-lg hover:bg-gray-700 transition duration-150"
+          @click.prevent="$emit('navigate', 'reports')"
+      >
+        Reports
+      </a>
     </div>
   </aside>
 </template>

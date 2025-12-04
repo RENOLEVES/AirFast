@@ -1,81 +1,66 @@
 <template>
-  <div id="app">
-    <FlightBooking
-        v-if="currentPage === 'FlightBooking'"
-        ref="flightBookingRef"
-        @navigate="handleNavigation"
-        @user-authenticated="handleAuthSuccess"
-        v-bind="currentPageProps"
-    />
-
-    <UserSignin
-        v-else-if="currentPage === 'UserSignin'"
-        @navigate="handleNavigation"
-        @user-authenticated="handleAuthSuccess"
-        v-bind="currentPageProps"
-    />
-
-    <UserSignup
-        v-else-if="currentPage === 'UserSignup'"
-        @navigate="handleNavigation"
-        v-bind="currentPageProps"
-    />
-
-    <BookedFlights
-        v-else-if="currentPage === 'BookedFlights'"
-        @navigate="handleNavigation"
-        v-bind="currentPageProps"/>
-
-    <OwnerHomePage
-        v-else-if="currentPage === 'OwnerHomePage'"
-        @navigate="handleNavigation"
-        v-bind="currentPageProps"
-    />
-
-    <BookingPayment
-        v-else-if="currentPage === 'BookingPayment'"
-        @navigate="handleNavigation"
-        v-bind="currentPageProps"
-    />
-
-  </div>
+  <component 
+    :is="currentView" 
+    v-bind="currentPageProps"
+    @navigate="handleNavigation"
+    @user-authenticated="handleAuthSuccess"
+    ref="currentComponentRef"
+  />
 </template>
 
 <script setup>
 import { ref, computed, provide, nextTick } from 'vue'
-import FlightBooking from './views/FlightBooking.vue' // Renamed from HomePage for clarity
+import FlightBooking from './views/FlightBooking.vue'
 import BookedFlights from './views/BookedFlights.vue'
 import UserSignup from './views/UserSignup.vue'
 import UserSignin from './views/UserSignin.vue'
 import BookingPayment from './views/BookingPayment.vue'
 import OwnerHomePage from './views/OwnerHomePage.vue'
+import ManagerDashboard from './views/ManagerDashboard.vue'
+import AllFlights from './views/AllFlights.vue'
 
+const views = {
+  FlightBooking,
+  BookedFlights,
+  UserSignup,
+  UserSignin,
+  BookingPayment,
+  OwnerHomePage,
+  ManagerDashboard,
+  AllFlights
+}
 
-const currentPage = ref('FlightBooking');
-const flightBookingRef = ref(null);
-const currentPageProps = ref({});
+const currentPage = ref('ManagerDashboard')  // Changed back to FlightBooking as default
+const currentPageProps = ref({})
+const currentComponentRef = ref(null)
 
-// --- Navigation ---
+const currentView = computed(() => views[currentPage.value] || FlightBooking)
+
 const handleNavigation = (pageName, data = {}) => {
-  currentPage.value = pageName;
-  currentPageProps.value = data;
-  console.log(`Navigating to: ${pageName}, with props:`, data);
-};
-
-provide('navigate', handleNavigation);
+  currentPage.value = pageName
+  currentPageProps.value = data
+  console.log(`Navigating to: ${pageName}`, data)
+}
 
 const handleAuthSuccess = async (userData) => {
-  console.log('Authentication successful in App.vue. User Data:', userData);
-
-  currentPage.value = 'FlightBooking';
-
-  await nextTick();
-
-  if (flightBookingRef.value && flightBookingRef.value.logInUser) {
-    flightBookingRef.value.logInUser(userData);
-    console.log('FlightBooking component updated with user data.');
+  console.log('Auth success:', userData)
+  
+  // Route based on role from userData
+  if (userData.role === 'OWNER') {
+    currentPage.value = 'OwnerHomePage'
+  } else if (userData.role === 'MANAGER') {
+    currentPage.value = 'ManagerDashboard'
   } else {
-    console.error('Could not find flightBookingRef or logInUser method.');
+    currentPage.value = 'FlightBooking'
   }
-};
+  
+  await nextTick()
+  
+  // Pass user data to FlightBooking component if that's where we're going
+  if (currentPage.value === 'FlightBooking' && currentComponentRef.value?.logInUser) {
+    currentComponentRef.value.logInUser(userData)
+  }
+}
+
+provide('navigate', handleNavigation)
 </script>

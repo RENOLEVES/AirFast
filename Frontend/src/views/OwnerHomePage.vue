@@ -65,6 +65,7 @@ import ViewEmployees from './ViewEmployees.vue';
 import ViewBookings from "./ViewBookings.vue";
 import ViewSeats from "./ViewSeats.vue";
 import DashBoard from "./DashBoard.vue";
+import Reports from "./Reports.vue";   // ⬅️ ADD THIS
 import {ref} from "vue";
 
 
@@ -81,6 +82,7 @@ export default {
   name: 'OwnerHomePage',
   components: {
     ManagerSidebar,
+    Reports,
     ViewSeats,
     AllFlights,
     ViewCustomers,
@@ -131,6 +133,8 @@ export default {
         this.currentView = 'ViewSeats';
       } else if (view === 'dashboard'){
         this.currentView = 'DashBoard';
+      } else if (view === 'reports') {
+          this.currentView = 'Reports';
       } else {
         this.currentView = view;
       }

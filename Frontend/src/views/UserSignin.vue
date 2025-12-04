@@ -42,21 +42,30 @@
             />
           </div>
 
-          <!-- Default Customer Sign In Button -->
+          <!-- Customer Sign In Button -->
           <button
               type="submit"
               class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            <i class="fas fa-sign-in-alt mr-2"></i>Sign In as Customer
+            <i class="fas fa-user mr-2"></i>Sign In as Customer
           </button>
 
-          <!-- New Owner Sign In Button -->
+          <!-- Manager Sign In Button -->
+          <button
+              @click.prevent="handleManagerSignin"
+              type="button"
+              class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <i class="fas fa-user-cog mr-2"></i>Sign In as Manager
+          </button>
+
+          <!-- Owner Sign In Button -->
           <button
               @click.prevent="handleOwnerSignin"
               type="button"
-              class="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-red-600 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-lg mt-3"
+              class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold text-[15px] px-12 py-4 rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            <i class="fas fa-user-tie mr-2"></i>Sign In as Owner
+            <i class="fas fa-crown mr-2"></i>Sign In as Owner
           </button>
 
         </form>
@@ -93,7 +102,7 @@ const signinData = ref({
   password: ''
 })
 
-const performLogin = async () => {
+const performLogin = async (roleOverride = null) => {
   try {
     const endpoint = 'http://localhost:8080/api/persons/login';
 
@@ -107,48 +116,64 @@ const performLogin = async () => {
 
     const userData = response.data;
 
-    let userRole = 'CUSTOMER';
-
-    if (userData.title) {
+    // Determine role: use override if provided, otherwise check title
+    let userRole = roleOverride || 'CUSTOMER';
+    
+    if (!roleOverride && userData.title) {
       const titleUpper = userData.title.toUpperCase();
       if (titleUpper === 'OWNER') {
         userRole = 'OWNER';
+      } else if (titleUpper === 'MANAGER') {
+        userRole = 'MANAGER';
       }
     }
 
-    const targetPage = userRole === 'OWNER' ? 'OwnerHomePage' : 'FlightBooking';
+    // Route based on role
+    let targetPage;
+    if (userRole === 'OWNER') {
+      targetPage = 'OwnerHomePage';
+    } else if (userRole === 'MANAGER') {
+      targetPage = 'ManagerDashboard';
+    } else {
+      targetPage = 'FlightBooking';
+    }
 
-    console.log(`Login success. Role determined by title/simulation: ${userRole}. Navigating to: ${targetPage}`);
+    console.log(`Login success. Role: ${userRole}. Navigating to: ${targetPage}`);
 
     emit('user-authenticated', {
       id: userData.id,
       username: userData.firstName || userData.email.split('@')[0] || 'User',
-      points: userData.points
+      points: userData.points,
+      role: userRole
     });
 
-    alert(`Signed in successfully as ${userRole}!`)
+    alert(`Signed in successfully as ${userRole}!`);
 
-    emit('navigate', targetPage)
+    emit('navigate', targetPage);
 
   } catch (error) {
-    console.error("Login error:", error)
+    console.error("Login error:", error);
 
     if (error.response) {
       const msg = error.response.data?.message
           || error.response.data?.error
-          || "Invalid credentials"
-      alert("Login failed: " + msg)
+          || "Invalid credentials";
+      alert("Login failed: " + msg);
     } else {
-      alert("Cannot reach backend: Please check the API server is running.")
+      alert("Cannot reach backend: Please check the API server is running.");
     }
   }
 }
 
 const handleSignin = () => {
-  performLogin(false);
+  performLogin('CUSTOMER');
+}
+
+const handleManagerSignin = () => {
+  performLogin('MANAGER');
 }
 
 const handleOwnerSignin = () => {
-  performLogin(true);
+  performLogin('OWNER');
 }
 </script>

@@ -4,6 +4,7 @@
 // Frontend/src/api/service.js
 import { api } from './client'  // Must exist!
 
+
 /**
  * Customer API calls
  */
@@ -186,12 +187,137 @@ export const seatAPI = {
     return response.data
   }
 }
+/**
+ * Owner API calls (Dashboard & Analytics)
+ */
+export const ownerAPI = {
+  // Get all seats (Owner view)
+  getAllSeats: async () => {
+    const response = await api.get('/owners/view/seat')
+    return response.data
+  },
 
-// Export all API modules
+  // Get all customers (Owner view) 
+  getAllCustomers: async () => {
+    const response = await api.get('/owners/view/customer')
+    return response.data
+  },
+
+  // Get all employees (Owner view)
+  getAllEmployees: async () => {
+    const response = await api.get('/owners/view/employee')
+    return response.data
+  },
+
+  // Get all bookings (Owner view)
+  getAllBookings: async () => {
+    const response = await api.get('/owners/view/booking')
+    return response.data
+  },
+
+  // Get total revenue
+  getTotalRevenue: async () => {
+    const response = await api.get('/owners/view/revenue')
+    return response.data
+  },
+
+  // Get employee count metrics
+  getEmployeeMetrics: async () => {
+    const response = await api.get('/owners/view/totalEmployeeCount')
+    return response.data
+  },
+
+  // Get cumulative revenue over time
+  getCumulativeRevenue: async () => {
+    const response = await api.get('/owners/view/cumulativeRevenue')
+    return response.data
+  }
+}
+
+/**
+ * Manager API calls (CRUD Operations)
+ */
+export const managerAPI = {
+  // Flights management
+  getAllFlights: async () => {
+    const response = await api.get('/managers/flights')
+    return response.data
+  },
+
+  createFlight: async (flightData) => {
+    const response = await api.post('/managers/flights', flightData)
+    return response.data
+  },
+
+  updateFlight: async (flightId, flightData) => {
+    const response = await api.put(`/managers/flights/${flightId}`, flightData)
+    return response.data
+  },
+
+  deleteFlight: async (flightId) => {
+    const response = await api.delete(`/managers/flights/${flightId}`)
+    return response.data
+  },
+
+  assignFlight: async (flightId, employeeIds) => {
+    const response = await api.put(`/managers/flights/${flightId}/assign`, employeeIds)
+    return response.data
+  },
+
+  // Employees management
+  getAllEmployees: async () => {
+    const response = await api.get('/owners/view/employee') // Reuse owner endpoint for viewing
+    return response.data
+  },
+
+  createEmployee: async (employeeData) => {
+    const { email, password, firstName, lastName, type } = employeeData
+    const response = await api.post('/managers/employees', null, {
+      params: { email, password, firstName, lastName, type }
+    })
+    return response.data
+  },
+
+  // Bookings management
+  getAllBookings: async () => {
+    const response = await api.get('/managers/bookings')
+    return response.data
+  },
+
+  deleteBooking: async (bookingId) => {
+    const response = await api.delete(`/managers/bookings/${bookingId}`)
+    return response.data
+  },
+
+  // Seats management
+  ssetSeatPrice: async (seatId, newPrice) => {
+    // Send just the number as the request body
+    const response = await api.put(
+      `/managers/seats/${seatId}/price`, 
+      newPrice,  // Just the number, not {price: newPrice}
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    return response.data
+  },
+
+  // Persons view
+  getAllPersons: async () => {
+    const response = await api.get('/managers/persons')
+    return response.data
+  }
+}
+
+// Update export
 export default {
   customer: customerAPI,
   employee: employeeAPI,
   flight: flightAPI,
   booking: bookingAPI,
-  seat: seatAPI
+  seat: seatAPI,
+  owner: ownerAPI,
+  manager: managerAPI  // ADD THIS
 }

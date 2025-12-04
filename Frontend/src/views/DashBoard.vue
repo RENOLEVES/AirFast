@@ -71,7 +71,8 @@
 
 <script>
 import EmployeePieChart from "../components/EmployeePieChart.vue";
-import RevenueLineChart  from "../components/RevenueLineChart.vue";
+import RevenueLineChart from "../components/RevenueLineChart.vue";
+import { ownerAPI } from '@/api/service'
 
 export default {
   name: 'DashboardView',
@@ -83,10 +84,6 @@ export default {
     return {
       loading: true,
       error: null,
-      revenueApiUrl: 'http://localhost:8080/api/owners/view/revenue',
-      metricsApiUrl: 'http://localhost:8080/api/owners/view/totalEmployeeCount',
-      cumulativeRevenueApiUrl: 'http://localhost:8080/api/owners/view/cumulativeRevenue',
-
       totalRevenue: 0,
       totalCustomerCount: 0,
       employeeData: {
@@ -101,7 +98,7 @@ export default {
     formattedTotalRevenue() {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'CAD',
         minimumFractionDigits: 2
       }).format(this.totalRevenue);
     },
@@ -118,43 +115,24 @@ export default {
       this.error = null;
 
       try {
-        const revenuePromise = fetch(this.revenueApiUrl).then(res => {
-          if (!res.ok) throw new Error(`Revenue fetch failed: ${res.status}`);
-          return res.json();
-        });
-
-        const metricsPromise = fetch(this.metricsApiUrl).then(res => {
-          if (!res.ok) throw new Error(`Metrics fetch failed: ${res.status}`);
-          return res.json();
-        });
-
-        const cumulativeRevenuePromise = fetch(this.cumulativeRevenueApiUrl).then(res => {
-          if (!res.ok) throw new Error(`Cumulative Revenue fetch failed: ${res.status}`);
-          return res.json();
-        });
-
         const [revenueData, metricsArray, cumulativeRevenueData] = await Promise.all([
-          revenuePromise,
-          metricsPromise,
-          cumulativeRevenuePromise
+          ownerAPI.getTotalRevenue(),
+          ownerAPI.getEmployeeMetrics(),
+          ownerAPI.getCumulativeRevenue()
         ]);
 
         this.totalRevenue = typeof revenueData === 'number' ? revenueData : revenueData.totalRevenue || 0;
-
-        // --- Mapping Metrics Array Data ---
         this.totalCustomerCount = metricsArray[1] || 0;
-
         this.employeeData = {
           pilot: metricsArray[2] || 0,
           flightAttendant: metricsArray[3] || 0,
           manager: metricsArray[4] || 0,
         };
-
-        this.cumulativeRevenueData = cumulativeRevenueData;
+        this.cumulativeRevenueData = cumulativeRevenueData || [];
 
       } catch (e) {
         console.error('Fetch error:', e);
-        this.error = e.message || 'One or more dashboard services are unavailable.';
+        this.error = e.response?.data?.message || e.message || 'Dashboard services unavailable';
       } finally {
         this.loading = false;
       }

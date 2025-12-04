@@ -67,7 +67,7 @@ export default {
     formattedPrice() {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'CAD'
       }).format(this.seat.price);
     },
 

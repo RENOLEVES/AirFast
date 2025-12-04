@@ -87,7 +87,8 @@
 </template>
 
 <script>
-import { customerAPI } from '@/api/service'
+import { ownerAPI } from '@/api/service'
+
 export default {
   name: 'ViewCustomers',
   data() {
@@ -98,85 +99,51 @@ export default {
     };
   },
   methods: {
-    /**
-     * Fetch all customers from the backend using axios API service
-     */
     async fetchCustomers() {
       this.loading = true;
       this.error = null;
 
       try {
-        const data = await customerAPI.getAllCustomers();
+        const data = await ownerAPI.getAllCustomers();
 
-        // Map backend response to frontend format with fallbacks
         this.customers = (data || []).map(cust => ({
-          ...cust,
-          role: cust.role || (cust.id % 3 === 0 ? 'GOLD' : (cust.id % 2 === 0 ? 'SILVER' : 'BRONZE')),
+          id: cust.id,
+          firstName: cust.firstName,
+          lastName: cust.lastName,
+          email: cust.email,
           membershipNumber: cust.membershipNumber || `M${String(cust.id).padStart(5, '0')}`,
+          points: cust.points || 0,
+          timeInFlight: cust.timeInFlight || 0,
+          totalBookings: cust.totalBookings || 0,
+          role: cust.role || 'BRONZE'
         }));
 
       } catch (e) {
         console.error('Fetch error:', e);
-        
-        // Better error messages based on error type
-        if (e.code === 'ERR_NETWORK') {
-          this.error = 'Cannot connect to backend server. Make sure it\'s running on http://localhost:8080';
-        } else if (e.response) {
-          this.error = `Server error: ${e.response.status} - ${e.response.data?.message || 'Unknown error'}`;
-        } else {
-          this.error = e.message || 'The backend service is unavailable.';
-        }
+        this.error = e.response?.data?.message || e.message || 'Backend unavailable';
       } finally {
         this.loading = false;
       }
     },
 
-    /**
-     * Format role string for display
-     */
     formatRole(role) {
       if (!role) return 'N/A';
-      const s = role.toLowerCase().replace(/_/g, ' ');
-      return s.charAt(0).toUpperCase() + s.slice(1);
+      return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
     },
 
-    /**
-     * Format time in flight from minutes to human-readable format
-     */
     formatTimeInFlight(minutes) {
-      if (typeof minutes !== 'number' || minutes < 0) return '0 hrs';
+      if (!minutes) return '0 hrs';
       const hours = Math.floor(minutes / 60);
       const mins = minutes % 60;
-      if (hours > 0) {
-        return `${hours} hrs ${mins} min`;
-      }
-      return `${mins} min`;
+      return hours > 0 ? `${hours} hrs ${mins} min` : `${mins} min`;
     },
 
-    /**
-     * Get CSS classes for role badges
-     */
     getRoleClasses(role) {
-      const r = role ? role.toUpperCase() : '';
-      switch (r) {
-        case 'GOLD':
-          return 'bg-yellow-100 text-yellow-800';
-        case 'SILVER':
-          return 'bg-gray-200 text-gray-800';
-        case 'BRONZE':
-          return 'bg-amber-100 text-amber-800';
-        default:
-          return 'bg-blue-100 text-blue-800';
-      }
-    },
-
-    /**
-     * Handle customer details view (to be implemented)
-     */
-    viewCustomerDetails(customer) {
-      console.log('Viewing details for:', customer.id);
-      // TODO: Navigate to customer details page or open modal
-      // this.$router.push({ name: 'CustomerDetails', params: { id: customer.id } });
+      const r = (role || '').toUpperCase();
+      if (r === 'GOLD') return 'bg-yellow-100 text-yellow-800';
+      if (r === 'SILVER') return 'bg-gray-200 text-gray-800';
+      if (r === 'BRONZE') return 'bg-amber-100 text-amber-800';
+      return 'bg-blue-100 text-blue-800';
     },
   },
   mounted() {

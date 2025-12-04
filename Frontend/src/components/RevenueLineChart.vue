@@ -71,7 +71,7 @@ export default {
           y: {
             title: {
               display: true,
-              text: 'Cumulative Revenue (USD)' // 12. Updated Y-axis title
+              text: 'Cumulative Revenue (CAD)' // 12. Updated Y-axis title
             },
             // Good practice for cumulative data: ensure the Y-axis starts at zero
             beginAtZero: true
