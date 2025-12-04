@@ -22,7 +22,7 @@
       <div v-for="flight in flights" :key="flight.id" class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h3 class="text-xl font-bold text-gray-800">{{ flight.flightNumber }}</h3>
+            <h3 class="text-xl font-bold text-gray-800">{{ flight.flightNumber }}</h3> <p class="text-sm text-gray-500">FlightID: {{ flight.id}}</p>
             <p class="text-sm text-gray-500">{{ formatDate(flight.departTime) }}</p>
           </div>
         </div>
@@ -382,6 +382,7 @@ export default {
               errorMessage = backendData || errorMessage;
             }
           } catch (e) {
+            this.showError();
           }
           throw new Error(errorMessage);
         }
@@ -390,8 +391,8 @@ export default {
         await this.fetchFlights();
 
       } catch (e) {
-        console.error('Failed to delete flight:', e);
-        this.showError(e.message || 'Failed to delete flight due to an unexpected error.');
+        console.error('Failed to delete flight: .');
+        this.showError("Please delete all seats in this flights");
       }
     },
 

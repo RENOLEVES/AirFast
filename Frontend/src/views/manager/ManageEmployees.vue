@@ -173,25 +173,20 @@ export default {
       }
     },
 
-    /**
-     * Handles both creating (POST) and updating (PUT) an employee.
-     */
     async handleSaveEmployee() {
       try {
-        // Build the payload: exclude password on PUT, include it only on POST
         const payload = {
           firstName: this.formData.firstName,
           lastName: this.formData.lastName,
           email: this.formData.email,
           title: this.formData.title,
-          ...(this.isEditing ? {} : { password: this.formData.password }), // Only include password if creating
+          ...(this.isEditing ? {} : { password: this.formData.password }),
         };
 
         let url = this.apiUrl;
         let method = 'POST';
 
         if (this.isEditing) {
-          // Use the specific PUT endpoint
           url = `${this.apiUrl}/${this.selectedEmployeeId}`;
           method = 'PUT';
         }
@@ -205,27 +200,16 @@ export default {
         });
 
         if (!response.ok) {
-          let errorMessage = `Failed to ${this.isEditing ? 'update' : 'create'} employee. Status: ${response.status}.`;
-
-          try {
-            const backendData = await response.text();
-            try {
-              const jsonBody = JSON.parse(backendData);
-              errorMessage = jsonBody.message || jsonBody.error || errorMessage;
-            } catch {
-              errorMessage = backendData || errorMessage;
-            }
-          } catch (e) {
-            // Ignore body read errors
-          }
-
-          throw new Error(errorMessage);
+          const err = await response.json();
+          throw new Error(err.message || `Failed to update seat ${seatId}`);
         }
 
         this.showSuccess(`Employee ${this.isEditing ? 'updated' : 'created'} successfully.`);
+
         this.closeModal();
         await this.fetchEmployees(); // Refresh list
-      } catch (e) {
+
+      } catch (err) {
         console.error("Save Employee Error:", e);
         this.showError(e.message || 'Failed to save employee. Check server connection.');
       }
@@ -256,7 +240,6 @@ export default {
               errorMessage = backendData || errorMessage;
             }
           } catch (e) {
-            // Ignore body read errors
           }
 
           throw new Error(errorMessage);
@@ -287,10 +270,6 @@ export default {
       this.showModal = true;
     },
 
-    /**
-     * Opens the modal to edit an existing employee.
-     * @param {Object} employee The employee object to edit.
-     */
     openEditModal(employee) {
       this.isEditing = true;
       this.selectedEmployeeId = employee.id;

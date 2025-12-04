@@ -57,7 +57,7 @@ import BookingPayment from './views/BookingPayment.vue'
 import OwnerHomePage from './views/OwnerHomePage.vue'
 import ManagerDashboard from "@/views/ManagerDashboard.vue";
 
-const currentPage = ref('ManagerDashboard');
+const currentPage = ref('FlightBooking');
 const flightBookingRef = ref(null);
 const currentPageProps = ref({});
 

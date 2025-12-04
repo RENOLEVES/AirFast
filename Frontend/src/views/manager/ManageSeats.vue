@@ -21,7 +21,7 @@
         <h2 class="text-xl font-bold text-indigo-700 mb-4 pb-2 border-b-2 border-indigo-200">
           Flight ID: {{ flightId }} ({{ flightSeats.length }} seats)
         </h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div v-for="seat in flightSeats" :key="seat.seatId" class="bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition">
             <div class="flex justify-between items-start mb-3">
@@ -30,7 +30,7 @@
                 <p class="text-xs text-gray-500">ID: {{ seat.seatId }}</p>
               </div>
               <span :class="getClassBadge(seat.seatClass)" class="px-2 py-1 text-xs rounded-full font-semibold">
-                {{ formatClass(seat.seatClass) }}
+                {{ seat.seatClass }}
               </span>
             </div>
 
@@ -38,7 +38,7 @@
               <div class="flex justify-between">
                 <span class="text-gray-600">Status:</span>
                 <span :class="getStatusClass(seat.seatStatus)" class="font-medium">
-                  {{ formatSeatStatus(seat.seatStatus) }}
+                  {{ seat.seatStatus }}
                 </span>
               </div>
               <div class="flex justify-between items-center">
@@ -50,6 +50,12 @@
             <button @click="openPriceModal(seat)" class="w-full px-3 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition">
               <i class="fas fa-dollar-sign mr-1"></i>Update Price
             </button>
+
+            <button
+                @click="deleteSeat(seat.seatId)"
+                class="w-full mt-2 px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">
+              <i class="fas fa-trash mr-1"></i> Delete Seat
+            </button>
           </div>
         </div>
       </div>
@@ -59,7 +65,7 @@
     <div v-if="showPriceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="closePriceModal">
       <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <h2 class="text-2xl font-bold mb-6">Update Seat Price</h2>
-        
+
         <div class="mb-4 p-4 bg-gray-50 rounded-lg">
           <div class="grid grid-cols-2 gap-2 text-sm">
             <div><span class="text-gray-600">Flight:</span> <span class="font-medium">{{ selectedSeat?.flightId }}</span></div>
@@ -69,7 +75,7 @@
           </div>
         </div>
 
-        <form @submit.prevent="updatePrice" class="space-y-4">
+        <form @submit.prevent="handleSaveSeat(selectedSeat.seatId)" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">New Price ($)</label>
             <input v-model.number="newPrice" type="number" step="0.01" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:ring-2 focus:ring-indigo-500">
@@ -110,7 +116,7 @@ export default {
       newPrice: 0,
       successMessage: '',
       errorMessage: '',
-      apiUrl: 'http://localhost:8080/api/owners/view/booking',
+      apiUrl: 'http://localhost:8080/api/seats',
     }
   },
   computed: {
@@ -128,23 +134,79 @@ export default {
   },
   methods: {
     async fetchSeats() {
-      this.isLoading = true;
+      this.loading = true;
       this.error = null;
+
       try {
         const response = await fetch(this.apiUrl);
 
         if (!response.ok) {
           throw new Error(`Server returned status: ${response.status}`);
         }
-        const data = await response.json();
 
+        const data = await response.json();
         this.seats = data;
 
       } catch (e) {
-        console.error('Fetch error:', e);
-        this.error = e.message || 'The backend service is unavailable.';
+        console.error("Fetch error:", e);
+        this.error = e.message || "The backend service is unavailable.";
       } finally {
         this.loading = false;
+      }
+    },
+
+    async handleSaveSeat(seatId) {
+      try {
+        const payload = {
+          flightId: this.selectedSeat.flightId,
+          seatClass: this.selectedSeat.seatClass,
+          price: this.newPrice,
+          seatNumber: this.selectedSeat.seatNumber,
+          seatStatus: this.selectedSeat.seatStatus
+        };
+
+        const response = await fetch(`${this.apiUrl}/${seatId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || `Failed to update seat ${seatId}`);
+        }
+
+        this.showSuccess(`Seat ${this.selectedSeat.seatNumber} price updated to $${this.newPrice}`);
+
+        this.closePriceModal();
+        await this.fetchSeats();
+
+      } catch (err) {
+        console.error(err);
+        this.showError(err.message);
+      }
+    },
+
+    async deleteSeat(seatId) {
+      if (!confirm("Are you sure you want to delete this seat?")) return;
+
+      try {
+        const response = await fetch(`${this.apiUrl}/${seatId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to delete seat: ${response.status}`);
+        }
+
+        this.showSuccess(`Seat ${seatId} deleted.`);
+        await this.fetchSeats();
+
+      } catch (e) {
+        console.error("Delete error:", e);
+        this.showError(e.message || "Failed to delete seat.");
       }
     },
 
@@ -160,37 +222,17 @@ export default {
       this.newPrice = 0;
     },
 
-    async updatePrice() {
-      try {
-        await managerAPI.setSeatPrice(this.selectedSeat.seatId, this.newPrice);
-        this.showSuccess(`Seat ${this.selectedSeat.seatNumber} price updated to $${this.newPrice}`);
-        this.closePriceModal();
-        this.fetchSeats();
-      } catch (e) {
-        this.showError(e.response?.data?.message || 'Failed to update seat price');
-      }
-    },
-
-    formatClass(seatClass) {
-      const classes = ['Business', 'Economy'];
-      return classes[seatClass] || 'Unknown';
-    },
-
-    formatSeatStatus(status) {
-      const statuses = ['TBD', 'Available'];
-      return statuses[status] || 'Unknown';
-    },
 
     getClassBadge(seatClass) {
       const badges = {
-        0: 'bg-purple-100 text-purple-800',
-        1: 'bg-blue-100 text-blue-800'
+        "ECONOMY": 'bg-purple-100 text-purple-800',
+        "BUSINESS": 'bg-blue-100 text-blue-800'
       };
       return badges[seatClass] || 'bg-gray-100 text-gray-800';
     },
 
     getStatusClass(status) {
-      return status === 1 ? 'text-green-600' : 'text-yellow-600';
+      return status === "AVAILABLE" ? 'text-green-600' : 'text-yellow-600';
     },
 
     showSuccess(message) {
