@@ -42,7 +42,7 @@ class BookingRepositoryTest {
         bookingRepository.deleteAll();
         flightRepository.deleteAll();
 
-        Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao",123456);
+        Customer customer = new Customer("eric.zhao@gmail.com", "123456", "Eric","Zhao", 0, 0, 0);
         customer.setPoints(500);
         c1 = personRepository.save(customer);
 
@@ -60,7 +60,7 @@ class BookingRepositoryTest {
     @Test
     void testSaveBooking() {
         //create entity
-        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456);
+        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien", 0, 0, 0);
         Customer c2 = personRepository.save(customer);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2024, 10, 6, 1, 15, 0);
@@ -92,7 +92,7 @@ class BookingRepositoryTest {
         //read
         Booking b2 = bookingRepository.findByBookingId(b1.getBookingId());
 
-        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456);
+        Customer customer = new Customer("ken.dubien@gmail.com", "654321", "Ken","Dubien",123456, 0, 0);
         Customer c2 = personRepository.save(customer);
 
         LocalDateTime expectedDepartTime = LocalDateTime.of(2024, 10, 6, 1, 15, 0);

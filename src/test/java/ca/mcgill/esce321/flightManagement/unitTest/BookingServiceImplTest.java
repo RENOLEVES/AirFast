@@ -36,7 +36,7 @@ class BookingServiceImplTest {
 
     @BeforeEach
     void setup() {
-        customer = new Customer("a@b.com","pw","Alice","Smith", 123456);
+        customer = new Customer("a@b.com","pw","Alice","Smith", 123456, 0, 0);
         customer.setId(1L);
         flight = new Flight(
             100,
@@ -105,7 +105,7 @@ class BookingServiceImplTest {
 
         Booking existing = new Booking();
         existing.setBookingId(77L);
-        existing.setCustomer(new Customer("x@y.com","pw","X","Y", 111));
+        existing.setCustomer(new Customer("x@y.com","pw","X","Y", 111, 0, 0));
         existing.setSeat(seat);
         existing.setBookingStatus(BookingStatus.CONFIRMED);
         when(bookingRepo.findAll()).thenReturn(List.of(existing));

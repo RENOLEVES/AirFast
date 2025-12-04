@@ -217,9 +217,9 @@ public class OwnerServiceImplTest {
 
     @Test
     void testViewAllCustomers() {
-        Person p1 = new Customer("e1","p","f","l",1);
+        Person p1 = new Customer("e1","p","f","l",1, 0, 0);
         p1.setId(1L);
-        Person p2 = new Customer("e2","p2","f2","l2",2);
+        Person p2 = new Customer("e2","p2","f2","l2",2, 0, 0);
         p2.setId(2L);
         when(personRepository.findAll()).thenReturn(List.of(p1,p2));
 

@@ -1,53 +1,99 @@
-INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)
+-- Customers (15 diverse customers)
+INSERT INTO person (email, password, first_name, last_name, dtype, membership_number, points, time_in_flight, total_bookings, role)
 VALUES
-    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Manager',true,100),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Manager',true,200);
+    ('alice.chen@example.com', 'pass123', 'Alice', 'Chen', 'Customer', 'M00001', 15000, 480, 12, 'GOLD'),
+    ('bob.williams@example.com', 'pass123', 'Bob', 'Williams', 'Customer', 'M00002', 8500, 320, 8, 'SILVER'),
+    ('carol.kim@example.com', 'pass123', 'Carol', 'Kim', 'Customer', 'M00003', 2200, 90, 3, 'BRONZE'),
+    ('david.patel@example.com', 'pass123', 'David', 'Patel', 'Customer', 'M00004', 450, 60, 1, 'BRONZE'),
+    ('emma.brown@example.com', 'pass123', 'Emma', 'Brown', 'Customer', 'M00005', 12000, 410, 10, 'GOLD'),
+    ('frank.russo@example.com', 'pass123', 'Frank', 'Russo', 'Customer', 'M00006', 6700, 240, 6, 'SILVER'),
+    ('grace.lee@example.com', 'pass123', 'Grace', 'Lee', 'Customer', 'M00007', 900, 75, 2, 'BRONZE'),
+    ('henry.nguyen@example.com', 'pass123', 'Henry', 'Nguyen', 'Customer', 'M00008', 18500, 620, 15, 'GOLD'),
+    ('iris.garcia@example.com', 'pass123', 'Iris', 'Garcia', 'Customer', 'M00009', 3400, 140, 4, 'SILVER'),
+    ('jack.martin@example.com', 'pass123', 'Jack', 'Martin', 'Customer', 'M00010', 550, 45, 1, 'BRONZE');
 
-INSERT INTO person (email, password, first_name, last_name, dtype, membership_number, points, time_in_flight)
+-- Managers (3)
+INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary, title)
 VALUES
-    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Customer',1,0,0),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Customer',2,5000,155);
+    ('john.manager@airline.com', 'pass123', 'John', 'Stevens', 'Manager', true, 95000, 'Manager'),
+    ('sarah.ops@airline.com', 'pass123', 'Sarah', 'Johnson', 'Manager', true, 88000, 'Manager'),
+    ('mike.fleet@airline.com', 'pass123', 'Mike', 'Thompson', 'Manager', true, 92000, 'Manager');
 
-INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)
+-- Pilots (5)
+INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary, title)
 VALUES
-    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'Pilot',true,100),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'Pilot',true,100);
+    ('captain.smith@airline.com', 'pass123', 'Robert', 'Smith', 'Pilot', true, 125000, 'Pilot'),
+    ('captain.jones@airline.com', 'pass123', 'Jennifer', 'Jones', 'Pilot', true, 118000, 'Pilot'),
+    ('captain.davis@airline.com', 'pass123', 'Michael', 'Davis', 'Pilot', true, 122000, 'Pilot'),
+    ('fo.wilson@airline.com', 'pass123', 'Emily', 'Wilson', 'Pilot', true, 85000, 'Pilot'),
+    ('fo.taylor@airline.com', 'pass123', 'James', 'Taylor', 'Pilot', true, 82000, 'Pilot');
 
-
-INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary)
+-- Flight Attendants (6)
+INSERT INTO person (email, password, first_name, last_name, dtype, is_Active, salary, title)
 VALUES
-    ('ethan.hunt@example.com', 'hsh_ethan456', 'Ethan', 'Hunt', 'FlightAttendant',true,100),
-    ('maya.singh@example.com', 'hsh_maya789', 'Maya', 'Singh', 'FlightAttendant',true,100);
+    ('fa.anderson@airline.com', 'pass123', 'Lisa', 'Anderson', 'FlightAttendant', true, 52000, 'Flight Attendant'),
+    ('fa.thomas@airline.com', 'pass123', 'Kevin', 'Thomas', 'FlightAttendant', true, 48000, 'Flight Attendant'),
+    ('fa.jackson@airline.com', 'pass123', 'Maria', 'Jackson', 'FlightAttendant', true, 51000, 'Flight Attendant'),
+    ('fa.white@airline.com', 'pass123', 'Daniel', 'White', 'FlightAttendant', true, 49000, 'Flight Attendant'),
+    ('fa.harris@airline.com', 'pass123', 'Sophie', 'Harris', 'FlightAttendant', true, 53000, 'Flight Attendant'),
+    ('fa.clark@airline.com', 'pass123', 'Ryan', 'Clark', 'FlightAttendant', true, 47000, 'Flight Attendant');
 
--- Insert test flights
-INSERT INTO flight (flight_id, capacity, seats_remaining, delay_hours, depart_time, arrival_time, expected_depart_time, depart_location, arrival_location, flight_number, flight_time, is_recurring, is_active, status)
+-- Flights (15 varied routes and times)
+INSERT INTO flight (capacity, seats_remaining, delay_hours, depart_time, arrival_time, expected_depart_time, depart_location, arrival_location, flight_number, flight_time, is_recurring, is_active, status)
 VALUES
-    (1, 200, 150, 0, '2025-11-22 08:30:00', '2025-11-22 09:30:00', '2025-11-22 08:30:00', 'Montreal', 'Toronto', 'AC101', 60, false, true, null),
-    (2, 180, 120, 0, '2025-11-22 14:45:00', '2025-11-22 15:45:00', '2025-11-22 14:45:00', 'Montreal', 'Toronto', 'AC102', 60, false, true, null),
-    (3, 220, 180, 0, '2025-11-23 10:00:00', '2025-11-23 11:00:00', '2025-11-23 10:00:00', 'Montreal', 'Toronto', 'AC103', 60, false, true, null),
-    (4, 200, 160, 0, '2025-11-25 07:30:00', '2025-11-25 11:45:00', '2025-11-25 07:30:00', 'Montreal', 'Vancouver', 'AC201', 255, false, true, null),
-    (5, 190, 140, 2, '2025-11-26 16:00:00', '2025-11-26 17:00:00', '2025-11-26 14:00:00', 'Toronto', 'Montreal', 'AC104', 60, false, true, null),
-    (6, 210, 190, 0, '2025-11-28 09:15:00', '2025-11-28 13:30:00', '2025-11-28 09:15:00', 'Toronto', 'Vancouver', 'AC202', 255, false, true, null),
-    (7, 180, 150, 0, '2025-11-30 11:00:00', '2025-11-30 12:00:00', '2025-11-30 11:00:00', 'Montreal', 'Toronto', 'AC105', 60, false, true, null),
-    (8, 200, 170, 0, '2025-12-01 15:30:00', '2025-12-01 19:45:00', '2025-12-01 15:30:00', 'Vancouver', 'Montreal', 'AC203', 255, false, true, null);
+    -- Montreal <-> Toronto
+    (180, 145, 0, '2025-12-10 08:30:00', '2025-12-10 09:45:00', '2025-12-10 08:30:00', 'Montreal', 'Toronto', 'AC101', 75, true, true, 'SCHEDULED'),
+    (180, 120, 0, '2025-12-10 14:00:00', '2025-12-10 15:15:00', '2025-12-10 14:00:00', 'Montreal', 'Toronto', 'AC102', 75, true, true, 'SCHEDULED'),
+    (180, 160, 0, '2025-12-10 19:30:00', '2025-12-10 20:45:00', '2025-12-10 19:30:00', 'Toronto', 'Montreal', 'AC103', 75, true, true, 'SCHEDULED'),
+    
+    -- Montreal <-> Vancouver
+    (220, 180, 0, '2025-12-11 07:00:00', '2025-12-11 11:30:00', '2025-12-11 07:00:00', 'Montreal', 'Vancouver', 'AC201', 270, false, true, 'SCHEDULED'),
+    (220, 150, 1, '2025-12-11 16:00:00', '2025-12-11 20:30:00', '2025-12-11 15:00:00', 'Vancouver', 'Montreal', 'AC202', 270, false, true, 'DELAYED'),
+    
+    -- Toronto <-> Vancouver
+    (200, 140, 0, '2025-12-12 10:00:00', '2025-12-12 14:00:00', '2025-12-12 10:00:00', 'Toronto', 'Vancouver', 'AC301', 240, false, true, 'SCHEDULED'),
+    (200, 170, 0, '2025-12-12 17:00:00', '2025-12-12 21:00:00', '2025-12-12 17:00:00', 'Vancouver', 'Toronto', 'AC302', 240, false, true, 'SCHEDULED'),
+    
+    -- Montreal <-> Calgary
+    (160, 100, 0, '2025-12-13 09:00:00', '2025-12-13 13:30:00', '2025-12-13 09:00:00', 'Montreal', 'Calgary', 'AC401', 270, false, true, 'SCHEDULED'),
+    (160, 130, 0, '2025-12-13 15:00:00', '2025-12-13 19:30:00', '2025-12-13 15:00:00', 'Calgary', 'Montreal', 'AC402', 270, false, true, 'SCHEDULED'),
+    
+    -- Montreal <-> Ottawa
+    (120, 85, 0, '2025-12-14 07:30:00', '2025-12-14 08:15:00', '2025-12-14 07:30:00', 'Montreal', 'Ottawa', 'AC501', 45, true, true, 'SCHEDULED'),
+    (120, 95, 0, '2025-12-14 12:00:00', '2025-12-14 12:45:00', '2025-12-14 12:00:00', 'Ottawa', 'Montreal', 'AC502', 45, true, true, 'SCHEDULED'),
+    (120, 110, 0, '2025-12-14 18:00:00', '2025-12-14 18:45:00', '2025-12-14 18:00:00', 'Montreal', 'Ottawa', 'AC503', 45, true, true, 'SCHEDULED'),
+    
+    -- Completed/Cancelled flights for demo
+    (180, 0, 0, '2025-11-30 08:00:00', '2025-11-30 09:15:00', '2025-11-30 08:00:00', 'Montreal', 'Toronto', 'AC104', 75, false, false, 'COMPLETED'),
+    (200, 200, 0, '2025-12-05 14:00:00', '2025-12-05 18:00:00', '2025-12-05 14:00:00', 'Toronto', 'Vancouver', 'AC303', 240, false, false, 'CANCELLED'),
+    (180, 155, 0, '2025-12-15 06:00:00', '2025-12-15 07:15:00', '2025-12-15 06:00:00', 'Montreal', 'Toronto', 'AC105', 75, true, true, 'SCHEDULED');
 
+-- Seats (varied classes and prices per flight)
+-- Flight 1 (AC101)
+INSERT INTO seat (seat_class, price, seat_number, seat_status, flight_id) VALUES
+    (2, 850.00, '1A', 0, 1), (2, 850.00, '1B', 2, 1), (2, 850.00, '2A', 2, 1),
+    (1, 420.00, '10A', 0, 1), (1, 420.00, '10B', 0, 1), (1, 420.00, '11A', 2, 1),
+    (0, 180.00, '25A', 0, 1), (0, 180.00, '25B', 0, 1), (0, 180.00, '26A', 0, 1);
 
-INSERT INTO seat (
-    seat_class,
-    price,
-    seat_number,
-    seat_status,
-    flight_id
-)
-VALUES
-    (0, 550.50, '1A', 1,1),
-    (1, 180.00, '25C', 1,1),
-    (1, 1200.00, '2D', 1,2),
-    (0, 310.25, '12F', 1,2);
+-- Flight 2 (AC102)
+INSERT INTO seat (seat_class, price, seat_number, seat_status, flight_id) VALUES
+    (2, 920.00, '1A', 2, 2), (2, 920.00, '1B', 2, 2),
+    (1, 450.00, '10A', 0, 2), (1, 450.00, '10B', 2, 2),
+    (0, 195.00, '25A', 0, 2), (0, 195.00, '25B', 0, 2);
 
+-- Flight 4 (AC201 - Long haul)
+INSERT INTO seat (seat_class, price, seat_number, seat_status, flight_id) VALUES
+    (2, 1850.00, '1A', 2, 4), (2, 1850.00, '2A', 0, 4),
+    (1, 780.00, '10A', 2, 4), (1, 780.00, '11A', 0, 4),
+    (0, 380.00, '30A', 0, 4), (0, 380.00, '31A', 0, 4);
 
-INSERT INTO booking (customer_id, seat_id,booking_date, payment_status, booking_status)
-VALUES
-    (3, 1 ,'2025-11-22 08:30:00', 1, 2),
-    (4, 2,'2025-11-23 08:30:00', 1, 2),
-    (3, 3,'2025-11-24 08:30:00', 1, 1);
+-- Bookings (mix of confirmed, pending, cancelled)
+INSERT INTO booking (customer_id, seat_id, booking_date, payment_status, booking_status) VALUES
+    (1, 2, '2025-12-01 10:30:00', 1, 2),  -- Alice, confirmed
+    (1, 10, '2025-12-02 14:20:00', 1, 2), -- Alice, confirmed
+    (2, 3, '2025-12-01 11:45:00', 1, 2),  -- Bob, confirmed
+    (5, 6, '2025-12-02 09:15:00', 1, 2),  -- Emma, confirmed
+    (8, 15, '2025-12-03 16:30:00', 1, 2), -- Henry, confirmed
+    (3, 7, '2025-12-04 08:00:00', 0, 0),  -- Carol, pending payment
+    (4, 20, '2025-12-04 12:00:00', 1, 1), -- David, cancelled
+    (6, 14, '2025-12-03 13:45:00', 1, 2); -- Frank, confirmed

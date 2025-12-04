@@ -39,7 +39,7 @@ public class CustomerServiceImplTest {
         dto.setLastName("Doe");
         dto.setMembershipNumber(001);
 
-        Customer savedCustomer = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber());
+        Customer savedCustomer = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber(), 0, 0);
         savedCustomer.setId(1L);
 
         when(personRepository.save(any(Customer.class))).thenReturn(savedCustomer);
@@ -57,7 +57,7 @@ public class CustomerServiceImplTest {
 
     @Test
     void testFindCustomerById_existing() {
-        Customer customer = new Customer("linceketchate@gmail.com", "Pass", "Lince", "Ketchate", 001);
+        Customer customer = new Customer("linceketchate@gmail.com", "Pass", "Lince", "Ketchate", 001, 0, 0);
         customer.setId(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(customer));
 
@@ -80,9 +80,9 @@ public class CustomerServiceImplTest {
 
     @Test
     void testFindAllCustomers() {
-        Customer c1 = new Customer("e1", "p1", "f1", "l1", 001);
+        Customer c1 = new Customer("e1", "p1", "f1", "l1", 001, 0, 0);
         c1.setId(1L);
-        Customer c2 = new Customer("e2", "p2", "f2", "l2", 002);
+        Customer c2 = new Customer("e2", "p2", "f2", "l2", 002, 0, 0);
         c2.setId(2L);
 
         when(personRepository.findAll()).thenReturn(List.of(c1, c2));
@@ -94,7 +94,7 @@ public class CustomerServiceImplTest {
 
     @Test
     void testUpdateCustomer_existing() {
-        Customer customer = new Customer("email@gmail.com", "Pass", "First", "Last", 001);
+        Customer customer = new Customer("email@gmail.com", "Pass", "First", "Last", 001, 0, 0);
         customer.setId(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(customer));
         when(personRepository.save(any(Customer.class))).thenReturn(customer);
@@ -131,7 +131,7 @@ public class CustomerServiceImplTest {
 
     @Test
     void testDeleteCustomer_existing() {
-        Customer customer = new Customer("email@gmail.com", "Pass", "First", "Last", 001);
+        Customer customer = new Customer("email@gmail.com", "Pass", "First", "Last", 001, 0, 0);
         customer.setId(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(customer));
 
