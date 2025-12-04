@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+
 defineProps({
   flight: {
     type: Object,

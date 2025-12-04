@@ -32,6 +32,12 @@
         v-bind="currentPageProps"
     />
 
+    <BookingPayment
+        v-else-if="currentPage === 'BookingPayment'"
+        @navigate="handleNavigation"
+        v-bind="currentPageProps"
+    />
+
   </div>
 </template>
 
@@ -52,7 +58,7 @@ const currentPageProps = ref({});
 // --- Navigation ---
 const handleNavigation = (pageName, data = {}) => {
   currentPage.value = pageName;
-  currentPageProps.value = data; // Saves data payload (e.g., { id: customerId })
+  currentPageProps.value = data;
   console.log(`Navigating to: ${pageName}, with props:`, data);
 };
 
