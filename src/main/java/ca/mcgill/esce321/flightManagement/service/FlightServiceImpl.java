@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.FlightStatus;
+import ca.mcgill.esce321.flightManagement.model.Pilot;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -39,7 +41,7 @@ public class FlightServiceImpl {
                 dto.isRecurring(), null, null
         );
 
-        if (dto.getDepartTime() != null)  f.setDepartTime(dto.getDepartTime());
+        if (dto.getDepartTime() != null) f.setDepartTime(dto.getDepartTime());
         if (dto.getArrivalTime() != null) f.setArrivalTime(dto.getArrivalTime());
 
         // Active default: true unless explicitly set
@@ -59,7 +61,7 @@ public class FlightServiceImpl {
 
         // Status (nullable in request; set only if provided)
         if (dto.getStatus() != null) {
-            f.setFlightStatus(dto.getStatus());  
+            f.setFlightStatus(dto.getStatus());
         }
 
         Flight saved = flightRepository.save(f);
@@ -75,7 +77,7 @@ public class FlightServiceImpl {
 
     public List<FlightResponseDTO> getAllFlights() {
         return flightRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(this::convertWithEmployee)
                 .collect(Collectors.toList());
     }
 
@@ -96,11 +98,11 @@ public class FlightServiceImpl {
 
         // Optional fields (null-safe)
         if (dto.isActive() != null) f.setActive(dto.isActive());
-        if (dto.getDepartTime() != null)  f.setDepartTime(dto.getDepartTime());
+        if (dto.getDepartTime() != null) f.setDepartTime(dto.getDepartTime());
         if (dto.getArrivalTime() != null) f.setArrivalTime(dto.getArrivalTime());
-        if (dto.getSeatsRemaining() > 0)  f.setSeatsRemaining(dto.getSeatsRemaining());
-        if (dto.getDelayHours() != null)  f.setDelayHours(dto.getDelayHours());
-        if (dto.getStatus() != null)      f.setFlightStatus(dto.getStatus());
+        if (dto.getSeatsRemaining() > 0) f.setSeatsRemaining(dto.getSeatsRemaining());
+        if (dto.getDelayHours() != null) f.setDelayHours(dto.getDelayHours());
+        if (dto.getStatus() != null) f.setFlightStatus(dto.getStatus());
 
         Flight saved = flightRepository.save(f);
         return convertToDTO(saved);
@@ -173,6 +175,27 @@ public class FlightServiceImpl {
                 flight.isRecurring(),
                 flight.isActive(),
                 flight.getFlightStatus()
+        );
+    }
+
+    private FlightResponseDTO convertWithEmployee(Flight flight) {
+        return new FlightResponseDTO(
+                flight.getFlightId(),
+                flight.getCapacity(),
+                flight.getSeatsRemaining(),
+                flight.getDelayHours(),
+                flight.getDepartTime(),
+                flight.getArrivalTime(),
+                flight.getExpectedDepartTime(),
+                flight.getDepartLocation(),
+                flight.getArrivalLocation(),
+                flight.getFlightNumber(),
+                flight.getFlightTime(),
+                flight.isRecurring(),
+                flight.isActive(),
+                flight.getFlightStatus(),
+                flight.getPilots().stream().map(Pilot::getId).toList(),
+                flight.getAttendants().stream().map(FlightAttendant::getId).toList()
         );
     }
 }

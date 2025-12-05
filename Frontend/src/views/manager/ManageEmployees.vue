@@ -39,8 +39,8 @@
           </div>
           <div class="flex justify-between">
             <span class="text-gray-600">Status:</span>
-            <span :class="emp.isActive ? 'text-green-600' : 'text-red-600'" class="font-medium">
-              {{ emp.isActive ? 'Active' : 'Inactive' }}
+            <span :class="emp.isActive ?  'text-red-600': 'text-green-600'" class="font-medium">
+              {{ emp.isActive ? 'Inactive' : 'Active' }}
             </span>
           </div>
         </div>
@@ -204,7 +204,7 @@ export default {
           throw new Error(err.message || `Failed to update seat ${seatId}`);
         }
 
-        this.showSuccess(`Employee ${this.isEditing ? 'updated' : 'created'} successfully.`);
+        this.showSuccess(`Employee ${this.isEditing ? 'updated' : 'created'} successfully.  It may show at the bottom.`);
 
         this.closeModal();
         await this.fetchEmployees(); // Refresh list

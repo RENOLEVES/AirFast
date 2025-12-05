@@ -53,6 +53,31 @@ public class FlightResponseDTO {
         this.status = status;
     }
 
+    public FlightResponseDTO(Long flightId, int capacity, int seatsRemaining,
+                             Integer delayHours,
+                             LocalDateTime departTime, LocalDateTime arrivalTime, LocalDateTime expectedDepartTime,
+                             String departLocation, String arrivalLocation,
+                             String flightNumber, double flightTime,
+                             boolean isRecurring, boolean isActive,
+                             FlightStatus status,List<Long> pilots, List<Long> flightattendants) {
+        this.flightId = flightId;
+        this.capacity = capacity;
+        this.seatsRemaining = seatsRemaining;
+        this.delayHours = delayHours;
+        this.departTime = departTime;
+        this.arrivalTime = arrivalTime;
+        this.expectedDepartTime = expectedDepartTime;
+        this.departLocation = departLocation;
+        this.arrivalLocation = arrivalLocation;
+        this.flightNumber = flightNumber;
+        this.flightTime = flightTime;
+        this.isRecurring = isRecurring;
+        this.isActive = isActive;
+        this.status = status;
+        this.pilots = pilots;
+        this.flightattendants = flightattendants;
+    }
+
     public FlightResponseDTO(Long flightId, int capacity,
                              LocalDateTime departTime, LocalDateTime arrivalTime,
                              String departLocation, String arrivalLocation,
