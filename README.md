@@ -99,6 +99,36 @@ npm run build
 npm run preview
 ```
 
+## Sample Date & Default User
+```
+src/
+├── main/
+|   ├── resources/
+|      ├── all.sql
+```
+
+This sql creates sample data for the website. You may log in to the website using the 'Sign In' button located at the top-right corner.
+Here are some sample users:
+
+```bash
+Customer:
+Username: aaa@example.com
+Password: 123456
+```
+
+```bash
+Owner:
+Username: owner@example.com
+Password: 123456
+```
+
+```bash
+Manager:
+Username: bbb@example.com
+Password: 123456
+```
+<p>***You can always create new users to log in.</p>
+
 ## Project Structure
 
 ```
