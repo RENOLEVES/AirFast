@@ -127,7 +127,15 @@ Manager:
 Username: bbb@example.com
 Password: 123456
 ```
+
 <p>***You can always create new users to log in.</p>
+
+The application includes sample flight data:
+- Routes between Montreal and Toronto
+- Various times and classes (Economy/Business)
+- Different price points ($1000-$2000 CAD)
+- Seat availability information
+
 
 ## Project Structure
 
@@ -238,14 +246,6 @@ router:
 - `BookingPayment`
 - `OwnerHomePage`     <- owner home page
 - `ManagerDashboard`  <- manager home page
-
-## Sample Data (/resources/all.sql)
-
-The application includes sample flight data:
-- Routes between Montreal and Toronto
-- Various times and classes (Economy/Business)
-- Different price points ($1000-$2000 CAD)
-- Seat availability information
 
 ## Browser Support
 
