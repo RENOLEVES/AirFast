@@ -22,12 +22,14 @@ Each flight card shows:
 - Quick book button
 
 ### Pages Included
-1. **Home Page** - Welcome screen with navigation to book flights or view bookings
+1. **Home Page** - Welcome screen with navigation to book flights or search flights
 2. **Flight Booking** - Search and browse available flights with filtering
 3. **Booked Flights** - View all your booked flights with cancel option
 4. **User Signup** - Create a new account
 5. **User Signin** - Login to existing account
 6. **Booking Payment** - Complete payment for flight booking
+7. **Owner HomePage** - Homepage for owner to view statics
+8. **Manager HomePage** - Homepage for manager to manage employee/seat/flight
 
 ## Tech Stack
 
@@ -82,16 +84,16 @@ src/
 │   ├── UserSignup.vue        # User registration
 │   ├── UserSignin.vue        # User login
 │   └── BookingPayment.vue    # Payment page
+|         ...
 ├── components/
 │   └── FlightCard.vue        # Reusable flight card component
+|         ...
 ├── App.vue                    # Main app component with routing
 ├── main.js                    # App entry point
 └── style.css                  # Global styles with Tailwind
 ```
 
-## Features to Implement (Backend Integration)
-
-The current implementation includes the complete UI with mock data. To make it fully functional, you'll need to:
+## Implemented Feature
 
 1. **API Integration**
    - Connect to a flight booking API
@@ -99,18 +101,17 @@ The current implementation includes the complete UI with mock data. To make it f
    - Add authentication endpoints
 
 2. **State Management**
-   - Add Pinia or Vuex for global state
    - Manage user session
    - Store booking information
+   - Update booking, seat, employee infomation
+   - Make/cancel multiple bookings
+   - Search flight by date range & location
 
 3. **Database**
-   - User accounts
-   - Flight bookings
-   - Payment records
-
-4. **Payment Gateway**
-   - Integrate Stripe, PayPal, or other payment processors
-   - Handle secure transactions
+   - person accounts (Customer, Owner, Manager, Pilot, Flight Attendant)
+   - flight
+   - booking
+   - seat
 
 ## Design System
 
@@ -134,13 +135,15 @@ The app uses a simple component-based navigation system. To navigate between vie
 $emit('navigate', 'FlightBooking')
 ```
 
-Available views:
+router:
 - `HomePage`
 - `FlightBooking`
 - `BookedFlights`
 - `UserSignup`
 - `UserSignin`
 - `BookingPayment`
+- `OwnerHomePage`     <- owner home page
+- `ManagerDashboard`  <- manager home page
 
 ## Sample Data
 
