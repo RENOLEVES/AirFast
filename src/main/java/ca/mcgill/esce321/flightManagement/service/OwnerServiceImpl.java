@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,28 +35,26 @@ public class OwnerServiceImpl{
         this.seatRepository = seatRepository;
     }
 
-    public OwnerResponseDTO createOwner(OwnerRequestDTO dto) {
+    public OwnerResponse createOwner(OwnerRequestDTO dto) {
         // Date today = Date.valueOf(LocalDate.now());
 
         Owner ownerToCreate = new Owner(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
         Owner saved = personRepository.save(ownerToCreate);
-        return new OwnerResponseDTO(
+        return new OwnerResponse(
                 saved.getId(),
                 saved.getEmail(),
-                saved.getPassword(),
                 saved.getFirstName(),
                 saved.getLastName()
         );
     }
 
-    public OwnerResponseDTO findOwnerById(long id) {
+    public OwnerResponse findOwnerById(long id) {
         Optional<Person> p = personRepository.findById(id);
         if (p.isPresent() && p.get() instanceof Owner owner) {
 
-            return new OwnerResponseDTO(
+            return new OwnerResponse(
                     owner.getId(),
                     owner.getEmail(),
-                    owner.getPassword(),
                     owner.getFirstName(),
                     owner.getLastName()
             );
@@ -66,14 +63,13 @@ public class OwnerServiceImpl{
         }
     }
 
-    public List<CustomerResponseDTO> viewAllCustomers() {
+    public List<CustomerResponse> viewAllCustomers() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Customer)
                 .map(p -> (Customer) p)
-                .map(c -> new CustomerResponseDTO(
+                .map(c -> new CustomerResponse(
                         c.getId(),
                         c.getEmail(),
-                        c.getPassword(),
                         c.getFirstName(),
                         c.getLastName(),
                         c.getMembershipNumber(),
@@ -82,44 +78,40 @@ public class OwnerServiceImpl{
                 )).collect(Collectors.toList());
     }
 
-    public List<EmployeeResponseDTO> viewAllEmployees() {
+    public List<EmployeeResponse> viewAllEmployees() {
         return personRepository.findAll().stream()
                 .filter(p -> p instanceof Employee)
                 .map(p -> (Employee) p)
                 .map(e -> {
                     if (e instanceof Pilot pilot) {
-                        return new PilotResponseDTO(
+                        return new PilotResponse(
                                 pilot.getId(),
                                 pilot.getEmail(),
-                                pilot.getPassword(),
                                 pilot.getFirstName(),
                                 pilot.getLastName(),
                                 pilot.getFlights().stream().map(Flight::getFlightId).toList()
                         );
                     } else if (e instanceof Manager manager) {
-                        return new ManagerResponseDTO(
+                        return new ManagerResponse(
                                 manager.getId(),
                                 manager.getEmail(),
-                                manager.getPassword(),
                                 manager.getFirstName(),
                                 manager.getLastName(),
                                 manager.getFlights().stream().map(Flight::getFlightId).toList(),
                                 manager.getBookings().stream().map(Booking::getBookingId).toList()
                         );
                     } else if (e instanceof FlightAttendant attendant) {
-                        return new FlightAttendantResponseDTO(
+                        return new FlightAttendantResponse(
                                 attendant.getId(),
                                 attendant.getEmail(),
-                                attendant.getPassword(),
                                 attendant.getFirstName(),
                                 attendant.getLastName(),
                                 attendant.getFlights().stream().map(Flight::getFlightId).toList()
                         );
                     } else {
-                        return new EmployeeResponseDTO(
+                        return new EmployeeResponse(
                                 e.getId(),
                                 e.getEmail(),
-                                e.getPassword(),
                                 e.getFirstName(),
                                 e.getLastName(),
                                 "Employee"
@@ -128,9 +120,9 @@ public class OwnerServiceImpl{
                 }).collect(Collectors.toList());
     }
 
-    public List<FlightResponseDTO> viewAllFlights() {
+    public List<FlightResponse> viewAllFlights() {
         return flightRepository.findAll().stream()
-                .map(f -> new FlightResponseDTO(
+                .map(f -> new FlightResponse(
                         f.getFlightId(),
                         f.getCapacity(),
                         f.getSeatsRemaining(),
@@ -147,10 +139,10 @@ public class OwnerServiceImpl{
     }
 
     @Transactional(readOnly = true)
-    public List<BookingResponseDTO> viewAllBookings() {
+    public List<BookingResponse> viewAllBookings() {
         // Call the new query that guarantees the customer and seat are loaded
         return bookingRepository.findAll().stream()
-                .map(b -> new BookingResponseDTO(
+                .map(b -> new BookingResponse(
                         b.getBookingId(),
                         // b.getCustomer() is now guaranteed to be loaded and accessible
                         b.getCustomer() != null ? b.getCustomer().getId() : null,
@@ -161,9 +153,9 @@ public class OwnerServiceImpl{
                 )).collect(Collectors.toList());
     }
 
-    public List<SeatResponseDTO> viewAllSeats() {
+    public List<SeatResponse> viewAllSeats() {
         return seatRepository.findAll().stream()
-                .map(s -> new SeatResponseDTO(
+                .map(s -> new SeatResponse(
                         s.getSeatId(),
                         s.getFlight() != null ? s.getFlight().getFlightId() : null,
                         s.getSeatClass(),
@@ -185,7 +177,7 @@ public class OwnerServiceImpl{
 
     public double calculateTotalRevenue() {
         // Get all paid bookings
-        List<BookingResponseDTO> paidBookings = viewAllBookings().stream()
+        List<BookingResponse> paidBookings = viewAllBookings().stream()
                 .filter(b -> b.getPaymentStatus() == PaymentStatus.PAID)
                 .toList();
 
@@ -211,7 +203,7 @@ public class OwnerServiceImpl{
         }
     }
 
-    public OwnerResponseDTO updateOwner(long id, OwnerRequestDTO dto) {
+    public OwnerResponse updateOwner(long id, OwnerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Owner ownerToUpdate) {
@@ -222,10 +214,9 @@ public class OwnerServiceImpl{
 
             Owner updated = personRepository.save(ownerToUpdate);
 
-            return new OwnerResponseDTO(
+            return new OwnerResponse(
                     updated.getId(),
                     updated.getEmail(),
-                    updated.getPassword(),
                     updated.getFirstName(),
                     updated.getLastName()
             );
@@ -241,12 +232,12 @@ public class OwnerServiceImpl{
         int totalFlightAttendantCount = 0;
         int totalManagerCount = 0;
         System.out.println(viewAllEmployees());
-        for (EmployeeResponseDTO e : viewAllEmployees()) {
-            if (e instanceof PilotResponseDTO ) {
+        for (EmployeeResponse e : viewAllEmployees()) {
+            if (e instanceof PilotResponse) {
                 totalPilotCount++;
-            } else if (e instanceof FlightAttendantResponseDTO ) {
+            } else if (e instanceof FlightAttendantResponse) {
                 totalFlightAttendantCount++;
-            } else if (e instanceof ManagerResponseDTO ) {
+            } else if (e instanceof ManagerResponse) {
                 totalManagerCount++;
             }
         }
@@ -254,7 +245,7 @@ public class OwnerServiceImpl{
         return List.of(totalCount, totalCustomerCount, totalPilotCount, totalFlightAttendantCount, totalManagerCount);
     }
 
-    public List<RevenuePointResponseDTO> calculateCumulativeRevenueHistory() {
+    public List<RevenuePointResponse> calculateCumulativeRevenueHistory() {
         // 1. Fetch all bookings
         List<Booking> allBookings = bookingRepository.findAll();
 
@@ -281,7 +272,7 @@ public class OwnerServiceImpl{
                 ));
 
         // 4. Calculate cumulative revenue and build the DTO list using double
-        List<RevenuePointResponseDTO> revenueHistory = new ArrayList<>();
+        List<RevenuePointResponse> revenueHistory = new ArrayList<>();
         double cumulativeSum = 0.0;
 
         // Iterate through the sorted map entries (dates)
@@ -291,7 +282,7 @@ public class OwnerServiceImpl{
 
             // Create and add the DTO for this day
             // NOTE: This assumes your RevenuePointResponseDTO has been updated to use 'double'
-            revenueHistory.add(new RevenuePointResponseDTO(
+            revenueHistory.add(new RevenuePointResponse(
                     entry.getKey(),
                     // We cast the double to BigDecimal to satisfy the current DTO signature.
                     // You must change the DTO to use 'double' for this to work correctly
@@ -304,17 +295,16 @@ public class OwnerServiceImpl{
     }
 
 
-        public List<OwnerResponseDTO> findOwner() {
+        public List<OwnerResponse> findOwner() {
         List<Person> allPersons = personRepository.findAll();
-        List<OwnerResponseDTO> owners = new ArrayList<>();
+        List<OwnerResponse> owners = new ArrayList<>();
 
         for (Person p : allPersons) {
             if (p instanceof Owner owner) {
 
-                owners.add(new OwnerResponseDTO(
+                owners.add(new OwnerResponse(
                         owner.getId(),
                         owner.getEmail(),
-                        owner.getPassword(),
                         owner.getFirstName(),
                         owner.getLastName()));
             }

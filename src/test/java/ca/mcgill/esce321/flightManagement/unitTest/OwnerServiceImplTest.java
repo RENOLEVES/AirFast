@@ -1,8 +1,6 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.OwnerRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
@@ -52,7 +50,7 @@ public class OwnerServiceImplTest {
 
         when(personRepository.save(any(Owner.class))).thenReturn(savedOwner);
 
-        OwnerResponseDTO result = ownerService.createOwner(dto);
+        OwnerResponse result = ownerService.createOwner(dto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -68,7 +66,7 @@ public class OwnerServiceImplTest {
         owner.setId(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(owner));
 
-        OwnerResponseDTO result = ownerService.findOwnerById(1L);
+        OwnerResponse result = ownerService.findOwnerById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -92,7 +90,7 @@ public class OwnerServiceImplTest {
 
         when(personRepository.findAll()).thenReturn(List.of(o1, o2));
 
-        List<OwnerResponseDTO> result = ownerService.findOwner();
+        List<OwnerResponse> result = ownerService.findOwner();
 
         assertEquals(2, result.size());
     }
@@ -112,7 +110,7 @@ public class OwnerServiceImplTest {
         dto.setFirstName("NewF");
         dto.setLastName("NewL");
 
-        OwnerResponseDTO result = ownerService.updateOwner(1L, dto);
+        OwnerResponse result = ownerService.updateOwner(1L, dto);
 
         assertNotNull(result);
         assertEquals("new@example.com", result.getEmail());
@@ -137,7 +135,7 @@ public class OwnerServiceImplTest {
         s2.setSeatId(2L);
         when(seatRepository.findAll()).thenReturn(List.of(s1, s2));
 
-        List<SeatResponseDTO> result = ownerService.viewAllSeats();
+        List<SeatResponse> result = ownerService.viewAllSeats();
 
         assertEquals(2, result.size());
     }
@@ -152,7 +150,7 @@ public class OwnerServiceImplTest {
         f2.setFlightId(2L);
         when(flightRepository.findAll()).thenReturn(List.of(f1, f2));
 
-        List<FlightResponseDTO> result = ownerService.viewAllFlights();
+        List<FlightResponse> result = ownerService.viewAllFlights();
 
         assertEquals(2, result.size());
     }
@@ -166,7 +164,7 @@ public class OwnerServiceImplTest {
         b2.setBookingId(2L);
         when(bookingRepository.findAll()).thenReturn(List.of(b1, b2));
 
-        List<BookingResponseDTO> result = ownerService.viewAllBookings();
+        List<BookingResponse> result = ownerService.viewAllBookings();
 
         assertEquals(2, result.size());
     }
@@ -182,7 +180,7 @@ public class OwnerServiceImplTest {
 
         when(personRepository.findAll()).thenReturn(List.of(p1,p2));
 
-        List<EmployeeResponseDTO> result = ownerService.viewAllEmployees();
+        List<EmployeeResponse> result = ownerService.viewAllEmployees();
 
         assertEquals(2,result.size());
     }
@@ -193,7 +191,7 @@ public class OwnerServiceImplTest {
         f.setFlightId(1L);
         when(flightRepository.findAll()).thenReturn(List.of(f));
 
-        List<FlightResponseDTO> result = ownerService.viewAllFlights();
+        List<FlightResponse> result = ownerService.viewAllFlights();
 
         assertEquals(1,result.size());
     }
@@ -210,7 +208,7 @@ public class OwnerServiceImplTest {
         b.setSeat(s);
         when(bookingRepository.findAll()).thenReturn(List.of(b));
 
-        List<BookingResponseDTO> result = ownerService.viewAllBookings();
+        List<BookingResponse> result = ownerService.viewAllBookings();
 
         assertEquals(1,result.size());
     }
@@ -223,7 +221,7 @@ public class OwnerServiceImplTest {
         p2.setId(2L);
         when(personRepository.findAll()).thenReturn(List.of(p1,p2));
 
-        List<CustomerResponseDTO> result = ownerService.viewAllCustomers();
+        List<CustomerResponse> result = ownerService.viewAllCustomers();
 
         assertEquals(2,result.size());
     }
@@ -243,15 +241,15 @@ public class OwnerServiceImplTest {
 
     @Test
     void testViewTotalRevenue() {
-        BookingResponseDTO booking1 = new BookingResponseDTO();
+        BookingResponse booking1 = new BookingResponse();
         booking1.setPaymentStatus(PaymentStatus.PAID);
         booking1.setSeatId(1L);
 
-        BookingResponseDTO booking2 = new BookingResponseDTO();
+        BookingResponse booking2 = new BookingResponse();
         booking2.setPaymentStatus(PaymentStatus.PAID);
         booking2.setSeatId(2L);
 
-        BookingResponseDTO booking3 = new BookingResponseDTO();
+        BookingResponse booking3 = new BookingResponse();
         booking3.setPaymentStatus(PaymentStatus.NOTPAID);
         booking3.setSeatId(3L);
 

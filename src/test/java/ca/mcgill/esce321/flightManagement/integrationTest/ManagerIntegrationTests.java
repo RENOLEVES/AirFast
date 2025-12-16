@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponse;
 import ca.mcgill.esce321.flightManagement.model.Manager;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +71,7 @@ public class ManagerIntegrationTests {
                 .getContentAsString();
 
         // Parse response back to DTO
-        ManagerResponseDTO createdDto = objectMapper.readValue(jsonResponse, ManagerResponseDTO.class);
+        ManagerResponse createdDto = objectMapper.readValue(jsonResponse, ManagerResponse.class);
 
         // Assert: check repository for saved entity
         Optional<Manager> fromDb = personRepository.findById(createdDto.getId())

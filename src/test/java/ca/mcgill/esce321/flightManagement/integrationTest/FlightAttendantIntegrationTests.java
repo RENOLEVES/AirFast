@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponse;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +42,12 @@ class FlightAttendantIntegrationTests {
         body.put("lastName", "Lo");
         body.put("password", "strongPass!");
 
-        ResponseEntity<FlightAttendantResponseDTO> response =
-                client.postForEntity("/api/flight-attendants", body, FlightAttendantResponseDTO.class);
+        ResponseEntity<FlightAttendantResponse> response =
+                client.postForEntity("/api/flight-attendants", body, FlightAttendantResponse.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        FlightAttendantResponseDTO dto = response.getBody();
+        FlightAttendantResponse dto = response.getBody();
         assertNotNull(dto);
         assertNotNull(dto.getId());
         assertTrue(dto.getId() > 0);
@@ -63,12 +63,12 @@ class FlightAttendantIntegrationTests {
     @Order(2)
     void getById_valid_200_returnsDto() {
         String url = "/api/flight-attendants/" + createdId;
-        ResponseEntity<FlightAttendantResponseDTO> response =
-                client.getForEntity(url, FlightAttendantResponseDTO.class);
+        ResponseEntity<FlightAttendantResponse> response =
+                client.getForEntity(url, FlightAttendantResponse.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        FlightAttendantResponseDTO dto = response.getBody();
+        FlightAttendantResponse dto = response.getBody();
         assertNotNull(dto);
         assertEquals(createdId, dto.getId());
         assertEquals("fa.integration@mail.com", dto.getEmail());
@@ -88,11 +88,11 @@ class FlightAttendantIntegrationTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<FlightAttendantResponseDTO> response =
-                client.exchange(url, HttpMethod.PUT, entity, FlightAttendantResponseDTO.class);
+        ResponseEntity<FlightAttendantResponse> response =
+                client.exchange(url, HttpMethod.PUT, entity, FlightAttendantResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        FlightAttendantResponseDTO dto = response.getBody();
+        FlightAttendantResponse dto = response.getBody();
         assertNotNull(dto);
         assertEquals("Ivy-Updated", dto.getFirstName());
     }

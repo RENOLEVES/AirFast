@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
@@ -79,7 +79,7 @@ public class SeatIntegrationTests {
                 .getContentAsString();
 
         // Parse response back to DTO
-        SeatResponseDTO createdDto = objectMapper.readValue(jsonResponse, SeatResponseDTO.class);
+        SeatResponse createdDto = objectMapper.readValue(jsonResponse, SeatResponse.class);
 
         // Assert: check repository for saved entity
         Optional<Seat> fromDb = seatRepository.findById(createdDto.getSeatId())

@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.OwnerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponse;
 import ca.mcgill.esce321.flightManagement.model.Owner;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +69,7 @@ public class OwnerIntegrationTests {
                 .getContentAsString();
 
         // Parse response back to DTO
-        OwnerResponseDTO createdDto = objectMapper.readValue(jsonResponse, OwnerResponseDTO.class);
+        OwnerResponse createdDto = objectMapper.readValue(jsonResponse, OwnerResponse.class);
 
         // Assert: check repository for saved entity
         Optional<Owner> fromDb = personRepository.findById(createdDto.getId())

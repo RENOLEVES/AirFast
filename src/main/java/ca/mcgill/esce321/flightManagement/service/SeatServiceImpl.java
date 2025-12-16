@@ -7,14 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.SeatResponseDTO;
-import ca.mcgill.esce321.flightManagement.model.Booking;
+import ca.mcgill.esce321.flightManagement.controller.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.SeatResponse;
 import ca.mcgill.esce321.flightManagement.model.Flight;
-import ca.mcgill.esce321.flightManagement.model.Manager;
-import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.model.Seat;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
@@ -39,7 +34,7 @@ public class SeatServiceImpl {
     }
 
      @Transactional
-    public SeatResponseDTO createSeat(SeatRequestDTO dto) {        
+    public SeatResponse createSeat(SeatRequestDTO dto) {
         Optional<Flight> f = flightRepository.findById(dto.getFlightId());
         Flight flight = null;
         if (f.isPresent()) {
@@ -49,7 +44,7 @@ public class SeatServiceImpl {
         Seat seatToCreate = new Seat(dto.getSeatClass(), dto.getPrice(), dto.getSeatNumber(), dto.getSeatStatus(), flight);
 
         Seat saved = seatRepository.save(seatToCreate);
-        return new SeatResponseDTO(
+        return new SeatResponse(
                 saved.getSeatId(),
                 saved.getFlight().getFlightId(),
                 saved.getSeatClass(),
@@ -61,10 +56,10 @@ public class SeatServiceImpl {
 
     
 
-    public SeatResponseDTO getSeatById(long id) {
+    public SeatResponse getSeatById(long id) {
         Optional<Seat> s = seatRepository.findById(id);
         if(s.isPresent() && s.get() instanceof Seat seat) {
-            return new SeatResponseDTO(seat.getSeatId(), seat.getFlight().getFlightId(), seat.getSeatClass(), seat.getPrice(), seat.getSeatNumber(), seat.getSeatStatus()); 
+            return new SeatResponse(seat.getSeatId(), seat.getFlight().getFlightId(), seat.getSeatClass(), seat.getPrice(), seat.getSeatNumber(), seat.getSeatStatus());
         }       
         else {
             throw new IllegalArgumentException("There is no Seat with ID " + id + ".");
@@ -72,7 +67,7 @@ public class SeatServiceImpl {
 
     }
 
-    public List<SeatResponseDTO> getSeatsByFlightId(long flightId) {
+    public List<SeatResponse> getSeatsByFlightId(long flightId) {
         List<Seat> seats = seatRepository.findByFlight_FlightId(flightId);
 
         if (seats.isEmpty()) {
@@ -80,7 +75,7 @@ public class SeatServiceImpl {
         }
 
         return seats.stream()
-                .map(seat -> new SeatResponseDTO(
+                .map(seat -> new SeatResponse(
                         seat.getSeatId(),
                         seat.getFlight().getFlightId(),
                         seat.getSeatClass(),
@@ -92,9 +87,9 @@ public class SeatServiceImpl {
     }
 
    
-    public List<SeatResponseDTO> getAllSeats() {
+    public List<SeatResponse> getAllSeats() {
         return seatRepository.findAll().stream()
-                .map(f -> new SeatResponseDTO(
+                .map(f -> new SeatResponse(
 
             f.getSeatId(),
             f.getFlight().getFlightId(),
@@ -107,7 +102,7 @@ public class SeatServiceImpl {
 
     
     @Transactional
-    public SeatResponseDTO updateSeat(long id, SeatRequestDTO dto) {
+    public SeatResponse updateSeat(long id, SeatRequestDTO dto) {
         Optional<Seat> optionalSeat = seatRepository.findById(id);
 
         if (optionalSeat.isPresent() && optionalSeat.get() instanceof Seat seatToUpdate) {
@@ -129,7 +124,7 @@ public class SeatServiceImpl {
         
             Seat updated = seatRepository.save(seatToUpdate);
 
-            return new SeatResponseDTO(
+            return new SeatResponse(
                     updated.getSeatId(),
                     updated.getFlight().getFlightId(),
                     updated.getSeatClass(),

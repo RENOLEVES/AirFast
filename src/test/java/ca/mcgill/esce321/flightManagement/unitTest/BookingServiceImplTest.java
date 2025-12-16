@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.BookingRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.BookingRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -66,7 +66,7 @@ class BookingServiceImplTest {
 
         BookingRequestDTO req = new BookingRequestDTO(1L, 20L, null, null, null);
 
-        BookingResponseDTO out = service.createBooking(req);
+        BookingResponse out = service.createBooking(req);
 
         assertThat(out.getBookingId()).isEqualTo(99L);
         assertThat(out.getCustomerId()).isEqualTo(1L);
@@ -124,7 +124,7 @@ class BookingServiceImplTest {
         b.setSeat(seat);
         when(bookingRepo.findById(5L)).thenReturn(Optional.of(b));
 
-        BookingResponseDTO out = service.getBookingById(5L);
+        BookingResponse out = service.getBookingById(5L);
 
         assertThat(out.getBookingId()).isEqualTo(5L);
         assertThat(out.getCustomerId()).isEqualTo(1L);
@@ -152,7 +152,7 @@ class BookingServiceImplTest {
         LocalDateTime t = LocalDateTime.now().plusDays(1);
         BookingRequestDTO req = new BookingRequestDTO(null, null, t, PaymentStatus.PAID, BookingStatus.CONFIRMED);
 
-        BookingResponseDTO out = service.updateBooking(5L, req);
+        BookingResponse out = service.updateBooking(5L, req);
 
         assertThat(out.getPaymentStatus()).isEqualTo(PaymentStatus.PAID);
         assertThat(out.getBookingDate()).isEqualTo(t);
@@ -174,7 +174,7 @@ class BookingServiceImplTest {
         when(bookingRepo.findAll()).thenReturn(List.of(b)); // no other bookings taking newSeat
 
         BookingRequestDTO req = new BookingRequestDTO(null, 30L, null, null, null);
-        BookingResponseDTO out = service.updateBooking(5L, req);
+        BookingResponse out = service.updateBooking(5L, req);
 
         assertThat(out.getSeatId()).isEqualTo(30L);
     }

@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightAttendantRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightAttendantRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponse;
 import ca.mcgill.esce321.flightManagement.service.FlightAttendantServiceImpl;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
 import ca.mcgill.esce321.flightManagement.model.Person;
@@ -46,7 +46,7 @@ class FlightAttendantServiceImplTests {
         when(repo.save(any(Person.class))).thenReturn(saved);
 
         // Act
-        FlightAttendantResponseDTO dto = service.createFlightAttendant(req);
+        FlightAttendantResponse dto = service.createFlightAttendant(req);
 
         // Assert
         assertNotNull(dto);
@@ -139,7 +139,7 @@ class FlightAttendantServiceImplTests {
 
         when(repo.save(any(Person.class))).thenReturn(saved);
 
-        FlightAttendantResponseDTO dto = service.updateFlightAttendant(id, req);
+        FlightAttendantResponse dto = service.updateFlightAttendant(id, req);
 
         assertNotNull(dto);
         assertEquals(id, dto.getId());

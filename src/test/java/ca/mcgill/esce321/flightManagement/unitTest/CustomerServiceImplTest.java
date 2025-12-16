@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.CustomerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.CustomerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.service.CustomerServiceImpl;
@@ -44,7 +44,7 @@ public class CustomerServiceImplTest {
 
         when(personRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
-        CustomerResponseDTO result = customerService.createCustomer(dto);
+        CustomerResponse result = customerService.createCustomer(dto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -61,7 +61,7 @@ public class CustomerServiceImplTest {
         customer.setId(1L);
         when(personRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-        CustomerResponseDTO result = customerService.findCustomerById(1L);
+        CustomerResponse result = customerService.findCustomerById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -87,7 +87,7 @@ public class CustomerServiceImplTest {
 
         when(personRepository.findAll()).thenReturn(List.of(c1, c2));
 
-        List<CustomerResponseDTO> result = customerService.findAllCustomers();
+        List<CustomerResponse> result = customerService.findAllCustomers();
 
         assertEquals(2, result.size());
     }
@@ -106,7 +106,7 @@ public class CustomerServiceImplTest {
         dto.setLastName("NewL");
         dto.setMembershipNumber(007);
 
-        CustomerResponseDTO result = customerService.updateCustomer(1L, dto);
+        CustomerResponse result = customerService.updateCustomer(1L, dto);
 
         assertNotNull(result);
         assertEquals("new@example.com", result.getEmail());

@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PilotResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
 import ca.mcgill.esce321.flightManagement.service.PilotServiceImpl;
@@ -54,7 +54,7 @@ public class PilotServiceImplTest {
 
         when(personRepository.save(any(Pilot.class))).thenReturn(savedPilot);
 
-        PilotResponseDTO result = pilotService.createPilot(dto);
+        PilotResponse result = pilotService.createPilot(dto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -78,7 +78,7 @@ public class PilotServiceImplTest {
 
         when(personRepository.findById(5L)).thenReturn(Optional.of(pilot));
 
-        PilotResponseDTO result = pilotService.getPilotById(5L);
+        PilotResponse result = pilotService.getPilotById(5L);
 
         assertNotNull(result);
         assertEquals(5L, result.getId());
@@ -114,7 +114,7 @@ public class PilotServiceImplTest {
 
         when(personRepository.findAll()).thenReturn(List.of(pilot1, pilot2));
 
-        List<PilotResponseDTO> result = pilotService.getAllPilots();
+        List<PilotResponse> result = pilotService.getAllPilots();
 
         assertEquals(2, result.size());
         assertEquals("Alice", result.get(0).getFirstName());
@@ -151,7 +151,7 @@ public class PilotServiceImplTest {
         when(personRepository.findById(10L)).thenReturn(Optional.of(existing));
         when(personRepository.save(any(Pilot.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        PilotResponseDTO result = pilotService.updatePilot(10L, dto);
+        PilotResponse result = pilotService.updatePilot(10L, dto);
 
         assertNotNull(result);
         assertEquals("New", result.getFirstName());

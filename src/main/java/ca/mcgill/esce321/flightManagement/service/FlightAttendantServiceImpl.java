@@ -1,10 +1,8 @@
 package ca.mcgill.esce321.flightManagement.service;
-import ca.mcgill.esce321.flightManagement.dto.request.FlightAttendantRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightAttendantRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightAttendantResponse;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
-import ca.mcgill.esce321.flightManagement.model.Owner;
 import ca.mcgill.esce321.flightManagement.model.Person;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -24,7 +22,7 @@ public class FlightAttendantServiceImpl {
 
     // ---------- CREATE ----------
     @Transactional
-    public FlightAttendantResponseDTO createFlightAttendant(FlightAttendantRequestDTO d) {
+    public FlightAttendantResponse createFlightAttendant(FlightAttendantRequestDTO d) {
         require(d.getEmail(), "email");
         require(d.getFirstName(), "firstName");
         require(d.getLastName(), "lastName");
@@ -48,17 +46,16 @@ public class FlightAttendantServiceImpl {
     }
 
     // ---------- READ ALL ----------
-    public List<FlightAttendantResponseDTO> getAllFlightAttendants() {
+    public List<FlightAttendantResponse> getAllFlightAttendants() {
         List<Person> allPersons = flightAttendantRepo.findAll();
-        List<FlightAttendantResponseDTO> flightAttendants = new ArrayList<>();
+        List<FlightAttendantResponse> flightAttendants = new ArrayList<>();
 
         for (Person p : allPersons) {
             if (p instanceof FlightAttendant flightAttendant) {
 
-                flightAttendants.add(new FlightAttendantResponseDTO(
+                flightAttendants.add(new FlightAttendantResponse(
                         flightAttendant.getId(),
                         flightAttendant.getEmail(),
-                        flightAttendant.getPassword(),
                         flightAttendant.getFirstName(),
                         flightAttendant.getLastName(),
                         flightAttendant.getFlights().stream().map(Flight::getFlightId).toList()
@@ -74,7 +71,7 @@ public class FlightAttendantServiceImpl {
 
     // ---------- UPDATE ----------
     @Transactional
-    public FlightAttendantResponseDTO updateFlightAttendant(Long id, FlightAttendantRequestDTO d) {
+    public FlightAttendantResponse updateFlightAttendant(Long id, FlightAttendantRequestDTO d) {
         FlightAttendant fa = (FlightAttendant) flightAttendantRepo.findById(id)
                 .orElseThrow(() -> notFound(id));
 
@@ -106,8 +103,8 @@ public class FlightAttendantServiceImpl {
         return new IllegalArgumentException("FlightAttendant " + id + " not found");
     }
 
-    private static FlightAttendantResponseDTO toResponseDTO(FlightAttendant fa) {
-        FlightAttendantResponseDTO dto = new FlightAttendantResponseDTO();
+    private static FlightAttendantResponse toResponseDTO(FlightAttendant fa) {
+        FlightAttendantResponse dto = new FlightAttendantResponse();
         dto.setId(fa.getId());
         dto.setEmail(fa.getEmail());
         dto.setFirstName(fa.getFirstName());

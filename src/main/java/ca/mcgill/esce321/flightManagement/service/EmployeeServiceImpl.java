@@ -1,10 +1,12 @@
 package ca.mcgill.esce321.flightManagement.service;
-import ca.mcgill.esce321.flightManagement.dto.request.*;
+import ca.mcgill.esce321.flightManagement.controller.request.EmployeeRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightAttendantRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.PilotRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -33,7 +35,7 @@ public class EmployeeServiceImpl{
     }
 
     // ---------- CREATE ----------
-    public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
+    public EmployeeResponse createEmployee(EmployeeRequestDTO dto) {
 
         if (personRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("A person with this email already exists.");
@@ -59,10 +61,9 @@ public class EmployeeServiceImpl{
 
         Employee saved = personRepository.save(eToCreate);
 
-        return new EmployeeResponseDTO(
+        return new EmployeeResponse(
                 saved.getId(),
                 saved.getEmail(),
-                saved.getPassword(),
                 saved.getFirstName(),
                 saved.getLastName(),
                 saved.getTitle()
@@ -70,7 +71,7 @@ public class EmployeeServiceImpl{
     }
 
     // ---------- READ ALL ----------
-    public List<EmployeeResponseDTO> findAllEmployees() {
+    public List<EmployeeResponse> findAllEmployees() {
         List<Person> allPeople = personRepository.findAll();
 
         return allPeople.stream()
@@ -81,7 +82,7 @@ public class EmployeeServiceImpl{
     }
 
     // ---------- UPDATE ----------
-    public EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO dto) {
+    public EmployeeResponse updateEmployee(Long id, EmployeeRequestDTO dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Request body (dto) must not be null");
         }
@@ -120,17 +121,16 @@ public class EmployeeServiceImpl{
     }
 
     // ---------- helpers ----------
-    private EmployeeResponseDTO convertToResponseDto(Employee e) {
-        return new EmployeeResponseDTO(e.getId(), e.getEmail(),e.getPassword(),e.getFirstName(), e.getLastName(), e.getTitle());
+    private EmployeeResponse convertToResponseDto(Employee e) {
+        return new EmployeeResponse(e.getId(), e.getEmail(),e.getFirstName(), e.getLastName(), e.getTitle());
     }
 
-    private EmployeeResponseDTO convertEmployee(Employee e) {
+    private EmployeeResponse convertEmployee(Employee e) {
         String employeeTitle = e.getClass().getSimpleName();
 
-        return new EmployeeResponseDTO(
+        return new EmployeeResponse(
                 e.getId(),
                 e.getEmail(),
-                e.getPassword(),
                 e.getFirstName(),
                 e.getLastName(),
                 employeeTitle

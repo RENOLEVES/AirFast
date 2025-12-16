@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.service;
 
-import ca.mcgill.esce321.flightManagement.dto.request.BookingRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.BookingRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -32,7 +32,7 @@ public class BookingServiceImpl {
 
     // ----------------------- Create -----------------------
     @Transactional
-    public BookingResponseDTO createBooking(BookingRequestDTO dto) {
+    public BookingResponse createBooking(BookingRequestDTO dto) {
         if (dto.getCustomerId() == null) throw new IllegalArgumentException("customerId is required");
         if (dto.getSeatId() == null)     throw new IllegalArgumentException("seatId is required");
 
@@ -86,19 +86,19 @@ public class BookingServiceImpl {
     }
 
     // ----------------------- Read -----------------------
-    public BookingResponseDTO getBookingById(Long id) {
+    public BookingResponse getBookingById(Long id) {
         Booking b = bookingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + id));
         return toResponse(b);
     }
 
-    public List<BookingResponseDTO> listAllBookings() {
+    public List<BookingResponse> listAllBookings() {
         return bookingRepository.findAll().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<BookingResponseDTO> listBookingsByCustomer(Long customerId) {
+    public List<BookingResponse> listBookingsByCustomer(Long customerId) {
         return bookingRepository.findAll().stream()
                 .filter(b -> b.getCustomer() != null && b.getCustomer().getId().equals(customerId))
                 .map(this::toResponse)
@@ -107,7 +107,7 @@ public class BookingServiceImpl {
 
     // ----------------------- Update -----------------------
     @Transactional
-    public BookingResponseDTO updatePaymentStatus(Long bookingId, PaymentStatus newStatus) {
+    public BookingResponse updatePaymentStatus(Long bookingId, PaymentStatus newStatus) {
         if (newStatus == null) throw new IllegalArgumentException("newStatus is required");
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
@@ -115,7 +115,7 @@ public class BookingServiceImpl {
         return toResponse(b);
     }
 
-    public List<BookingResponseDTO> getAllBookings() {
+    public List<BookingResponse> getAllBookings() {
         return listAllBookings();
     }
 
@@ -124,7 +124,7 @@ public class BookingServiceImpl {
      * Validates: same flight, new seat not taken, one booking per customer per flight still holds.
      */
     @Transactional
-    public BookingResponseDTO changeSeat(Long bookingId, Long newSeatId) {
+    public BookingResponse changeSeat(Long bookingId, Long newSeatId) {
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
         Seat currentSeat = b.getSeat();
@@ -150,7 +150,7 @@ public class BookingServiceImpl {
         return toResponse(b);
     }
     @Transactional
-    public BookingResponseDTO updateBooking(Long bookingId, BookingRequestDTO dto) {
+    public BookingResponse updateBooking(Long bookingId, BookingRequestDTO dto) {
         Booking b = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("No booking with id " + bookingId));
 
@@ -234,10 +234,10 @@ public class BookingServiceImpl {
         return s == BookingStatus.CONFIRMED || s == BookingStatus.WAITLISTED;
     }
 
-    private BookingResponseDTO toResponse(Booking b) {
+    private BookingResponse toResponse(Booking b) {
         Long customerId = (b.getCustomer() != null) ? b.getCustomer().getId() : null;
         Long seatId = (b.getSeat() != null) ? b.getSeat().getSeatId() : null;
-        return new BookingResponseDTO(
+        return new BookingResponse(
                 b.getBookingId(),
                 customerId,
                 seatId,

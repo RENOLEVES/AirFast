@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponse;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import ca.mcgill.esce321.flightManagement.service.FlightServiceImpl;
@@ -56,7 +56,7 @@ class FlightServiceImplTest {
         saved.setSeatsRemaining(baseReq.getCapacity());
         when(flightRepo.save(any(Flight.class))).thenReturn(saved);
 
-        FlightResponseDTO out = service.createFlight(baseReq);
+        FlightResponse out = service.createFlight(baseReq);
 
         assertThat(out.getFlightId()).isEqualTo(42L);
         assertThat(out.getCapacity()).isEqualTo(120);
@@ -75,7 +75,7 @@ class FlightServiceImplTest {
         f.setFlightId(10L);
         when(flightRepo.findById(10L)).thenReturn(Optional.of(f));
 
-        FlightResponseDTO out = service.getFlightById(10L);
+        FlightResponse out = service.getFlightById(10L);
 
         assertThat(out.getFlightId()).isEqualTo(10L);
         assertThat(out.getCapacity()).isEqualTo(100);
@@ -97,7 +97,7 @@ class FlightServiceImplTest {
         f2.setFlightId(2L);
         when(flightRepo.findAll()).thenReturn(List.of(f1, f2));
 
-        List<FlightResponseDTO> out = service.getAllFlights();
+        List<FlightResponse> out = service.getAllFlights();
 
         assertThat(out).hasSize(2);
         assertThat(out.get(0).getFlightId()).isEqualTo(1L);
@@ -129,7 +129,7 @@ class FlightServiceImplTest {
         update.setActive(true);
         update.setSeatsRemaining(150);
 
-        FlightResponseDTO out = service.updateFlight(9L, update);
+        FlightResponse out = service.updateFlight(9L, update);
 
         assertThat(out.getCapacity()).isEqualTo(150);
         assertThat(out.getDepartLocation()).isEqualTo("YUL");

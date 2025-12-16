@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.PersonResponse;
 import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
@@ -50,28 +50,26 @@ public class ManagerServiceImpl {
 
     // ---------- CREATE ----------
     @Transactional
-    public ManagerResponseDTO createManager(ManagerRequestDTO dto) {        
+    public ManagerResponse createManager(ManagerRequestDTO dto) {
         Manager managerToCreate = new Manager(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
 
         Manager saved = personRepository.save(managerToCreate);
-        return new ManagerResponseDTO(
+        return new ManagerResponse(
                 saved.getId(),
                 saved.getEmail(),
-                saved.getPassword(),
                 saved.getFirstName(),
                 saved.getLastName()
                 );
     }
 
     // ---------- READ ONE ----------
-    public ManagerResponseDTO findManagerById(long id) {
+    public ManagerResponse findManagerById(long id) {
         Optional<Person> p = personRepository.findById(id);
         if (p.isPresent() && p.get() instanceof Manager manager) {
 
-            return new ManagerResponseDTO(
+            return new ManagerResponse(
                     manager.getId(),
                     manager.getEmail(),
-                    manager.getPassword(),
                     manager.getFirstName(),
                     manager.getLastName(),
                     manager.getFlights().stream().map(Flight::getFlightId).toList(),
@@ -83,17 +81,16 @@ public class ManagerServiceImpl {
     }
 
     // ---------- READ ALL ----------
-    public List<ManagerResponseDTO> findAllManagers() {
+    public List<ManagerResponse> findAllManagers() {
         List<Person> allPersons = personRepository.findAll();
-        List<ManagerResponseDTO> allManagers = new ArrayList<>();
+        List<ManagerResponse> allManagers = new ArrayList<>();
         for (Person p : allPersons) {
             if (p instanceof Manager manager) {
 
 
-                allManagers.add(new ManagerResponseDTO(
+                allManagers.add(new ManagerResponse(
                         manager.getId(),
                         manager.getEmail(),
-                        manager.getPassword(),
                         manager.getFirstName(),
                         manager.getLastName(),
                         manager.getFlights().stream().map(Flight::getFlightId).toList(),
@@ -108,7 +105,7 @@ public class ManagerServiceImpl {
 
     // ---------- UPDATE ----------
     @Transactional
-    public ManagerResponseDTO updateManager(long id, ManagerRequestDTO dto) {
+    public ManagerResponse updateManager(long id, ManagerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Manager managerToUpdate) {
@@ -124,10 +121,9 @@ public class ManagerServiceImpl {
 
             Manager updated = personRepository.save(managerToUpdate);
 
-            return new ManagerResponseDTO(
+            return new ManagerResponse(
                     updated.getId(),
                     updated.getEmail(),
-                    updated.getPassword(),
                     updated.getFirstName(),
                     updated.getLastName(),
                     updated.getFlights().stream().map(Flight::getFlightId).toList(),
@@ -228,14 +224,13 @@ public class ManagerServiceImpl {
         return true;
     }
 
-    public List<PersonResponseDTO> viewAllPersons() {
+    public List<PersonResponse> viewAllPersons() {
         List<Person> persons = personRepository.findAll();
 
-        List<PersonResponseDTO> dtoList = persons.stream()
-            .map(p -> new PersonResponseDTO(
+        List<PersonResponse> dtoList = persons.stream()
+            .map(p -> new PersonResponse(
                     p.getId(),
                     p.getEmail(),
-                    p.getPassword(),
                     p.getFirstName(),
                     p.getLastName(),
                     p.getTitle()
@@ -245,10 +240,10 @@ public class ManagerServiceImpl {
     }
 
 
-    public List<FlightResponseDTO> viewAllFlights() {
+    public List<FlightResponse> viewAllFlights() {
         return flightRepository.findAll().stream()
             .map(f -> {
-                FlightResponseDTO dto = new FlightResponseDTO(
+                FlightResponse dto = new FlightResponse(
                     f.getFlightId(),
                     f.getCapacity(),
                     f.getSeatsRemaining(),
@@ -270,10 +265,10 @@ public class ManagerServiceImpl {
     }   
 
 
-    public List<BookingResponseDTO> viewAllBookings() {
+    public List<BookingResponse> viewAllBookings() {
     return bookingRepository.findAll().stream()
         .map(b -> {
-            BookingResponseDTO dto = new BookingResponseDTO(b.getBookingId(), b.getCustomer().getId(), b.getSeat().getSeatId(), b.getBookingDate(), b.getPaymentStatus(), b.getBookingStatus());
+            BookingResponse dto = new BookingResponse(b.getBookingId(), b.getCustomer().getId(), b.getSeat().getSeatId(), b.getBookingDate(), b.getPaymentStatus(), b.getBookingStatus());
             return dto;
         })
         .collect(Collectors.toList());
@@ -298,7 +293,7 @@ public class ManagerServiceImpl {
     }
 
     @Transactional
-    public FlightResponseDTO assignFlight(Long flightId, List<Long> employeeIds) {
+    public FlightResponse assignFlight(Long flightId, List<Long> employeeIds) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
             return null; // flight not found
@@ -336,7 +331,7 @@ public class ManagerServiceImpl {
 
         Flight f = flightRepository.save(flight);
 
-        return new FlightResponseDTO(
+        return new FlightResponse(
                 f.getFlightId(),
                 f.getCapacity(),
                 f.getDepartTime(),
@@ -375,14 +370,14 @@ public class ManagerServiceImpl {
     }
 
 
-    public FlightResponseDTO viewFlightStats(long flightId) {
+    public FlightResponse viewFlightStats(long flightId) {
         Optional<Flight> optionalFlight = flightRepository.findById(flightId);
         if (optionalFlight.isEmpty()) {
             return null;
         }
         Flight f = optionalFlight.get();
 
-        return new FlightResponseDTO(
+        return new FlightResponse(
                 f.getFlightId(),
                 f.getCapacity(),
                 f.getSeatsRemaining(),

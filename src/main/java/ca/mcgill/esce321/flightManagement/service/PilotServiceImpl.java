@@ -3,8 +3,8 @@ package ca.mcgill.esce321.flightManagement.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PilotResponse;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.model.Flight;
@@ -40,31 +40,29 @@ public class PilotServiceImpl {
     }
 
 
-      public PilotResponseDTO createPilot(PilotRequestDTO dto) {
+      public PilotResponse createPilot(PilotRequestDTO dto) {
 
         Pilot pilotToCreate = new Pilot(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName());
         Pilot saved = personRepository.save(pilotToCreate);
      
-        return new PilotResponseDTO(
+        return new PilotResponse(
                 saved.getId(),
                 saved.getEmail(),
-                saved.getPassword(),
                 saved.getFirstName(),
                 saved.getLastName(),
                 saved.getFlights().stream().map(Flight::getFlightId).toList()
                 );
     }
 
-    public PilotResponseDTO getPilotById(long id) {
+    public PilotResponse getPilotById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
      
         if (p.isPresent() && p.get() instanceof Pilot pilot) {
 
-            return new PilotResponseDTO(
+            return new PilotResponse(
                     pilot.getId(),
                     pilot.getEmail(),
-                    pilot.getPassword(),
                     pilot.getFirstName(),
                     pilot.getLastName(),
                     pilot.getFlights().stream().map(Flight::getFlightId).toList()
@@ -74,16 +72,15 @@ public class PilotServiceImpl {
         }
     }
 
-     public List<PilotResponseDTO> getAllPilots() {
+     public List<PilotResponse> getAllPilots() {
         List<Person> allPersons = personRepository.findAll();
-        List<PilotResponseDTO> allPilots = new ArrayList<>();
+        List<PilotResponse> allPilots = new ArrayList<>();
         for (Person p : allPersons) {
             if (p instanceof Pilot pilot) {
 
-                allPilots.add(new PilotResponseDTO(
+                allPilots.add(new PilotResponse(
                     pilot.getId(),
                     pilot.getEmail(),
-                    pilot.getPassword(),
                     pilot.getFirstName(),
                     pilot.getLastName(),
                     pilot.getFlights().stream().map(Flight::getFlightId).toList()));
@@ -95,7 +92,7 @@ public class PilotServiceImpl {
         return allPilots;
     }
 
-    public PilotResponseDTO updatePilot(long id, PilotRequestDTO dto) {
+    public PilotResponse updatePilot(long id, PilotRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Pilot pilotToUpdate) {
@@ -111,10 +108,9 @@ public class PilotServiceImpl {
 
             personRepository.save(pilotToUpdate);
 
-            return new PilotResponseDTO(
+            return new PilotResponse(
                     pilotToUpdate.getId(),
                     pilotToUpdate.getEmail(),
-                    pilotToUpdate.getPassword(),
                     pilotToUpdate.getFirstName(),
                     pilotToUpdate.getLastName(),
                     pilotToUpdate.getFlights().stream().map(Flight::getFlightId).toList());

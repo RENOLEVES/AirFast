@@ -1,12 +1,12 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.ManagerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.ManagerRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightRequestDTO;
 
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.ManagerResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.PersonResponse;
 import ca.mcgill.esce321.flightManagement.model.Booking;
 import ca.mcgill.esce321.flightManagement.model.Customer;
 import ca.mcgill.esce321.flightManagement.model.Flight;
@@ -79,7 +79,7 @@ class ManagerServiceImplTest {
 
         when(personRepository.save(any(Manager.class))).thenReturn(savedManager);
 
-        ManagerResponseDTO result = managerService.createManager(dto);
+        ManagerResponse result = managerService.createManager(dto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -209,7 +209,7 @@ class ManagerServiceImplTest {
 
         when(personRepository.findById(1L)).thenReturn(Optional.of(manager));
 
-        ManagerResponseDTO result = managerService.findManagerById(1L);
+        ManagerResponse result = managerService.findManagerById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -235,7 +235,7 @@ class ManagerServiceImplTest {
         when(personRepository.findAll()).thenReturn(allPersons);
 
         // Act
-        List<ManagerResponseDTO> result = managerService.findAllManagers();
+        List<ManagerResponse> result = managerService.findAllManagers();
 
         // Assert
         assertEquals(result.size(), 2);
@@ -271,7 +271,7 @@ class ManagerServiceImplTest {
         when(personRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(personRepository.save(existing)).thenReturn(existing);
 
-        ManagerResponseDTO result = managerService.updateManager(1L, dto);
+        ManagerResponse result = managerService.updateManager(1L, dto);
 
         assertEquals("New", result.getFirstName());
         assertEquals("new@example.com", result.getEmail());
@@ -296,7 +296,7 @@ class ManagerServiceImplTest {
         dto.setFlightIds(Collections.emptyList());
         dto.setBookingIds(Collections.emptyList());
 
-        ManagerResponseDTO result = managerService.updateManager(1L, dto);
+        ManagerResponse result = managerService.updateManager(1L, dto);
 
         assertNotNull(result);
         assertEquals("new@example.com", result.getEmail());
@@ -375,7 +375,7 @@ class ManagerServiceImplTest {
         List<Person> persons = List.of(p1);
         when(personRepository.findAll()).thenReturn(persons);
 
-        List<PersonResponseDTO> dtoList = managerService.viewAllPersons();
+        List<PersonResponse> dtoList = managerService.viewAllPersons();
 
         assertEquals(1, dtoList.size());
         assertEquals("v", dtoList.get(0).getFirstName());
@@ -392,7 +392,7 @@ class ManagerServiceImplTest {
 
         when(flightRepository.findAll()).thenReturn(List.of(f1));
 
-        List<FlightResponseDTO> flights = managerService.viewAllFlights();
+        List<FlightResponse> flights = managerService.viewAllFlights();
 
         assertEquals(1, flights.size());
         assertEquals(1L, flights.get(0).getFlightId());
@@ -414,7 +414,7 @@ class ManagerServiceImplTest {
 
         when(bookingRepository.findAll()).thenReturn(List.of(booking));
 
-        List<BookingResponseDTO> dtoList = managerService.viewAllBookings();
+        List<BookingResponse> dtoList = managerService.viewAllBookings();
 
         assertEquals(1, dtoList.size());
         assertEquals(100L, dtoList.get(0).getBookingId());
@@ -466,7 +466,7 @@ class ManagerServiceImplTest {
         when(personRepository.findById(102L)).thenReturn(Optional.of(attendant));
         when(personRepository.findById(103L)).thenReturn(Optional.of(manager));
 
-        FlightResponseDTO result = managerService.assignFlight(1L, List.of(101L, 102L, 103L));
+        FlightResponse result = managerService.assignFlight(1L, List.of(101L, 102L, 103L));
         boolean resultt = result.getFlightattendants().size() + result.getPilots().size() == 3;
         assertTrue(resultt);
         assertEquals(manager, flight.getManager());
@@ -507,7 +507,7 @@ class ManagerServiceImplTest {
 
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
 
-        FlightResponseDTO dto = managerService.viewFlightStats(1L);
+        FlightResponse dto = managerService.viewFlightStats(1L);
 
 
         assertNotNull(dto);
@@ -520,7 +520,7 @@ class ManagerServiceImplTest {
     void testViewFlightStats_NotFound() {
         when(flightRepository.findById(1L)).thenReturn(Optional.empty());
 
-        FlightResponseDTO dto = managerService.viewFlightStats(1L);
+        FlightResponse dto = managerService.viewFlightStats(1L);
 
         assertNull(dto);
     }

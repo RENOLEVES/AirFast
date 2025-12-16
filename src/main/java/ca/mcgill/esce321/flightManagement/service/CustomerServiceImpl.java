@@ -3,13 +3,9 @@ package ca.mcgill.esce321.flightManagement.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mcgill.esce321.flightManagement.dto.request.CustomerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.OwnerRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.request.PersonRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.OwnerResponseDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PersonResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.CustomerRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
+import ca.mcgill.esce321.flightManagement.dto.response.CustomerResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
@@ -34,15 +30,14 @@ public class CustomerServiceImpl {
     }
 
     // ---------- CREATE ----------
-    public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
+    public CustomerResponse createCustomer(CustomerRequestDTO dto) {
 
         Customer customerToCreate = new Customer(dto.getEmail(), dto.getPassword(), dto.getFirstName(), dto.getLastName(), dto.getMembershipNumber(), 0, 0);
         Customer saved = personRepository.save(customerToCreate);
 
-        return new CustomerResponseDTO(
+        return new CustomerResponse(
                 saved.getId(),
                 saved.getEmail(),
-                saved.getPassword(),
                 saved.getFirstName(),
                 saved.getLastName(),
                 saved.getMembershipNumber(),
@@ -52,15 +47,14 @@ public class CustomerServiceImpl {
     }
 
     // ---------- READ ONE ----------
-    public CustomerResponseDTO findCustomerById(long id) {
+    public CustomerResponse findCustomerById(long id) {
         Optional<Person> p = personRepository.findById(id);
 
         if (p.isPresent() && p.get() instanceof Customer customer) {
 
-            return new CustomerResponseDTO(
+            return new CustomerResponse(
                     customer.getId(),
                     customer.getEmail(),
-                    customer.getPassword(),
                     customer.getFirstName(),
                     customer.getLastName(),
                     customer.getMembershipNumber(),
@@ -73,17 +67,16 @@ public class CustomerServiceImpl {
     }
 
     // ---------- READ ALL ----------
-     public List<CustomerResponseDTO> findAllCustomers() {
+     public List<CustomerResponse> findAllCustomers() {
         List<Person> allPersons = personRepository.findAll();
          System.out.println(allPersons);
-        List<CustomerResponseDTO> allCustomers = new ArrayList<>();
+        List<CustomerResponse> allCustomers = new ArrayList<>();
         for (Person p : allPersons) {
             if (p instanceof Customer customer) {
 
-                allCustomers.add(new CustomerResponseDTO(
+                allCustomers.add(new CustomerResponse(
                     customer.getId(),
                     customer.getEmail(),
-                    customer.getPassword(),
                     customer.getFirstName(),
                     customer.getLastName(),
                     customer.getMembershipNumber(),
@@ -97,7 +90,7 @@ public class CustomerServiceImpl {
         return allCustomers;
     }
 
-    public List<BookingResponseDTO> findBookingsByCustomerId(Long customerId) {
+    public List<BookingResponse> findBookingsByCustomerId(Long customerId) {
         List<Booking> bookings = bookingRepository.findAllByCustomer_Id(customerId);
 
         return bookings.stream()
@@ -106,7 +99,7 @@ public class CustomerServiceImpl {
     }
 
     // ---------- UPDATE ----------
-    public CustomerResponseDTO updateCustomer(long id, CustomerRequestDTO dto) {
+    public CustomerResponse updateCustomer(long id, CustomerRequestDTO dto) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent() && optionalPerson.get() instanceof Customer customerToUpdate) {
@@ -120,10 +113,9 @@ public class CustomerServiceImpl {
 
             personRepository.save(customerToUpdate);
 
-            return new CustomerResponseDTO(
+            return new CustomerResponse(
                     customerToUpdate.getId(),
                     customerToUpdate.getEmail(),
-                    customerToUpdate.getPassword(),
                     customerToUpdate.getFirstName(),
                     customerToUpdate.getLastName(),
                     customerToUpdate.getMembershipNumber(),
@@ -146,8 +138,8 @@ public class CustomerServiceImpl {
     }
 
     // ---------- helpers ----------
-    private BookingResponseDTO convertToDto(Booking booking) {
-        return new BookingResponseDTO(
+    private BookingResponse convertToDto(Booking booking) {
+        return new BookingResponse(
                 booking.getBookingId(),
                 booking.getCustomer().getId(),
                 booking.getSeat().getSeatId(),

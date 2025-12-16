@@ -1,0 +1,28 @@
+package ca.mcgill.esce321.flightManagement.dto.response;
+
+public class EmployeeResponse extends PersonResponse {
+    private Long e_id;
+    private boolean isActive;
+
+    public EmployeeResponse(){}
+    public EmployeeResponse(Long id, String email, String firstName, String lastName, String title) {
+        super(id, email,firstName,lastName, title);
+        this.isActive = true;
+    }
+
+    public Long getE_id() {
+        return e_id;
+    }
+
+    public void setE_id(Long e_id) {
+        this.e_id = e_id;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+}

@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.PilotRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.PilotResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.PilotRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.PilotResponse;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import org.junit.jupiter.api.*;
@@ -48,13 +48,13 @@ public class PilotIntegrationTests {
         HttpEntity<PilotRequestDTO> entity = new HttpEntity<>(request, headers);
 
         // Act
-        ResponseEntity<PilotResponseDTO> response = client.postForEntity("/api/pilots", entity, PilotResponseDTO.class);
+        ResponseEntity<PilotResponse> response = client.postForEntity("/api/pilots", entity, PilotResponse.class);
 
         // Assert HTTP status
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         // Assert response body
-        PilotResponseDTO created = response.getBody();
+        PilotResponse created = response.getBody();
         assertThat(created).isNotNull();
         assertThat(created.getEmail()).isEqualTo("pilot@test.com");
         assertThat(created.getFirstName()).isEqualTo("John");
@@ -89,15 +89,15 @@ public class PilotIntegrationTests {
         HttpEntity<PilotRequestDTO> entity = new HttpEntity<>(updateRequest, headers);
 
         // Act: perform PUT request
-        ResponseEntity<PilotResponseDTO> response = client.exchange(
-                "/api/pilots/{id}", HttpMethod.PUT, entity, PilotResponseDTO.class, pilotId
+        ResponseEntity<PilotResponse> response = client.exchange(
+                "/api/pilots/{id}", HttpMethod.PUT, entity, PilotResponse.class, pilotId
         );
 
         // Assert HTTP status
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         // Assert response body
-        PilotResponseDTO updated = response.getBody();
+        PilotResponse updated = response.getBody();
         assertThat(updated).isNotNull();
         assertThat(updated.getEmail()).isEqualTo("updated@test.com");
         assertThat(updated.getFirstName()).isEqualTo("JaneUpdated");

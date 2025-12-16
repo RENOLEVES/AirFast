@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,8 +36,8 @@ class FlightIntegrationTests {
         );
         dto.setActive(true);
 
-        ResponseEntity<FlightResponseDTO> resp =
-                client.postForEntity("/api/flights", dto, FlightResponseDTO.class);
+        ResponseEntity<FlightResponse> resp =
+                client.postForEntity("/api/flights", dto, FlightResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
@@ -49,8 +49,8 @@ class FlightIntegrationTests {
     @Test
     @Order(2)
     void getFlightById_success() {
-        ResponseEntity<FlightResponseDTO> resp =
-                client.getForEntity("/api/flights/" + flightId, FlightResponseDTO.class);
+        ResponseEntity<FlightResponse> resp =
+                client.getForEntity("/api/flights/" + flightId, FlightResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -60,8 +60,8 @@ class FlightIntegrationTests {
     @Test
     @Order(3)
     void getAllFlights_success() {
-        ResponseEntity<FlightResponseDTO[]> resp =
-                client.getForEntity("/api/flights", FlightResponseDTO[].class);
+        ResponseEntity<FlightResponse[]> resp =
+                client.getForEntity("/api/flights", FlightResponse[].class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotEmpty();
@@ -83,8 +83,8 @@ class FlightIntegrationTests {
         update.setSeatsRemaining(150);
 
         HttpEntity<FlightRequestDTO> entity = new HttpEntity<>(update);
-        ResponseEntity<FlightResponseDTO> resp =
-                client.exchange("/api/flights/" + flightId, HttpMethod.PUT, entity, FlightResponseDTO.class);
+        ResponseEntity<FlightResponse> resp =
+                client.exchange("/api/flights/" + flightId, HttpMethod.PUT, entity, FlightResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();

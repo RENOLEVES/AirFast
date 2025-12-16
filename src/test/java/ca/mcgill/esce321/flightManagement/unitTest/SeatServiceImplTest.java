@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.unitTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.SeatRequestDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.SeatRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.*;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.*;
@@ -50,7 +50,7 @@ public class SeatServiceImplTest {
 
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(s));
 
-        SeatResponseDTO seat = seatService.getSeatById(seatId);
+        SeatResponse seat = seatService.getSeatById(seatId);
 
 
         assertNotNull(seat);
@@ -106,7 +106,7 @@ public class SeatServiceImplTest {
 
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(s));
 
-        SeatResponseDTO seat = seatService.getSeatById(seatId);
+        SeatResponse seat = seatService.getSeatById(seatId);
 
 
         assertNotNull(seat);
@@ -152,7 +152,7 @@ public class SeatServiceImplTest {
         
         when(seatRepository.findAll()).thenReturn(List.of(s));
 
-        List<SeatResponseDTO> result = seatService.getAllSeats();
+        List<SeatResponse> result = seatService.getAllSeats();
 
         assertEquals(1, result.size());
 
@@ -193,7 +193,7 @@ public class SeatServiceImplTest {
         when(seatRepository.save(any(Seat.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        SeatResponseDTO result = seatService.updateSeat(10L, dto);
+        SeatResponse result = seatService.updateSeat(10L, dto);
 
         // Assert
         assertNotNull(result);

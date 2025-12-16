@@ -6,13 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ca.mcgill.esce321.flightManagement.model.FlightAttendant;
-import ca.mcgill.esce321.flightManagement.model.FlightStatus;
 import ca.mcgill.esce321.flightManagement.model.Pilot;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import ca.mcgill.esce321.flightManagement.dto.request.FlightRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.FlightResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.FlightRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.FlightResponse;
 import ca.mcgill.esce321.flightManagement.model.Flight;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
 import jakarta.transaction.Transactional;
@@ -29,7 +28,7 @@ public class FlightServiceImpl {
 
     // --------- CREATE ----------
     @Transactional
-    public FlightResponseDTO createFlight(FlightRequestDTO dto) {
+    public FlightResponse createFlight(FlightRequestDTO dto) {
         // Use the 7-arg ctor (no status)
         Flight f = new Flight(
                 dto.getCapacity(),
@@ -69,13 +68,13 @@ public class FlightServiceImpl {
     }
 
     // --------- READ ----------
-    public FlightResponseDTO getFlightById(long id) {
+    public FlightResponse getFlightById(long id) {
         Flight f = flightRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
         return convertToDTO(f);
     }
 
-    public List<FlightResponseDTO> getAllFlights() {
+    public List<FlightResponse> getAllFlights() {
         return flightRepository.findAll().stream()
                 .map(this::convertWithEmployee)
                 .collect(Collectors.toList());
@@ -83,7 +82,7 @@ public class FlightServiceImpl {
 
     // --------- UPDATE ----------
     @Transactional
-    public FlightResponseDTO updateFlight(long id, FlightRequestDTO dto) {
+    public FlightResponse updateFlight(long id, FlightRequestDTO dto) {
         Flight f = flightRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No Flight with ID " + id));
 
@@ -118,7 +117,7 @@ public class FlightServiceImpl {
 
     // --------- MAPPER ----------
 
-    public List<FlightResponseDTO> searchFlights(
+    public List<FlightResponse> searchFlights(
             LocalDateTime start,
             LocalDateTime end,
             String departureLocation,
@@ -159,8 +158,8 @@ public class FlightServiceImpl {
     }
 
     // Helper method to convert Flight entity to FlightResponseDTO
-    private FlightResponseDTO convertToDTO(Flight flight) {
-        return new FlightResponseDTO(
+    private FlightResponse convertToDTO(Flight flight) {
+        return new FlightResponse(
                 flight.getFlightId(),
                 flight.getCapacity(),
                 flight.getSeatsRemaining(),
@@ -178,8 +177,8 @@ public class FlightServiceImpl {
         );
     }
 
-    private FlightResponseDTO convertWithEmployee(Flight flight) {
-        return new FlightResponseDTO(
+    private FlightResponse convertWithEmployee(Flight flight) {
+        return new FlightResponse(
                 flight.getFlightId(),
                 flight.getCapacity(),
                 flight.getSeatsRemaining(),

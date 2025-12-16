@@ -1,7 +1,7 @@
 package ca.mcgill.esce321.flightManagement.integrationTest;
 
-import ca.mcgill.esce321.flightManagement.dto.request.BookingRequestDTO;
-import ca.mcgill.esce321.flightManagement.dto.response.BookingResponseDTO;
+import ca.mcgill.esce321.flightManagement.controller.request.BookingRequestDTO;
+import ca.mcgill.esce321.flightManagement.dto.response.BookingResponse;
 import ca.mcgill.esce321.flightManagement.model.*;
 import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.FlightRepository;
@@ -67,8 +67,8 @@ class BookingIntegrationTests {
     void createBooking_success() {
         BookingRequestDTO req = new BookingRequestDTO(customerId, seatId, null, null, null);
 
-        ResponseEntity<BookingResponseDTO> resp =
-                client.postForEntity("/api/bookings", req, BookingResponseDTO.class);
+        ResponseEntity<BookingResponse> resp =
+                client.postForEntity("/api/bookings", req, BookingResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
@@ -81,8 +81,8 @@ class BookingIntegrationTests {
     @Test
     @Order(2)
     void getBooking_success() {
-        ResponseEntity<BookingResponseDTO> resp =
-                client.getForEntity("/api/bookings/" + bookingId, BookingResponseDTO.class);
+        ResponseEntity<BookingResponse> resp =
+                client.getForEntity("/api/bookings/" + bookingId, BookingResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -92,8 +92,8 @@ class BookingIntegrationTests {
     @Test
     @Order(3)
     void listBookings_success() {
-        ResponseEntity<BookingResponseDTO[]> resp =
-                client.getForEntity("/api/bookings", BookingResponseDTO[].class);
+        ResponseEntity<BookingResponse[]> resp =
+                client.getForEntity("/api/bookings", BookingResponse[].class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotEmpty();
@@ -107,8 +107,8 @@ class BookingIntegrationTests {
         );
 
         HttpEntity<BookingRequestDTO> entity = new HttpEntity<>(update);
-        ResponseEntity<BookingResponseDTO> resp =
-                client.exchange("/api/bookings/" + bookingId, HttpMethod.PUT, entity, BookingResponseDTO.class);
+        ResponseEntity<BookingResponse> resp =
+                client.exchange("/api/bookings/" + bookingId, HttpMethod.PUT, entity, BookingResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -124,8 +124,8 @@ class BookingIntegrationTests {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         // Verify status changed
-        ResponseEntity<BookingResponseDTO> get =
-                client.getForEntity("/api/bookings/" + bookingId, BookingResponseDTO.class);
+        ResponseEntity<BookingResponse> get =
+                client.getForEntity("/api/bookings/" + bookingId, BookingResponse.class);
 
         assertThat(get.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(get.getBody()).isNotNull();
