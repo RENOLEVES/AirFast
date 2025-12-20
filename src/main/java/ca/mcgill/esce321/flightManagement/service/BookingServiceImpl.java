@@ -7,6 +7,7 @@ import ca.mcgill.esce321.flightManagement.repo.BookingRepository;
 import ca.mcgill.esce321.flightManagement.repo.PersonRepository;
 import ca.mcgill.esce321.flightManagement.repo.SeatRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ public class BookingServiceImpl {
     private final PersonRepository personRepository;
     private final SeatRepository seatRepository;
 
+
+    @Autowired
     public BookingServiceImpl(BookingRepository bookingRepository,
                               PersonRepository personRepository,
                               SeatRepository seatRepository) {
