@@ -1,6 +1,6 @@
 package ca.mcgill.esce321.flightManagement.controller.api;
 
-import ca.mcgill.esce321.flightManagement.controller.request.LoginRequest;
+import ca.mcgill.esce321.flightManagement.controller.request.LoginRequestDTO;
 import ca.mcgill.esce321.flightManagement.dto.response.Response;
 import ca.mcgill.esce321.flightManagement.repo.TokenRepository;
 import ca.mcgill.esce321.flightManagement.service.PersonServiceImpl;

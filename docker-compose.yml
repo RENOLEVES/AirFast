@@ -1,0 +1,11 @@
+services:
+  backend:
+    build: ./ # Adjust path to your Spring folder
+    ports:
+      - "8080:8080"
+  frontend:
+    build: /frontend # Adjust path to your Vue folder
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
