@@ -21,16 +21,6 @@ public class CustomerController {
     private CustomerServiceImpl customerService;
 
     /**
-     * Create a new customer
-     */
-    @PostMapping
-    public ResponseEntity<CustomerResponse> createPilot(@RequestBody CustomerRequestDTO request) {
-        CustomerResponse created = customerService.createCustomer(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(created);
-    }
-
-    /**
      * Get customer by ID
      */
     @GetMapping("/{id}")

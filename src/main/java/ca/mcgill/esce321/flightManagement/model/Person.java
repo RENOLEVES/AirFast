@@ -16,9 +16,8 @@ public abstract class Person implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "token_id")
-    private Person person;
+    @OneToOne(mappedBy = "person")
+    private Token token;
 
     private String email;
     private String password;
